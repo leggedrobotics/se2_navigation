@@ -66,14 +66,31 @@ void appendPointAlongFinalApproachDirection(double extendingDistance, PathSegmen
   pathSegment->segment_.push_back(appendedPoint);
 }
 
-Vector computeDesiredHeadingVector(const RobotState& robotState) {
+Vector computeDesiredHeadingVector(const RobotState& robotState, DrivingDirection desiredDrivingDirection) {
   double headingAngle = robotState.pose_.yaw_;
-  if (robotState.desiredDrivingDirection_ == DrivingDirection::BCK) {
+  if (desiredDrivingDirection == DrivingDirection::BCK) {
     // handle reverse driving
     headingAngle += M_PI;
   }
 
   return Vector(std::cos(headingAngle), std::sin(headingAngle));
+}
+
+Point chooseLookaheadPoint(const Intersection& intersection, const Vector& desiredHeading, const Point& origin) {
+  // radii vectors w.r.t. to the local frame
+  const Vector r1 = intersection.p1_ - origin;
+  const Vector r2 = intersection.p2_ - origin;
+
+  /*Pick a point that is in front i.e. where the cos of the angle is >= 0
+   * one should always be + the other one -*/
+  const double voteP1 = desiredHeading.transpose() * r1;
+  const double voteP2 = desiredHeading.transpose() * r2;
+  assert(sgn(voteP1) + sgn(voteP2) == 0);
+  if (voteP1 >= voteP2) {
+    return intersection.p1_;
+  } else {
+    return intersection.p2_;
+  }
 }
 
 } /* namespace pure_pursuit */

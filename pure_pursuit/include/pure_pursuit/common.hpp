@@ -16,7 +16,6 @@ enum class DrivingDirection : int {
   BCK   // backwards
 };
 
-
 struct RobotPose {
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
   Point position_{0.0, 0.0};
@@ -25,9 +24,6 @@ struct RobotPose {
 
 struct RobotState {
   RobotPose pose_;
-  DrivingDirection desiredDrivingDirection_{DrivingDirection::FWD};
 };
-
-
 
 } /* namespace pure_pursuit */

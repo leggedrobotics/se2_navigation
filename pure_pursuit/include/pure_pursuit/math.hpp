@@ -37,6 +37,5 @@ int sgn(T val) {
 void computeIntersection(const Line& line, const Circle& circle, Intersection* intersection);
 Vector computeFinalApproachDirection(const PathSegment& pathSegment);
 void appendPointAlongFinalApproachDirection(double extendingDistance, PathSegment* pathSegment);
-Vector computeDesiredHeadingVector(const RobotState& robotState);
-
+Vector computeDesiredHeadingVector(const RobotState& robotState, DrivingDirection desiredDrivingDirection);
 } /* namespace pure_pursuit */

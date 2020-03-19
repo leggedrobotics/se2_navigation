@@ -16,11 +16,17 @@ find_package(catkin REQUIRED
     ${CATKIN_PACKAGE_DEPENDENCIES}
 )
 
-find_package(Eigen3 REQUIRED)
+find_package(Eigen3 QUIET)
+if(NOT EIGEN3_FOUND)
+  find_package(PkgConfig REQUIRED)
+  pkg_check_modules(EIGEN3 REQUIRED eigen3)
+  set(EIGEN3_INCLUDE_DIR ${EIGEN3_INCLUDE_DIRS})
+endif()
 
 catkin_package(
   INCLUDE_DIRS
     include
+    ${EIGEN3_INCLUDE_DIR}
   LIBRARIES
     ${PROJECT_NAME}
   CATKIN_DEPENDS
@@ -76,6 +82,21 @@ if(cmake_clang_tools_FOUND)
 endif(cmake_clang_tools_FOUND)
 
 
+#############
+## Testing ##
+#############
+if(CATKIN_ENABLE_TESTING)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+## Add gtest based cpp test target and link libraries
+catkin_add_gtest(${PROJECT_NAME}-test
+  test/test_pure_pursuit.cpp
+  test/GeometryTest.cpp	
+  )
+endif()
+
+if(TARGET ${PROJECT_NAME}-test)
+  target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
+endif()
 
 
 
