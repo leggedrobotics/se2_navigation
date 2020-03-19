@@ -7,26 +7,21 @@
 
 #pragma once
 
+#include "pure_pursuit/common.hpp"
+#include "pure_pursuit/typedefs.hpp"
+
 #include <Eigen/Core>
 #include <vector>
-#include "typedefs.hpp"
 
 namespace pure_pursuit {
 
-enum class DrivingDirection : int {
-  FWD,  // forward
-  BCK   // backwards
-};
-
 struct PathPoint {
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-  Point position_{0.0, 0.0};
-  double yaw_ = 0.0;
+  Point position_;
 };
 
 struct PathSegment {
   DrivingDirection drivingDirection_;
-  std::vector<PathPoint> pathSegment_;
+  std::vector<PathPoint> segment_;
 };
 
 struct Path {
