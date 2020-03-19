@@ -10,7 +10,7 @@
 #include "pure_pursuit/common.hpp"
 #include "pure_pursuit/typedefs.hpp"
 
-#include <Eigen/Core>
+#include <Eigen/Dense>
 #include <vector>
 
 namespace pure_pursuit {

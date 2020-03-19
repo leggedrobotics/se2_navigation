@@ -20,6 +20,9 @@ using Line = pure_pursuit::Line;
 using Vector = pure_pursuit::Vector;
 using Matrix = pure_pursuit::Matrix;
 using Point = pure_pursuit::Point;
+using RobotState = pure_pursuit::RobotState;
+using PathPoint = pure_pursuit::PathPoint;
+using PathSegment = pure_pursuit::PathSegment;
 
 extern std::mt19937 rndGenerator;
 constexpr double testPlaneWidth = 100.0;
@@ -33,5 +36,7 @@ Line createRandomLineWithTwoIntersections(const Circle &circle);
 Point createRandomPoint();
 Point createRandomPointOutside( const Circle &circle);
 Point createRandomPointInside( const Circle &circle);
+PathSegment createRandomPathSegment( unsigned int numPoints);
+bool isVectorsColinear(const Vector &v1, const Vector &v2);
 
 } /* namespace pure_pursuit_test */

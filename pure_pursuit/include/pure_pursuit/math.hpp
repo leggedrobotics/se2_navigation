@@ -9,6 +9,8 @@
 
 #include "pure_pursuit/Path.hpp"
 
+#include <Eigen/Dense>
+
 namespace pure_pursuit {
 
 struct Line {

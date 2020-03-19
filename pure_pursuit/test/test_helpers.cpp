@@ -94,4 +94,22 @@ Point createRandomPoint(){
   return Point(pDist(rndGenerator), pDist(rndGenerator));
 }
 
+PathSegment createRandomPathSegment( unsigned int numPoints){
+  PathSegment pathSegment;
+  pathSegment.segment_.resize(numPoints);
+  for (unsigned int i = 0; i < numPoints; ++i){
+    PathPoint pathPoint;
+    pathPoint.position_ = createRandomPoint();
+    pathSegment.segment_.at(i) = pathPoint;
+  }
+  return pathSegment;
+}
+
+bool isVectorsColinear(const Vector &v1, const Vector &v2){
+  const auto v1Hat  = v1.normalized();
+  const auto v2Hat  = v2.normalized();
+  const double dotProductAbs = std::fabs(v1Hat.transpose() * v2Hat);
+  return std::fabs(dotProductAbs - 1.0) < 1e-4;
+}
+
 } /* namespace pure_pursuit_test */
