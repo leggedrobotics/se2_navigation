@@ -90,6 +90,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 ## Add gtest based cpp test target and link libraries
 catkin_add_gtest(${PROJECT_NAME}-test
   test/test_pure_pursuit.cpp
+  test/test_helpers.cpp
   test/GeometryTest.cpp	
   )
 endif()

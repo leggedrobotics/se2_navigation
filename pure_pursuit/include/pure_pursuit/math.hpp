@@ -34,8 +34,13 @@ int sgn(T val) {
   return (T(0) < val) - (val < T(0));
 }
 
+bool isAlmostZero(double val);
+bool isClose(double val1, double val2);
+
 void computeIntersection(const Line& line, const Circle& circle, Intersection* intersection);
 Vector computeFinalApproachDirection(const PathSegment& pathSegment);
 void appendPointAlongFinalApproachDirection(double extendingDistance, PathSegment* pathSegment);
 Vector computeDesiredHeadingVector(const RobotState& robotState, DrivingDirection desiredDrivingDirection);
+Matrix rotationMatrix(double angle);
+
 } /* namespace pure_pursuit */

@@ -6,8 +6,11 @@
  */
 
 #include "pure_pursuit/math.hpp"
+#include <iostream>
 
 namespace pure_pursuit {
+
+constexpr double zeroThreshold = 1e-5;
 
 void computeIntersection(const Line& line, const Circle& circle, Intersection* intersection) {
   /*need to shift everything to the origin so that the formulas for the intersection are valid
@@ -26,7 +29,7 @@ void computeIntersection(const Line& line, const Circle& circle, Intersection* i
   const double D = x1 * y2 - x2 * y1;
   const double discriminant = circle.r_ * circle.r_ * dr - D * D;
 
-  if (discriminant < 0) {
+  if (discriminant < -zeroThreshold) {
     intersection->solutionCase_ = Intersection::SolutionCase::NO_SOLUTION;
     return;
   }
@@ -42,11 +45,19 @@ void computeIntersection(const Line& line, const Circle& circle, Intersection* i
   intersection->p1_ = solution1;
   intersection->p2_ = solution2;
 
-  if (discriminant < 1e-4) {
+  if (isAlmostZero(discriminant)) {
     intersection->solutionCase_ = Intersection::SolutionCase::ONE_SOLUTION;
   } else {
     intersection->solutionCase_ = Intersection::SolutionCase::TWO_SOLUTIONS;
   }
+}
+
+bool isAlmostZero(double val) {
+  return std::fabs(val) < zeroThreshold;
+}
+
+bool isClose(double val1, double val2) {
+  return std::fabs(val1 - val1) < zeroThreshold;
 }
 
 Vector computeFinalApproachDirection(const PathSegment& pathSegment) {
@@ -91,6 +102,14 @@ Point chooseLookaheadPoint(const Intersection& intersection, const Vector& desir
   } else {
     return intersection.p2_;
   }
+}
+
+Matrix rotationMatrix(double angle) {
+  Matrix mat;
+  const double c = std::cos(angle);
+  const double s = std::sin(angle);
+  mat << c, -s, s, c;
+  return mat;
 }
 
 } /* namespace pure_pursuit */
