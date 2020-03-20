@@ -10,6 +10,7 @@ set(SRC_FILES
   src/LongitudinalVelocityController.cpp
   src/ConstantVelocityController.cpp
   src/PathTracker.cpp
+  src/HeadingController.cpp
 )
 
 set(CATKIN_PACKAGE_DEPENDENCIES )
