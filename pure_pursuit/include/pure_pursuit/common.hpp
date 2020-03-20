@@ -26,4 +26,8 @@ struct RobotState {
   RobotPose pose_;
 };
 
+struct LookaheadPoint {
+  Point position_{0.0, 0.0};
+};
+
 } /* namespace pure_pursuit */
