@@ -5,7 +5,7 @@
  *      Author: jelavice
  */
 
-#include "pure_pursuit/LongitudinalVelocityController.hpp"
+#include "pure_pursuit/velocity_control/LongitudinalVelocityController.hpp"
 
 namespace pure_pursuit {
 

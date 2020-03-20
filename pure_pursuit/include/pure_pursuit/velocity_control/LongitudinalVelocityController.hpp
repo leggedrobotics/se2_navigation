@@ -21,7 +21,7 @@ class LongitudinalVelocityController {
   virtual void updateCurrentLookaheadPoint(const LookaheadPoint& point);
 
  private:
-  virtual bool computeVelocity(double dt) const = 0;
+  virtual bool computeVelocity(double dt) = 0;
 
  protected:
   double desiredLongitudinalVelocity_ = 0.0;
