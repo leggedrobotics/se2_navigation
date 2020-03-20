@@ -57,7 +57,7 @@ bool isAlmostZero(double val) {
 }
 
 bool isClose(double val1, double val2) {
-  return std::fabs(val1 - val1) < zeroThreshold;
+  return std::fabs(val1 - val2) < zeroThreshold;
 }
 
 Vector computeFinalApproachDirection(const PathSegment& pathSegment) {
