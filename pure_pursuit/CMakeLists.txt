@@ -11,6 +11,7 @@ set(SRC_FILES
   src/ConstantVelocityController.cpp
   src/PathTracker.cpp
   src/HeadingController.cpp
+  src/AckermannSteeringController.cpp
 )
 
 set(CATKIN_PACKAGE_DEPENDENCIES )
