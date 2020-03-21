@@ -22,14 +22,17 @@ struct RobotPose {
   double yaw_ = 0.0;
 };
 
-struct RobotState {
-  RobotPose pose_;
+struct RobotTwist {
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+  Vector linear_{0.0, 0.0};
+  double ang_ = 0.0;
 };
 
-struct LookaheadPoint {
-  LookaheadPoint(const Point& p) : position_(p) {}
-  LookaheadPoint(double x, double y) : position_(x, y) {}
-  Point position_{0.0, 0.0};
+struct RobotState {
+  RobotPose pose_;
+  RobotTwist twist_;
+  DrivingDirection desiredDirection_;
 };
+
 
 } /* namespace pure_pursuit */

@@ -12,7 +12,8 @@ namespace pure_pursuit {
 
 constexpr double zeroThreshold = 1e-5;
 
-void computeIntersection(const Line& line, const Circle& circle, Intersection* intersection) {
+void computeIntersection(const Line& line, const Circle& circle, Intersection* intersection)
+{
   /*need to shift everything to the origin so that the formulas for the intersection are valid
    * those are taken from: http://mathworld.wolfram.com/Circle-LineIntersection.html
    * they're valid for the circle centered around the origin.
@@ -35,8 +36,10 @@ void computeIntersection(const Line& line, const Circle& circle, Intersection* i
   }
 
   const double sqrtDiscriminant = std::sqrt(discriminant);
-  Point solution1((D * dy + sgn(dy) * dx * sqrtDiscriminant) / dr, (-D * dx + std::abs(dy) * sqrtDiscriminant) / dr);
-  Point solution2((D * dy - sgn(dy) * dx * sqrtDiscriminant) / dr, (-D * dx - std::abs(dy) * sqrtDiscriminant) / dr);
+  Point solution1((D * dy + sgn(dy) * dx * sqrtDiscriminant) / dr,
+                  (-D * dx + std::abs(dy) * sqrtDiscriminant) / dr);
+  Point solution2((D * dy - sgn(dy) * dx * sqrtDiscriminant) / dr,
+                  (-D * dx - std::abs(dy) * sqrtDiscriminant) / dr);
 
   // translate solution back from the origin
   solution1 += circle.center_;
@@ -52,15 +55,18 @@ void computeIntersection(const Line& line, const Circle& circle, Intersection* i
   }
 }
 
-bool isAlmostZero(double val) {
+bool isAlmostZero(double val)
+{
   return std::fabs(val) < zeroThreshold;
 }
 
-bool isClose(double val1, double val2) {
+bool isClose(double val1, double val2)
+{
   return std::fabs(val1 - val2) < zeroThreshold;
 }
 
-Vector computeFinalApproachDirection(const PathSegment& pathSegment) {
+Vector computeFinalApproachDirection(const PathSegment& pathSegment)
+{
   if (pathSegment.segment_.size() < 2) {
     throw std::runtime_error("Path segment should have at lest two points");
   }
@@ -70,7 +76,8 @@ Vector computeFinalApproachDirection(const PathSegment& pathSegment) {
   return pathSegment.segment_.at(last).position_ - pathSegment.segment_.at(secondLast).position_;
 }
 
-void appendPointAlongFinalApproachDirection(double extendingDistance, PathSegment* pathSegment) {
+void appendPointAlongFinalApproachDirection(double extendingDistance, PathSegment* pathSegment)
+{
   const Vector extendingDirection = computeFinalApproachDirection(*pathSegment);
   const Point lastPoint = pathSegment->segment_.back().position_;
 
@@ -78,7 +85,9 @@ void appendPointAlongFinalApproachDirection(double extendingDistance, PathSegmen
   pathSegment->segment_.push_back(appendedPoint);
 }
 
-Vector computeDesiredHeadingVector(const RobotState& robotState, DrivingDirection desiredDrivingDirection) {
+Vector computeDesiredHeadingVector(const RobotState& robotState,
+                                   DrivingDirection desiredDrivingDirection)
+{
   double headingAngle = robotState.pose_.yaw_;
   if (desiredDrivingDirection == DrivingDirection::BCK) {
     // handle reverse driving
@@ -88,7 +97,9 @@ Vector computeDesiredHeadingVector(const RobotState& robotState, DrivingDirectio
   return Vector(std::cos(headingAngle), std::sin(headingAngle));
 }
 
-Point chooseLookaheadPoint(const Intersection& intersection, const Vector& desiredHeading, const Point& origin) {
+Point chooseLookaheadPoint(const Intersection& intersection, const Vector& desiredHeading,
+                           const Point& origin)
+{
   // radii vectors w.r.t. to the local frame
   const Vector r1 = intersection.p1_ - origin;
   const Vector r2 = intersection.p2_ - origin;
@@ -105,7 +116,8 @@ Point chooseLookaheadPoint(const Intersection& intersection, const Vector& desir
   }
 }
 
-Matrix rotationMatrix(double angle) {
+Matrix rotationMatrix(double angle)
+{
   Matrix mat;
   const double c = std::cos(angle);
   const double s = std::sin(angle);
@@ -113,7 +125,9 @@ Matrix rotationMatrix(double angle) {
   return mat;
 }
 
-unsigned int getIdOfTheClosestPointOnThePath(const PathSegment& pathSegment, const Point& robotPosition, unsigned int lastClosestId) {
+unsigned int getIdOfTheClosestPointOnThePath(const PathSegment& pathSegment,
+                                             const Point& robotPosition, unsigned int lastClosestId)
+{
   int currentBest = lastClosestId;
   assert(currentBest >= 0);
   double distanceMin = (robotPosition - pathSegment.segment_.at(currentBest).position_).norm();
@@ -130,7 +144,8 @@ unsigned int getIdOfTheClosestPointOnThePath(const PathSegment& pathSegment, con
   return bindIndexToRange(currentBest, 0, nPoints - 1);
 }
 
-unsigned int bindIndexToRange(int idReq, int lo, int hi) {
+unsigned int bindIndexToRange(int idReq, int lo, int hi)
+{
   assert(hi >= lo);
   if (idReq < lo) {
     return lo;
@@ -141,7 +156,8 @@ unsigned int bindIndexToRange(int idReq, int lo, int hi) {
   return static_cast<unsigned int>(idReq);
 }
 
-bool isPastTheSecondLastPoint(const PathSegment& pathSegment, const Point& robPos) {
+bool isPastTheSecondLastPoint(const PathSegment& pathSegment, const Point& robPos)
+{
   const unsigned int nPointsInSegment = pathSegment.segment_.size();
   if (pathSegment.segment_.size() < 3) {
     throw std::runtime_error("Path segment with the extra point should have at lest three points");
@@ -152,6 +168,12 @@ bool isPastTheSecondLastPoint(const PathSegment& pathSegment, const Point& robPo
   const Vector robPositionToSecondLast = secondLastPoint - robPos;
 
   return (finalApproach.transpose() * robPositionToSecondLast <= 0);
+}
+
+std::pair<unsigned int, unsigned int> findIdOfFirstPointsCloserThanLookaheadAndFirstPointsFartherThanLookahead(
+    const PathSegment &pathSegment, unsigned int startingPoint, double lookaheadDistance)
+{
+
 }
 
 } /* namespace pure_pursuit */

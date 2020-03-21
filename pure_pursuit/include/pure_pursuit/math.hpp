@@ -10,29 +10,38 @@
 #include "pure_pursuit/Path.hpp"
 
 #include <Eigen/Dense>
+#include <utility>
 
 namespace pure_pursuit {
 
-struct Line {
+struct Line
+{
   /*
    * Line is defined with two points
    */
   Point p1_, p2_;
 };
 
-struct Circle {
-  Point center_{0.0, 0.0};  // center
+struct Circle
+{
+  Point center_ { 0.0, 0.0 };  // center
   double r_ = 1.0;          // radius
 };
 
-struct Intersection {
-  enum class SolutionCase : int { NO_SOLUTION, ONE_SOLUTION, TWO_SOLUTIONS };
+struct Intersection
+{
+  enum class SolutionCase
+    : int {NO_SOLUTION,
+    ONE_SOLUTION,
+    TWO_SOLUTIONS
+  };
   Point p1_, p2_;
   SolutionCase solutionCase_;
 };
 
-template <typename T>
-int sgn(T val) {
+template<typename T>
+int sgn(T val)
+{
   return (T(0) < val) - (val < T(0));
 }
 
@@ -43,9 +52,14 @@ bool isClose(double val1, double val2);
 void computeIntersection(const Line& line, const Circle& circle, Intersection* intersection);
 Vector computeFinalApproachDirection(const PathSegment& pathSegment);
 void appendPointAlongFinalApproachDirection(double extendingDistance, PathSegment* pathSegment);
-Vector computeDesiredHeadingVector(const RobotState& robotState, DrivingDirection desiredDrivingDirection);
+Vector computeDesiredHeadingVector(const RobotState& robotState,
+                                   DrivingDirection desiredDrivingDirection);
 Matrix rotationMatrix(double angle);
-unsigned int getIdOfTheClosestPointOnThePath(const PathSegment& pathSegment, const Point& robotPosition, unsigned int lastClosestId = 0);
+unsigned int getIdOfTheClosestPointOnThePath(const PathSegment& pathSegment,
+                                             const Point& robotPosition,
+                                             unsigned int lastClosestId = 0);
 bool isPastTheSecondLastPoint(const PathSegment& pathSegment, const Point& robPos);
+std::pair<unsigned int, unsigned int> findIdOfFirstPointsCloserThanLookaheadAndFirstPointsFartherThanLookahead(
+    const PathSegment &pathSegment, unsigned int startingPoint, double lookaheadDistance);
 
 } /* namespace pure_pursuit */

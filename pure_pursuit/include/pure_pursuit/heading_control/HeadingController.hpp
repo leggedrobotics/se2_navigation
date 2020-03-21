@@ -7,8 +7,17 @@
 
 #pragma once
 #include "pure_pursuit/common.hpp"
+#include "pure_pursuit/Path.hpp"
 
 namespace pure_pursuit {
+
+struct HeadingControllerParameters {
+  virtual ~HeadingControllerParameters() = default;
+  double lookaheadDistanceFwd_ = 4.0;
+  double lookaheadDistanceBck_ = 4.0;
+  double anchorDistanceFwd_ = 0.2;
+  double anchorDistanceBck_ = 0.2;
+};
 
 class HeadingController {
  public:
@@ -16,23 +25,29 @@ class HeadingController {
   virtual ~HeadingController() = default;
 
   bool advance(double dt);
-  virtual void updateCurrentLongitudinalVelocity(double velocity);
+  virtual void updateCurrentPathSegment(const PathSegment &pathSegment);
   virtual void updateCurrentState(const RobotState& robState);
-  virtual void updateCurrentLookaheadPoint(const LookaheadPoint& point);
   double getTurningRadius() const;
   double getYawRate() const;
   double getSteeringAngle() const;
 
  private:
   virtual bool runController(double dt) = 0;
-
+  virtual void setActiveAnchorAndLookaheadDistance();
  protected:
-  double currentVelocity_ = 0.0;
+
+  Point computeAnchorPoint() const;
+  Point computeLookaheadPoint(unsigned int closestPointId) const;
+
   RobotState currentRobotState_;
-  LookaheadPoint currentLookaheadPoint_;
   double turningRadius_ = 0.0;
   double yawRate_ = 0.0;
   double steeringAngle_ = 0.0;
+  HeadingControllerParameters parameters_;
+  double activeAnchorDistance_ = 0.2;
+  double activeLookaheadDistance_ = 0.2;
+  PathSegment currentPathSegment_;
+  unsigned int lastClosesPointId_ = 0.0;
 };
 
 }  // namespace pure_pursuit
