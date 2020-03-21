@@ -110,7 +110,7 @@ TEST(Geometry, CircleIntersection_0)
 
 TEST(Geometry, CircleIntersection_1)
 {
-  const int seed = 558104554; //ppt::seedRndGenerator();
+  const int seed = 558104554;  //ppt::seedRndGenerator();
   for (unsigned int i = 0; i < numCasesPerTest; ++i) {
     const auto circle = ppt::createRandomCircle();
     const auto line = ppt::createRandomLineWitOneIntersection(circle);
@@ -181,5 +181,31 @@ TEST(Geometry, DesiredHeadingReverse)
 
   if (::testing::Test::HasFailure()) {
     std::cout << "\n Test Geometry, DesiredHeadingReverse failed with seed: " << seed << std::endl;
+  }
+}
+
+TEST(Geometry, IsPastLastPoint)
+{
+  using PathPoint = pp::PathPoint;
+  const int seed = ppt::seedRndGenerator();
+  pp::PathSegment segment;
+  segment.segment_.resize(1);
+  EXPECT_THROW(pp::isPastTheSecondLastPoint(segment, ppt::createRandomPoint()), std::runtime_error);
+  segment.segment_.resize(2);
+  EXPECT_THROW(pp::isPastTheSecondLastPoint(segment, ppt::createRandomPoint()), std::runtime_error);
+  segment.segment_.resize(3);
+  EXPECT_NO_THROW(pp::isPastTheSecondLastPoint(segment, ppt::createRandomPoint()));
+  segment.segment_ = {PathPoint(-1.0,0.0), PathPoint(0.0,0.0)};
+  appendPointAlongFinalApproachDirection(10.0, &segment);
+  for (unsigned int i = 0; i < numCasesPerTest; ++i) {
+    const PathPoint queryPoint(ppt::createRandomPoint());
+    if (queryPoint.position_.x() > 0.0){
+      EXPECT_TRUE(pp::isPastTheSecondLastPoint(segment, queryPoint.position_));
+    } else {
+      EXPECT_FALSE(pp::isPastTheSecondLastPoint(segment, queryPoint.position_));
+    }
+  }
+  if (::testing::Test::HasFailure()) {
+    std::cout << "\n Test Geometry, IsPastLastPoint failed with seed: " << seed << std::endl;
   }
 }

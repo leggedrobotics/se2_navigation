@@ -46,6 +46,6 @@ void appendPointAlongFinalApproachDirection(double extendingDistance, PathSegmen
 Vector computeDesiredHeadingVector(const RobotState& robotState, DrivingDirection desiredDrivingDirection);
 Matrix rotationMatrix(double angle);
 unsigned int getIdOfTheClosestPointOnThePath(const PathSegment& pathSegment, const Point& robotPosition, unsigned int lastClosestId = 0);
-bool isPastTheSecondLastPoint(const PathSegment& pathSegment, const RobotState& robState);
+bool isPastTheSecondLastPoint(const PathSegment& pathSegment, const Point& robPos);
 
 } /* namespace pure_pursuit */

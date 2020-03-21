@@ -27,6 +27,8 @@ struct RobotState {
 };
 
 struct LookaheadPoint {
+  LookaheadPoint(const Point& p) : position_(p) {}
+  LookaheadPoint(double x, double y) : position_(x, y) {}
   Point position_{0.0, 0.0};
 };
 

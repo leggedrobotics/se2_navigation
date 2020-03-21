@@ -74,8 +74,7 @@ void appendPointAlongFinalApproachDirection(double extendingDistance, PathSegmen
   const Vector extendingDirection = computeFinalApproachDirection(*pathSegment);
   const Point lastPoint = pathSegment->segment_.back().position_;
 
-  PathPoint appendedPoint;
-  appendedPoint.position_ = lastPoint + extendingDistance * extendingDirection;
+  PathPoint appendedPoint(lastPoint + extendingDistance * extendingDirection);
   pathSegment->segment_.push_back(appendedPoint);
 }
 
@@ -142,7 +141,7 @@ unsigned int bindIndexToRange(int idReq, int lo, int hi) {
   return static_cast<unsigned int>(idReq);
 }
 
-bool isPastTheSecondLastPoint(const PathSegment& pathSegment, const RobotState& robState) {
+bool isPastTheSecondLastPoint(const PathSegment& pathSegment, const Point& robPos) {
   const unsigned int nPointsInSegment = pathSegment.segment_.size();
   if (pathSegment.segment_.size() < 3) {
     throw std::runtime_error("Path segment with the extra point should have at lest three points");
@@ -150,7 +149,7 @@ bool isPastTheSecondLastPoint(const PathSegment& pathSegment, const RobotState& 
 
   const Vector finalApproach = computeFinalApproachDirection(pathSegment);
   const Point secondLastPoint = pathSegment.segment_.at(nPointsInSegment - 2).position_;
-  const Vector robPositionToSecondLast = secondLastPoint - robState.pose_.position_;
+  const Vector robPositionToSecondLast = secondLastPoint - robPos;
 
   return (finalApproach.transpose() * robPositionToSecondLast <= 0);
 }
