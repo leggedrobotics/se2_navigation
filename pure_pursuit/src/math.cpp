@@ -61,7 +61,9 @@ bool isClose(double val1, double val2) {
 }
 
 Vector computeFinalApproachDirection(const PathSegment& pathSegment) {
-  assert(pathSegment.segment_.size() > 1);
+  if (pathSegment.segment_.size() < 2) {
+    throw std::runtime_error("Path segment should have at lest two points");
+  }
   Vector direction;
   const int secondLast = pathSegment.segment_.size() - 2;
   const int last = pathSegment.segment_.size() - 1;
@@ -110,6 +112,47 @@ Matrix rotationMatrix(double angle) {
   const double s = std::sin(angle);
   mat << c, -s, s, c;
   return mat;
+}
+
+unsigned int getIdOfTheClosestPointOnThePath(const PathSegment& pathSegment, const Point& robotPosition, unsigned int lastClosestId) {
+  int currentBest = lastClosestId;
+  assert(currentBest >= 0);
+  double distanceMin = (robotPosition - pathSegment.segment_.at(currentBest).position_).norm();
+
+  const unsigned int nPoints = pathSegment.segment_.size();
+  for (unsigned int i = lastClosestId; i < nPoints; ++i) {
+    double distance = (robotPosition - pathSegment.segment_.at(i).position_).norm();
+    if (distance < distanceMin) {
+      distanceMin = distance;
+      currentBest = i;
+    }
+  }
+
+  return bindIndexToRange(currentBest, 0, nPoints - 1);
+}
+
+unsigned int bindIndexToRange(int idReq, int lo, int hi) {
+  assert(hi >= lo);
+  if (idReq < lo) {
+    return lo;
+  }
+  if (idReq > hi) {
+    return hi;
+  }
+  return static_cast<unsigned int>(idReq);
+}
+
+bool isPastTheSecondLastPoint(const PathSegment& pathSegment, const RobotState& robState) {
+  const unsigned int nPointsInSegment = pathSegment.segment_.size();
+  if (pathSegment.segment_.size() < 3) {
+    throw std::runtime_error("Path segment with the extra point should have at lest three points");
+  }
+
+  const Vector finalApproach = computeFinalApproachDirection(pathSegment);
+  const Point secondLastPoint = pathSegment.segment_.at(nPointsInSegment - 2).position_;
+  const Vector robPositionToSecondLast = secondLastPoint - robState.pose_.position_;
+
+  return (finalApproach.transpose() * robPositionToSecondLast <= 0);
 }
 
 } /* namespace pure_pursuit */
