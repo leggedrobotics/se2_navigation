@@ -233,7 +233,7 @@ bool computeLookaheadAngle(const Point& lookaheadPoint, const Point& anchorPoint
   return true;
 }
 
-double computeSteeringAngle(double lookaheadAngle, double lookaheadDistance, double anchorDistancte, double wheelBase) {
+double computeSteeringAngleCmd(double lookaheadAngle, double lookaheadDistance, double anchorDistancte, double wheelBase) {
   double steeringAngle;
 
   steeringAngle = -std::atan(wheelBase * std::sin(lookaheadAngle) / (lookaheadDistance * 0.5 + anchorDistancte * std::cos(lookaheadAngle)));

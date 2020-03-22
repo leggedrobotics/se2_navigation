@@ -24,7 +24,7 @@ class HeadingController {
   HeadingController() = default;
   virtual ~HeadingController() = default;
 
-  virtual bool initialize(double dt) = 0;
+  bool initialize(double dt);
   bool advance(double dt);
   virtual void updateCurrentPathSegment(const PathSegment& pathSegment);
   virtual void updateCurrentState(const RobotState& robState);
@@ -33,8 +33,12 @@ class HeadingController {
   double getSteeringAngle() const;
 
  private:
-  virtual bool runController(double dt) = 0;
+  virtual bool advanceImpl(double dt) = 0;
+  virtual bool initializeImpl(double dt) = 0;
   virtual void setActiveAnchorAndLookaheadDistance();
+  virtual bool computeYawRate(double dt) = 0;
+  virtual bool computeTurningRadius(double dt) = 0;
+  virtual bool computeSteeringAngle(double dt) = 0;
 
  protected:
   RobotState currentRobotState_;

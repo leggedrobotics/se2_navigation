@@ -9,12 +9,7 @@
 
 namespace pure_pursuit {
 
-bool MobileBaseHeadingController::runController(double dt) {
-  // todo implement
-  return true;
-}
-
-bool MobileBaseHeadingController::initialize(double dt) {
+bool MobileBaseHeadingController::initializeImpl(double dt) {
   // todo implement
   return true;
 }

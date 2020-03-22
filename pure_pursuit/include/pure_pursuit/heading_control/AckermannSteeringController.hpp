@@ -16,10 +16,14 @@ class AckermannSteeringController : public HeadingController {
   AckermannSteeringController() = default;
   ~AckermannSteeringController() override = default;
 
-  bool initialize(double dt) override;
-
  private:
-  bool runController(double dt) override;
+  bool advanceImpl(double dt) override;
+  bool initializeImpl(double dt) override;
+  bool computeYawRate(double dt) override;
+  bool computeTurningRadius(double dt) override;
+  bool computeSteeringAngle(double dt) override;
+
+  double wheelBase_ = 4.0;
 };
 
 }  // namespace pure_pursuit

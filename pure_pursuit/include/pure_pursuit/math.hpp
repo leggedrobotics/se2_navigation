@@ -58,10 +58,9 @@ void findIdOfFirstPointsCloserThanLookaheadAndFirstPointsFartherThanLookahead(co
                                                                               unsigned int startingPoint, double lookaheadDistance,
                                                                               unsigned int* closerPointId, unsigned int* fartherPointId);
 Point chooseCorrectLookaheadPoint(const Intersection& intersection, const Vector& desiredHeading, const Point& origin);
-double computeLookaheadAngle(const Point& lookaheadPoint);
 bool computeLookaheadAngle(const Point& lookaheadPoint, const Point& anchorPoint, const Vector& heading, DrivingDirection drivingDirection,
                            double* lookaheadAngle);
-double computeSteeringAngle(double lookaheadAngle, double lookaheadDistance, double anchorDistancte, double wheelBase);
+double computeSteeringAngleCmd(double lookaheadAngle, double lookaheadDistance, double anchorDistancte, double wheelBase);
 Point computeAnchorPoint(const RobotState& robotState, double anchorDistance, DrivingDirection drivingDirection);
 bool computeLookaheadPoint(unsigned int closestPointOnPathSegmentId, double lookaheadDistance, const RobotState& robotState,
                            DrivingDirection drivingDirection, const PathSegment& pathSegment, Point* lookaheadPoint);

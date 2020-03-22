@@ -16,10 +16,8 @@ class MobileBaseHeadingController : public HeadingController {
   MobileBaseHeadingController() = default;
   ~MobileBaseHeadingController() override = default;
 
-  bool initialize(double dt) override;
-
  private:
-  bool runController(double dt) override;
+  bool initializeImpl(double dt) override;
 };
 
 }  // namespace pure_pursuit

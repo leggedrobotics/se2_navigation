@@ -12,7 +12,12 @@
 namespace pure_pursuit {
 
 bool HeadingController::advance(double dt) {
-  return runController(dt);
+  setActiveAnchorAndLookaheadDistance();
+  bool status = advanceImpl(dt);
+  status = status && computeSteeringAngle(dt);
+  status = status && computeTurningRadius(dt);
+  status = status && computeYawRate(dt);
+  return status;
 }
 
 void HeadingController::updateCurrentState(const RobotState& robState) {
@@ -49,6 +54,16 @@ void HeadingController::setActiveAnchorAndLookaheadDistance() {
 void HeadingController::updateCurrentPathSegment(const PathSegment& pathSegment) {
   lastClosesPointId_ = 0;  // reset
   currentPathSegment_ = pathSegment;
+}
+
+bool HeadingController::computeSteeringAngle(double dt) {
+  return true;
+}
+bool HeadingController::computeYawRate(double dt) {
+  return true;
+}
+bool HeadingController::computeTurningRadius(double dt) {
+  return true;
 }
 
 } /* namespace pure_pursuit */
