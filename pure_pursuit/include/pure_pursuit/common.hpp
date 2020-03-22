@@ -34,5 +34,4 @@ struct RobotState {
   DrivingDirection desiredDirection_;
 };
 
-
 } /* namespace pure_pursuit */

@@ -19,7 +19,7 @@ double LongitudinalVelocityController::getVelocity() const {
 void LongitudinalVelocityController::updateCurrentState(const RobotState& robState) {
   currentRobotState_ = robState;
 }
-void LongitudinalVelocityController::updateCurrentLookaheadPoint(const LookaheadPoint& point) {
+void LongitudinalVelocityController::updateCurrentLookaheadPoint(const Point& point) {
   currentLookaheadPoint_ = point;
 }
 

@@ -10,31 +10,25 @@
 
 namespace pure_pursuit {
 
-bool HeadingController::advance(double dt)
-{
+bool HeadingController::advance(double dt) {
   return runController(dt);
 }
 
-void HeadingController::updateCurrentState(const RobotState& robState)
-{
+void HeadingController::updateCurrentState(const RobotState& robState) {
   currentRobotState_ = robState;
 }
 
-double HeadingController::getTurningRadius() const
-{
+double HeadingController::getTurningRadius() const {
   return turningRadius_;
 }
-double HeadingController::getYawRate() const
-{
+double HeadingController::getYawRate() const {
   return yawRate_;
 }
-double HeadingController::getSteeringAngle() const
-{
+double HeadingController::getSteeringAngle() const {
   return steeringAngle_;
 }
 
-void HeadingController::setActiveAnchorAndLookaheadDistance()
-{
+void HeadingController::setActiveAnchorAndLookaheadDistance() {
   switch (currentRobotState_.desiredDirection_) {
     case (DrivingDirection::FWD): {
       activeLookaheadDistance_ = parameters_.lookaheadDistanceFwd_;
@@ -47,60 +41,48 @@ void HeadingController::setActiveAnchorAndLookaheadDistance()
       break;
     }
     default:
-      throw std::runtime_error(
-          "Unknown direction of driving. Cannot set the active lookahead distance");
+      throw std::runtime_error("Unknown direction of driving. Cannot set the active lookahead distance");
   }
 }
 
-Point HeadingController::computeAnchorPoint() const
-{
-  const Vector heading = computeDesiredHeadingVector(currentRobotState_,
-                                                     currentRobotState_.desiredDirection_);
+Point HeadingController::computeAnchorPoint() const {
+  const Vector heading = computeDesiredHeadingVector(currentRobotState_, currentRobotState_.desiredDirection_);
   return Point(currentRobotState_.pose_.position_ + activeAnchorDistance_ * heading);
 }
 
-void HeadingController::updateCurrentPathSegment(const PathSegment &pathSegment)
-{
+void HeadingController::updateCurrentPathSegment(const PathSegment& pathSegment) {
   lastClosesPointId_ = 0;  // reset
   currentPathSegment_ = pathSegment;
 }
 
-Point HeadingController::computeLookaheadPoint(unsigned int closestPointId) const{
-
+bool HeadingController::computeLookaheadPoint(unsigned int closestPointId, Point* lookaheadPoint) const {
   const Point anchorPoint = computeAnchorPoint();
-  const int nPoints = currentPathSegment_.segment_.size();
-  /* okay find the first point ahead of the robot that is further than the lookahead distance */
-  const double epsilon = 0.03;
-  int pointFurtherThanLookaheadId = closestPointId;
-  for (; pointFurtherThanLookaheadId < nPoints; ++pointFurtherThanLookaheadId) {
-    const auto &p = currentPathSegment_.segment_.at(pointFurtherThanLookaheadId).position_;
-    const double distance = (p - anchorPoint).norm();
-    if (distance > activeLookaheadDistance_ + epsilon)
-      break;
-  }
-  pointFurtherThanLookaheadId = bindIndexToRange(pointFurtherThanLookaheadId, 0, nPoints-1);
+  unsigned int fartherPointId, closerPointId;
+  findIdOfFirstPointsCloserThanLookaheadAndFirstPointsFartherThanLookahead(currentPathSegment_, anchorPoint, closestPointId,
+                                                                           activeLookaheadDistance_, &closerPointId, &fartherPointId);
 
-  /* now iterate back and find a point which is closer than the lookahead distance */
-  int pointCloserThanLookaheadId = bindIndexToRange(pointFurtherThanLookaheadId - 1, 0, nPoints-1);
-  for (; pointCloserThanLookaheadId >= 0; --pointCloserThanLookaheadId) {
-    const auto &p = currentPathSegment_.segment_.at(pointCloserThanLookaheadId).position_;
-    const double distance = (p - anchorPoint).norm();
-    if (distance < activeLookaheadDistance_ - epsilon)
-      break;
-  }
-  pointCloserThanLookaheadId = bindIndexToRange(pointCloserThanLookaheadId, 0, nPoints-1);
+  const Line line(currentPathSegment_.segment_.at(closerPointId).position_, currentPathSegment_.segment_.at(fartherPointId).position_);
+  const Circle circle(anchorPoint, activeLookaheadDistance_);
+  Intersection intersection;
+  computeIntersection(line, circle, &intersection);
 
-  /* This can happen at the end of the trajectory */
-  if (pointFurtherThanLookaheadId == pointCloserThanLookaheadId) {
-    pointFurtherThanLookaheadId = nPoints - 1;
-    pointCloserThanLookaheadId = pointFurtherThanLookaheadId - 1;
+  switch (intersection.solutionCase_) {
+    case Intersection::SolutionCase::NO_SOLUTION: {
+      return false;
+    }
+    case Intersection::SolutionCase::ONE_SOLUTION: {
+      *lookaheadPoint = intersection.p1_;
+      return false;
+    }
+    case Intersection::SolutionCase::TWO_SOLUTIONS: {
+      const Vector heading = computeDesiredHeadingVector(currentRobotState_, currentRobotState_.desiredDirection_);
+      const Point origin = currentRobotState_.pose_.position_;
+      *lookaheadPoint = chooseCorrectLookaheadPoint(intersection, heading, origin);
+      return true;
+    }
   }
 
-  //todo now compute the intersection
-
-
-  //this implementation should handle correctly even the case when I have reached the end of line
-  //computeIntersection(i, j, lookaheadDistance, lookaheadPoint);
+  return true;
 }
 
 } /* namespace pure_pursuit */
