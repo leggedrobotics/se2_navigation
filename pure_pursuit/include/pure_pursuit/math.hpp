@@ -53,7 +53,7 @@ void appendPointAlongFinalApproachDirection(double extendingDistance, PathSegmen
 Vector computeDesiredHeadingVector(double yawAngle, DrivingDirection desiredDrivingDirection);
 Matrix rotationMatrix(double angle);
 unsigned int getIdOfTheClosestPointOnThePath(const PathSegment& pathSegment, const Point& robotPosition, unsigned int lastClosestId = 0);
-bool isPastTheSecondLastPoint(const PathSegment& pathSegment, const Point& robPos);
+bool isPastLastPoint(const PathSegment& pathSegment, const Point& robPos);
 void findIdOfFirstPointsCloserThanLookaheadAndFirstPointsFartherThanLookahead(const PathSegment& pathSegment, const Point& anchorPoint,
                                                                               unsigned int startingPoint, double lookaheadDistance,
                                                                               unsigned int* closerPointId, unsigned int* fartherPointId);

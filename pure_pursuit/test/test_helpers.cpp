@@ -96,11 +96,11 @@ Point createRandomPoint(){
 
 PathSegment createRandomPathSegment( unsigned int numPoints){
   PathSegment pathSegment;
-  pathSegment.segment_.resize(numPoints);
+  pathSegment.point_.resize(numPoints);
   for (unsigned int i = 0; i < numPoints; ++i){
     PathPoint pathPoint;
     pathPoint.position_ = createRandomPoint();
-    pathSegment.segment_.at(i) = pathPoint;
+    pathSegment.point_.at(i) = pathPoint;
   }
   return pathSegment;
 }

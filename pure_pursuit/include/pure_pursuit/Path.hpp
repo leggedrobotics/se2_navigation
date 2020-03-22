@@ -24,11 +24,11 @@ struct PathPoint {
 
 struct PathSegment {
   DrivingDirection drivingDirection_;
-  std::vector<PathPoint> segment_;
+  std::vector<PathPoint> point_;
 };
 
 struct Path {
-  std::vector<PathSegment> path_;
+  std::vector<PathSegment> segment_;
 };
 
 }  // namespace pure_pursuit

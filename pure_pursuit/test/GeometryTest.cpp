@@ -185,20 +185,17 @@ TEST(Geometry, IsPastLastPoint)
   using PathPoint = pp::PathPoint;
   const int seed = ppt::seedRndGenerator();
   pp::PathSegment segment;
-  segment.segment_.resize(1);
-  EXPECT_THROW(pp::isPastTheSecondLastPoint(segment, ppt::createRandomPoint()), std::runtime_error);
-  segment.segment_.resize(2);
-  EXPECT_THROW(pp::isPastTheSecondLastPoint(segment, ppt::createRandomPoint()), std::runtime_error);
-  segment.segment_.resize(3);
-  EXPECT_NO_THROW(pp::isPastTheSecondLastPoint(segment, ppt::createRandomPoint()));
-  segment.segment_ = {PathPoint(-1.0,0.0), PathPoint(0.0,0.0)};
-  appendPointAlongFinalApproachDirection(10.0, &segment);
+  segment.point_.resize(1);
+  EXPECT_THROW(pp::isPastLastPoint(segment, ppt::createRandomPoint()), std::runtime_error);
+  segment.point_.resize(2);
+  EXPECT_NO_THROW(pp::isPastLastPoint(segment, ppt::createRandomPoint()));
+  segment.point_ = {PathPoint(-1.0,0.0), PathPoint(0.0,0.0)};
   for (unsigned int i = 0; i < numCasesPerTest; ++i) {
     const PathPoint queryPoint(ppt::createRandomPoint());
     if (queryPoint.position_.x() > 0.0){
-      EXPECT_TRUE(pp::isPastTheSecondLastPoint(segment, queryPoint.position_));
+      EXPECT_TRUE(pp::isPastLastPoint(segment, queryPoint.position_));
     } else {
-      EXPECT_FALSE(pp::isPastTheSecondLastPoint(segment, queryPoint.position_));
+      EXPECT_FALSE(pp::isPastLastPoint(segment, queryPoint.position_));
     }
   }
   if (::testing::Test::HasFailure()) {

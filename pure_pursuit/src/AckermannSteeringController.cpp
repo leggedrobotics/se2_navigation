@@ -52,9 +52,12 @@ bool AckermannSteeringController::computeSteeringAngle(double dt) {
   return true;
 }
 bool AckermannSteeringController::computeYawRate(double dt) {
+  yawRate_ = currentRobotState_.desiredLongitudinalVelocity_ / wheelBase_ * std::tan(steeringAngle_);
   return true;
 }
 bool AckermannSteeringController::computeTurningRadius(double dt) {
+  const double yawRate = currentRobotState_.desiredLongitudinalVelocity_ / wheelBase_ * std::tan(steeringAngle_);
+  turningRadius_ = currentRobotState_.desiredLongitudinalVelocity_ / yawRate;
   return true;
 }
 

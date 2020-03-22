@@ -32,6 +32,7 @@ struct RobotState {
   RobotPose pose_;
   RobotTwist twist_;
   DrivingDirection desiredDirection_;
+  double desiredLongitudinalVelocity_;
 };
 
 } /* namespace pure_pursuit */

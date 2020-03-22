@@ -67,21 +67,21 @@ bool isClose(double val1, double val2) {
 }
 
 Vector computeFinalApproachDirection(const PathSegment& pathSegment) {
-  if (pathSegment.segment_.size() < 2) {
+  if (pathSegment.point_.size() < 2) {
     throw std::runtime_error("Path segment should have at lest two points");
   }
   Vector direction;
-  const int secondLast = pathSegment.segment_.size() - 2;
-  const int last = pathSegment.segment_.size() - 1;
-  return pathSegment.segment_.at(last).position_ - pathSegment.segment_.at(secondLast).position_;
+  const int secondLast = pathSegment.point_.size() - 2;
+  const int last = pathSegment.point_.size() - 1;
+  return pathSegment.point_.at(last).position_ - pathSegment.point_.at(secondLast).position_;
 }
 
 void appendPointAlongFinalApproachDirection(double extendingDistance, PathSegment* pathSegment) {
   const Vector extendingDirection = computeFinalApproachDirection(*pathSegment);
-  const Point lastPoint = pathSegment->segment_.back().position_;
+  const Point lastPoint = pathSegment->point_.back().position_;
 
   PathPoint appendedPoint(lastPoint + extendingDistance * extendingDirection);
-  pathSegment->segment_.push_back(appendedPoint);
+  pathSegment->point_.push_back(appendedPoint);
 }
 
 Vector computeDesiredHeadingVector(double yawAngle, DrivingDirection desiredDrivingDirection) {
@@ -122,11 +122,11 @@ Matrix rotationMatrix(double angle) {
 unsigned int getIdOfTheClosestPointOnThePath(const PathSegment& pathSegment, const Point& robotPosition, unsigned int lastClosestId) {
   int currentBest = lastClosestId;
   assert(currentBest >= 0);
-  double distanceMin = (robotPosition - pathSegment.segment_.at(currentBest).position_).norm();
+  double distanceMin = (robotPosition - pathSegment.point_.at(currentBest).position_).norm();
 
-  const unsigned int nPoints = pathSegment.segment_.size();
+  const unsigned int nPoints = pathSegment.point_.size();
   for (unsigned int i = lastClosestId; i < nPoints; ++i) {
-    double distance = (robotPosition - pathSegment.segment_.at(i).position_).norm();
+    double distance = (robotPosition - pathSegment.point_.at(i).position_).norm();
     if (distance < distanceMin) {
       distanceMin = distance;
       currentBest = i;
@@ -147,14 +147,11 @@ unsigned int bindIndexToRange(int idReq, int lo, int hi) {
   return static_cast<unsigned int>(idReq);
 }
 
-bool isPastTheSecondLastPoint(const PathSegment& pathSegment, const Point& robPos) {
-  const unsigned int nPointsInSegment = pathSegment.segment_.size();
-  if (pathSegment.segment_.size() < 3) {
-    throw std::runtime_error("Path segment with the extra point should have at lest three points");
-  }
+bool isPastLastPoint(const PathSegment& pathSegment, const Point& robPos) {
+  const unsigned int nPointsInSegment = pathSegment.point_.size();
 
   const Vector finalApproach = computeFinalApproachDirection(pathSegment);
-  const Point secondLastPoint = pathSegment.segment_.at(nPointsInSegment - 2).position_;
+  const Point secondLastPoint = pathSegment.point_.back().position_;
   const Vector robPositionToSecondLast = secondLastPoint - robPos;
 
   return (finalApproach.transpose() * robPositionToSecondLast <= 0);
@@ -163,12 +160,12 @@ bool isPastTheSecondLastPoint(const PathSegment& pathSegment, const Point& robPo
 void findIdOfFirstPointsCloserThanLookaheadAndFirstPointsFartherThanLookahead(const PathSegment& pathSegment, const Point& anchorPoint,
                                                                               unsigned int startingPoint, double lookaheadDistance,
                                                                               unsigned int* closerPointId, unsigned int* fartherPointId) {
-  const int nPoints = pathSegment.segment_.size();
+  const int nPoints = pathSegment.point_.size();
   /* okay find the first point ahead of the robot that is further than the lookahead distance */
   const double epsilon = 0.03;
   int pointFartherThanLookaheadId = startingPoint;
   for (; pointFartherThanLookaheadId < nPoints; ++pointFartherThanLookaheadId) {
-    const auto& p = pathSegment.segment_.at(pointFartherThanLookaheadId).position_;
+    const auto& p = pathSegment.point_.at(pointFartherThanLookaheadId).position_;
     const double distance = (p - anchorPoint).norm();
     if (distance > lookaheadDistance + epsilon) break;
   }
@@ -177,7 +174,7 @@ void findIdOfFirstPointsCloserThanLookaheadAndFirstPointsFartherThanLookahead(co
   /* now iterate back and find a point which is closer than the lookahead distance */
   int pointCloserThanLookaheadId = bindIndexToRange(pointFartherThanLookaheadId - 1, 0, nPoints - 1);
   for (; pointCloserThanLookaheadId >= 0; --pointCloserThanLookaheadId) {
-    const auto& p = pathSegment.segment_.at(pointCloserThanLookaheadId).position_;
+    const auto& p = pathSegment.point_.at(pointCloserThanLookaheadId).position_;
     const double distance = (p - anchorPoint).norm();
     if (distance < lookaheadDistance - epsilon) break;
   }
@@ -253,7 +250,7 @@ bool computeLookaheadPoint(unsigned int closestPointOnPathSegmentId, double look
   findIdOfFirstPointsCloserThanLookaheadAndFirstPointsFartherThanLookahead(pathSegment, anchorPoint, closestPointOnPathSegmentId,
                                                                            lookaheadDistance, &closerPointId, &fartherPointId);
 
-  const Line line(pathSegment.segment_.at(closerPointId).position_, pathSegment.segment_.at(fartherPointId).position_);
+  const Line line(pathSegment.point_.at(closerPointId).position_, pathSegment.point_.at(fartherPointId).position_);
   const Circle circle(anchorPoint, lookaheadDistance);
   Intersection intersection;
   computeIntersection(line, circle, &intersection);
