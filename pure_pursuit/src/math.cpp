@@ -84,8 +84,8 @@ void appendPointAlongFinalApproachDirection(double extendingDistance, PathSegmen
   pathSegment->segment_.push_back(appendedPoint);
 }
 
-Vector computeDesiredHeadingVector(const RobotState& robotState, DrivingDirection desiredDrivingDirection) {
-  double headingAngle = robotState.pose_.yaw_;
+Vector computeDesiredHeadingVector(double yawAngle, DrivingDirection desiredDrivingDirection) {
+  double headingAngle = yawAngle;
   if (desiredDrivingDirection == DrivingDirection::BCK) {
     // handle reverse driving
     headingAngle += M_PI;
@@ -239,6 +239,42 @@ double computeSteeringAngle(double lookaheadAngle, double lookaheadDistance, dou
   steeringAngle = -std::atan(wheelBase * std::sin(lookaheadAngle) / (lookaheadDistance * 0.5 + anchorDistancte * std::cos(lookaheadAngle)));
 
   return steeringAngle;
+}
+
+Point computeAnchorPoint(const RobotState& robotState, double anchorDistance, DrivingDirection drivingDirection) {
+  const Vector heading = computeDesiredHeadingVector(robotState.pose_.yaw_, drivingDirection);
+  return Point(robotState.pose_.position_ + anchorDistance * heading);
+}
+
+bool computeLookaheadPoint(unsigned int closestPointOnPathSegmentId, double lookaheadDistance, const RobotState& robotState,
+                           DrivingDirection drivingDirection, const PathSegment& pathSegment, Point* lookaheadPoint) {
+  const Point anchorPoint = computeAnchorPoint(robotState, lookaheadDistance, robotState.desiredDirection_);
+  unsigned int fartherPointId, closerPointId;
+  findIdOfFirstPointsCloserThanLookaheadAndFirstPointsFartherThanLookahead(pathSegment, anchorPoint, closestPointOnPathSegmentId,
+                                                                           lookaheadDistance, &closerPointId, &fartherPointId);
+
+  const Line line(pathSegment.segment_.at(closerPointId).position_, pathSegment.segment_.at(fartherPointId).position_);
+  const Circle circle(anchorPoint, lookaheadDistance);
+  Intersection intersection;
+  computeIntersection(line, circle, &intersection);
+
+  switch (intersection.solutionCase_) {
+    case Intersection::SolutionCase::NO_SOLUTION: {
+      return false;
+    }
+    case Intersection::SolutionCase::ONE_SOLUTION: {
+      *lookaheadPoint = intersection.p1_;
+      return false;
+    }
+    case Intersection::SolutionCase::TWO_SOLUTIONS: {
+      const Vector heading = computeDesiredHeadingVector(robotState.pose_.yaw_, robotState.desiredDirection_);
+      const Point origin = robotState.pose_.position_;
+      *lookaheadPoint = chooseCorrectLookaheadPoint(intersection, heading, origin);
+      return true;
+    }
+  }
+
+  return true;
 }
 
 } /* namespace pure_pursuit */

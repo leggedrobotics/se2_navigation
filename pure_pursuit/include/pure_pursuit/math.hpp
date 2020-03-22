@@ -50,7 +50,7 @@ bool isClose(double val1, double val2);
 void computeIntersection(const Line& line, const Circle& circle, Intersection* intersection);
 Vector computeFinalApproachDirection(const PathSegment& pathSegment);
 void appendPointAlongFinalApproachDirection(double extendingDistance, PathSegment* pathSegment);
-Vector computeDesiredHeadingVector(const RobotState& robotState, DrivingDirection desiredDrivingDirection);
+Vector computeDesiredHeadingVector(double yawAngle, DrivingDirection desiredDrivingDirection);
 Matrix rotationMatrix(double angle);
 unsigned int getIdOfTheClosestPointOnThePath(const PathSegment& pathSegment, const Point& robotPosition, unsigned int lastClosestId = 0);
 bool isPastTheSecondLastPoint(const PathSegment& pathSegment, const Point& robPos);
@@ -62,5 +62,8 @@ double computeLookaheadAngle(const Point& lookaheadPoint);
 bool computeLookaheadAngle(const Point& lookaheadPoint, const Point& anchorPoint, const Vector& heading, DrivingDirection drivingDirection,
                            double* lookaheadAngle);
 double computeSteeringAngle(double lookaheadAngle, double lookaheadDistance, double anchorDistancte, double wheelBase);
+Point computeAnchorPoint(const RobotState& robotState, double anchorDistance, DrivingDirection drivingDirection);
+bool computeLookaheadPoint(unsigned int closestPointOnPathSegmentId, double lookaheadDistance, const RobotState& robotState,
+                           DrivingDirection drivingDirection, const PathSegment& pathSegment, Point* lookaheadPoint);
 
 } /* namespace pure_pursuit */

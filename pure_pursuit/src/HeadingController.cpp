@@ -46,44 +46,9 @@ void HeadingController::setActiveAnchorAndLookaheadDistance() {
   }
 }
 
-Point HeadingController::computeAnchorPoint() const {
-  const Vector heading = computeDesiredHeadingVector(currentRobotState_, currentRobotState_.desiredDirection_);
-  return Point(currentRobotState_.pose_.position_ + activeAnchorDistance_ * heading);
-}
-
 void HeadingController::updateCurrentPathSegment(const PathSegment& pathSegment) {
   lastClosesPointId_ = 0;  // reset
   currentPathSegment_ = pathSegment;
-}
-
-bool HeadingController::computeLookaheadPoint(unsigned int closestPointId, Point* lookaheadPoint) const {
-  const Point anchorPoint = computeAnchorPoint();
-  unsigned int fartherPointId, closerPointId;
-  findIdOfFirstPointsCloserThanLookaheadAndFirstPointsFartherThanLookahead(currentPathSegment_, anchorPoint, closestPointId,
-                                                                           activeLookaheadDistance_, &closerPointId, &fartherPointId);
-
-  const Line line(currentPathSegment_.segment_.at(closerPointId).position_, currentPathSegment_.segment_.at(fartherPointId).position_);
-  const Circle circle(anchorPoint, activeLookaheadDistance_);
-  Intersection intersection;
-  computeIntersection(line, circle, &intersection);
-
-  switch (intersection.solutionCase_) {
-    case Intersection::SolutionCase::NO_SOLUTION: {
-      return false;
-    }
-    case Intersection::SolutionCase::ONE_SOLUTION: {
-      *lookaheadPoint = intersection.p1_;
-      return false;
-    }
-    case Intersection::SolutionCase::TWO_SOLUTIONS: {
-      const Vector heading = computeDesiredHeadingVector(currentRobotState_, currentRobotState_.desiredDirection_);
-      const Point origin = currentRobotState_.pose_.position_;
-      *lookaheadPoint = chooseCorrectLookaheadPoint(intersection, heading, origin);
-      return true;
-    }
-  }
-
-  return true;
 }
 
 } /* namespace pure_pursuit */

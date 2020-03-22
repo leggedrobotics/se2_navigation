@@ -151,9 +151,7 @@ TEST(Geometry, DesiredHeadingForward)
   std::uniform_real_distribution<double> yawDist(-M_PI, M_PI);
   for (unsigned int i = 0; i < numCasesPerTest; ++i) {
     const double desiredYaw = yawDist(ppt::rndGenerator);
-    ppt::RobotState robotState;
-    robotState.pose_.yaw_ = desiredYaw;
-    ppt::Vector desiredHeading = computeDesiredHeadingVector(robotState, DrivingDirection::FWD);
+    ppt::Vector desiredHeading = computeDesiredHeadingVector(desiredYaw, DrivingDirection::FWD);
     desiredHeading.normalize();
     ppt::Vector headingGroundTruth(std::cos(desiredYaw), std::sin(desiredYaw));
     EXPECT_NEAR(headingGroundTruth.transpose() * desiredHeading, 1.0, 1e-5);
@@ -171,9 +169,7 @@ TEST(Geometry, DesiredHeadingReverse)
   std::uniform_real_distribution<double> yawDist(-M_PI, M_PI);
   for (unsigned int i = 0; i < numCasesPerTest; ++i) {
     const double desiredYaw = yawDist(ppt::rndGenerator);
-    ppt::RobotState robotState;
-    robotState.pose_.yaw_ = desiredYaw;
-    ppt::Vector desiredHeading = computeDesiredHeadingVector(robotState, DrivingDirection::BCK);
+    ppt::Vector desiredHeading = computeDesiredHeadingVector(desiredYaw, DrivingDirection::BCK);
     desiredHeading.normalize();
     const ppt::Vector headingGroundTruth(std::cos(desiredYaw), std::sin(desiredYaw));
     EXPECT_NEAR(headingGroundTruth.transpose() * desiredHeading, -1.0, 1e-5);

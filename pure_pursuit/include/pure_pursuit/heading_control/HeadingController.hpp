@@ -37,9 +37,6 @@ class HeadingController {
   virtual void setActiveAnchorAndLookaheadDistance();
 
  protected:
-  Point computeAnchorPoint() const;
-  bool computeLookaheadPoint(unsigned int closestPointId, Point* lookaheadPoint) const;
-
   RobotState currentRobotState_;
   double turningRadius_ = 0.0;
   double yawRate_ = 0.0;
