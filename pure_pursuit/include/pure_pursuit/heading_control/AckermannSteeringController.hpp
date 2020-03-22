@@ -16,6 +16,8 @@ class AckermannSteeringController : public HeadingController {
   AckermannSteeringController() = default;
   ~AckermannSteeringController() override = default;
 
+  bool initialize(double dt) override;
+
  private:
   bool runController(double dt) override;
 };

@@ -24,6 +24,7 @@ class HeadingController {
   HeadingController() = default;
   virtual ~HeadingController() = default;
 
+  virtual bool initialize(double dt) = 0;
   bool advance(double dt);
   virtual void updateCurrentPathSegment(const PathSegment& pathSegment);
   virtual void updateCurrentState(const RobotState& robState);

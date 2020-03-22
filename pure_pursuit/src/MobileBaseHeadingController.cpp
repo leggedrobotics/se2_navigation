@@ -14,4 +14,9 @@ bool MobileBaseHeadingController::runController(double dt) {
   return true;
 }
 
+bool MobileBaseHeadingController::initialize(double dt) {
+  // todo implement
+  return true;
+}
+
 } /* namespace pure_pursuit */

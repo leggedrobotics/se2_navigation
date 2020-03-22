@@ -6,6 +6,7 @@
  */
 
 #include "pure_pursuit/heading_control/HeadingController.hpp"
+#include <cmath>
 #include "pure_pursuit/math.hpp"
 
 namespace pure_pursuit {

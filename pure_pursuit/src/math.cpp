@@ -193,4 +193,52 @@ void findIdOfFirstPointsCloserThanLookaheadAndFirstPointsFartherThanLookahead(co
   *fartherPointId = pointFartherThanLookaheadId;
 }
 
+bool computeLookaheadAngle(const Point& lookaheadPoint, const Point& anchorPoint, const Vector& heading, DrivingDirection drivingDirection,
+                           double* lookaheadAngle) {
+  const Vector lookaheadVector = (lookaheadPoint - anchorPoint).normalized();
+  const double cosAngle = heading.normalized().transpose() * lookaheadVector;
+
+  /* if the point is indeed in front of the robot, the cosine should be positive*/
+  if (cosAngle < 0) {
+    return false;
+  }
+
+  double angle = std::fabs(std::acos(cosAngle));
+  const Matrix rotMat = rotationMatrix(angle);
+
+  /* now we need to figure out whether angle is positive or negative.
+   * Rotate it to the left and check the scalar product. It should be close to 1
+   * that means that the trajectory on is on the left hand side of the robot
+   * otherwise it is one the right hand side. */
+  const double voteForTurningLeft = lookaheadVector.transpose() * (rotMat * heading);
+  const double voteForTurningRight = lookaheadVector.transpose() * (rotMat.transpose() * heading);
+
+  /*In the paper the convention is that turning left corresponds to negative steering angle
+   * and turning right to the positive steering angle.*/
+  if (voteForTurningLeft > voteForTurningRight) {
+    angle = -angle;
+  }
+
+  /* reverse and forward driving use different conventions for the lookahead angle.*/
+  if (drivingDirection == DrivingDirection::BCK) {
+    angle = -angle;
+  }
+
+  if (std::isnan(angle) || std::isinf(angle)) {
+    return false;
+  }
+
+  *lookaheadAngle = angle;
+
+  return true;
+}
+
+double computeSteeringAngle(double lookaheadAngle, double lookaheadDistance, double anchorDistancte, double wheelBase) {
+  double steeringAngle;
+
+  steeringAngle = -std::atan(wheelBase * std::sin(lookaheadAngle) / (lookaheadDistance * 0.5 + anchorDistancte * std::cos(lookaheadAngle)));
+
+  return steeringAngle;
+}
+
 } /* namespace pure_pursuit */

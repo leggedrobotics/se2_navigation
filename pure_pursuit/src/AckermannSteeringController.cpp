@@ -14,4 +14,9 @@ bool AckermannSteeringController::runController(double dt) {
   return true;
 }
 
+bool AckermannSteeringController::initialize(double dt) {
+  // todo implement
+  return true;
+}
+
 } /* namespace pure_pursuit */
