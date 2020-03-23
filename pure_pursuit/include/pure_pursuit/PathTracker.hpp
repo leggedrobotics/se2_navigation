@@ -8,6 +8,7 @@
 #pragma once
 #include <memory>
 #include "pure_pursuit/Path.hpp"
+#include "pure_pursuit/Stopwatch.hpp"
 
 namespace pure_pursuit {
 
@@ -25,23 +26,21 @@ class PathTracker {
   double getSteeringAngle() const;
   double getLongitudinalVelocity() const;
   void importCurrentPath(const Path& path);
+  bool advance(double dt);
+  virtual void stopTracking();
   virtual void updateRobotState(const RobotState& robotState);
   virtual bool initialize(double dt);
-  virtual bool advance(double dt);
   virtual bool loadParameters(const std::string& filename);
 
  private:
   enum class States : int { NoOperation, Waiting, Driving };
-
-  void advanceStateMachine();
-  bool advanceControllers();
-  void gotoNoOperation();
-  void gotoWaiting();
-  void gotoDriving();
+  virtual void advanceStateMachine();
+  virtual bool advanceControllers();
 
   States currentState_ = States::NoOperation;
   bool isPathReceived_ = false;
   unsigned int currentPathSegment_ = 0;
+  Stopwatch stopwatch_;
 
  protected:
   std::unique_ptr<LongitudinalVelocityController> velocityController_;

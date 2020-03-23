@@ -8,6 +8,7 @@
 #include "pure_pursuit/PathTracker.hpp"
 #include "pure_pursuit/TrackingProgress.hpp"
 #include "pure_pursuit/heading_control/HeadingController.hpp"
+#include "pure_pursuit/math.hpp"
 #include "pure_pursuit/velocity_control/LongitudinalVelocityController.hpp"
 
 namespace pure_pursuit {
@@ -37,12 +38,15 @@ void PathTracker::importCurrentPath(const Path& path) {
   currentPath_ = path;
   isPathReceived_ = true;
   currentPathSegment_ = 0;
+  currentState_ = States::NoOperation;
 }
 
 bool PathTracker::initialize(double dt) {
   return true;
 }
 bool PathTracker::advance(double dt) {
+  advanceStateMachine();
+  advanceControllers();
   return true;
 }
 bool PathTracker::loadParameters(const std::string& filename) {
@@ -57,7 +61,6 @@ void PathTracker::advanceStateMachine() {
   const auto& currentPathSegment = currentPath_.segment_.at(currentPathSegment_);
   const bool isSegmentTrackingFinished = trackingProgress_->isPathSegmentTrackingFinished(currentPathSegment, currentRobotState_);
   const bool isPathTrackingFinished = trackingProgress_->isPathTrackingFinished(currentPath_, currentRobotState_, currentPathSegment_);
-  const bool isWaitedLongEnough = true;
 
   if (isPathTrackingFinished) {
     currentState_ = States::NoOperation;
@@ -66,19 +69,23 @@ void PathTracker::advanceStateMachine() {
   if (currentState_ == States::Driving && isSegmentTrackingFinished) {
     // go to waiting state state
     currentState_ = States::Waiting;
+    stopwatch_.start();
+    const int nSegments = currentPath_.segment_.size();
+    currentPathSegment_ = bindIndexToRange(currentPathSegment_ + 1, 0, nSegments - 1);
+    headingController_->updateCurrentPathSegment(currentPath_.segment_.at(currentPathSegment_));
   }
 
-  if (currentState_ == States::Waiting && isWaitedLongEnough) {
-    // got to driving state
-
-    return;
+  if (currentState_ == States::Waiting) {
+    const bool isWaitedLongEnough = stopwatch_.getElapsedTimeSinceStartSeconds() > 2.5;
+    if (isWaitedLongEnough) {
+      currentState_ = States::Driving;
+    }
   }
 
   /* got to either FWD or RV state */
   if (currentState_ == States::NoOperation && isPathReceived_) {
     currentState_ = States::Driving;
     headingController_->updateCurrentPathSegment(currentPathSegment);
-    return;
   }
   isPathReceived_ = false;
 }
@@ -114,8 +121,8 @@ bool PathTracker::advanceControllers() {
   return result;
 }
 
-void PathTracker::gotoNoOperation() {}
-void PathTracker::gotoWaiting() {}
-void PathTracker::gotoDriving() {}
+virtual void PathTracker::stopTracking(){
+  currentState_ = States::NoOperation;
+}
 
 } /* namespace pure_pursuit */
