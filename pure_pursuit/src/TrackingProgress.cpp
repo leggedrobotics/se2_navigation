@@ -10,20 +10,15 @@
 
 namespace pure_pursuit {
 
-bool TrackingProgress::isPathSegmentTrackingFinished(const PathSegment &pathSegment,
-                                                     const RobotState &currentState)
-{
+bool TrackingProgress::isPathSegmentTrackingFinished(const PathSegment& pathSegment, const RobotState& currentState) {
   const Point currPosition = currentState.pose_.position_;
   const Point goalPosition = pathSegment.point_.back().position_;
   const bool isCloseEnough = (currPosition - goalPosition).norm() < goalDistanceTolerance_;
   return isCloseEnough || isPastLastPoint(pathSegment, currPosition);
 }
-bool TrackingProgress::isPathTrackingFinished(const Path &path,
-                                              const RobotState &currentState,
-                                              unsigned int currentSegment)
-{
+bool TrackingProgress::isPathTrackingFinished(const Path& path, const RobotState& currentState, unsigned int currentSegment) {
   const bool isTrackingLastSegment = path.segment_.size() - 1 == currentSegment;
   return isPathSegmentTrackingFinished(path.segment_.at(currentSegment), currentState) && isTrackingLastSegment;
 }
 
-} /* namespace pure pursuit */
+}  // namespace pure_pursuit

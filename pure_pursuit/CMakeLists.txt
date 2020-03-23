@@ -13,6 +13,7 @@ set(SRC_FILES
   src/HeadingController.cpp
   src/AckermannSteeringController.cpp
   src/MobileBaseHeadingController.cpp
+  src/Stopwatch.cpp
 )
 
 set(CATKIN_PACKAGE_DEPENDENCIES )

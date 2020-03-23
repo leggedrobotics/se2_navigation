@@ -29,7 +29,8 @@ bool AckermannSteeringController::advanceImpl(double dt) {
     return false;
   }
 
-  const double steeringAngle = computeSteeringAngleCmd(lookaheadAngle, activeLookaheadDistance_, activeAnchorDistance_, wheelBase_);
+  const double steeringAngle =
+      computeSteeringAngleCmd(lookaheadAngle, activeLookaheadDistance_, activeAnchorDistance_, parameters_.wheelBase_);
 
   if (std::isnan(steeringAngle) || std::isinf(steeringAngle)) {
     return false;
@@ -52,13 +53,17 @@ bool AckermannSteeringController::computeSteeringAngle(double dt) {
   return true;
 }
 bool AckermannSteeringController::computeYawRate(double dt) {
-  yawRate_ = currentRobotState_.desiredLongitudinalVelocity_ / wheelBase_ * std::tan(steeringAngle_);
+  yawRate_ = currentRobotState_.desiredLongitudinalVelocity_ / parameters_.wheelBase_ * std::tan(steeringAngle_);
   return true;
 }
 bool AckermannSteeringController::computeTurningRadius(double dt) {
-  const double yawRate = currentRobotState_.desiredLongitudinalVelocity_ / wheelBase_ * std::tan(steeringAngle_);
+  const double yawRate = currentRobotState_.desiredLongitudinalVelocity_ / parameters_.wheelBase_ * std::tan(steeringAngle_);
   turningRadius_ = currentRobotState_.desiredLongitudinalVelocity_ / yawRate;
   return true;
+}
+
+void AckermannSteeringController::setParameters(const AckermannSteeringCtrlParameters& parameters) {
+  parameters_ = parameters;
 }
 
 } /* namespace pure_pursuit */
