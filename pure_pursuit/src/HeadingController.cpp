@@ -11,8 +11,12 @@
 
 namespace pure_pursuit {
 
+bool HeadingController::initialize() {
+  return initializeImpl();
+}
+
 bool HeadingController::advance() {
-  setActiveAnchorAndLookaheadDistance();
+  chooseActiveAnchorAndLookaheadDistance();
   bool status = advanceImpl();
   status = status && computeSteeringAngle();
   status = status && computeTurningRadius();
@@ -34,7 +38,7 @@ double HeadingController::getSteeringAngle() const {
   return steeringAngle_;
 }
 
-void HeadingController::setActiveAnchorAndLookaheadDistance() {
+void HeadingController::chooseActiveAnchorAndLookaheadDistance() {
   switch (currentRobotState_.desiredDirection_) {
     case (DrivingDirection::FWD): {
       activeLookaheadDistance_ = parameters_.lookaheadDistanceFwd_;

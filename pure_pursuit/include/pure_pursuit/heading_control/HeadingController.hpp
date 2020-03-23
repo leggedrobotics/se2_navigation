@@ -35,7 +35,7 @@ class HeadingController {
  private:
   virtual bool advanceImpl() = 0;
   virtual bool initializeImpl() = 0;
-  virtual void setActiveAnchorAndLookaheadDistance();
+  virtual void chooseActiveAnchorAndLookaheadDistance();
   virtual bool computeYawRate() = 0;
   virtual bool computeTurningRadius() = 0;
   virtual bool computeSteeringAngle() = 0;
