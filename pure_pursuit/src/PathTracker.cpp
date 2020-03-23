@@ -6,25 +6,32 @@
  */
 
 #include "pure_pursuit/PathTracker.hpp"
-#include "pure_pursuit/TrackingProgress.hpp"
+
+#include "pure_pursuit/ProgressValidator.hpp"
 #include "pure_pursuit/heading_control/HeadingController.hpp"
 #include "pure_pursuit/math.hpp"
 #include "pure_pursuit/velocity_control/LongitudinalVelocityController.hpp"
 
 namespace pure_pursuit {
 
-PathTracker::PathTracker() {}
-
-PathTracker::~PathTracker() = default;
+void PathTracker::setHeadingController(std::shared_ptr<HeadingController> ctrl) {
+  headingController_ = ctrl;
+}
+void PathTracker::setVelocityController(std::shared_ptr<LongitudinalVelocityController> ctrl) {
+  velocityController_ = ctrl;
+}
+void PathTracker::setProgressValidator(std::shared_ptr<ProgressValidator> validator) {
+  progressValidator_ = validator;
+}
 
 double PathTracker::getTurningRadius() const {
-  return headingController_->getTurningRadius();
+  return turningRadius_;
 }
 double PathTracker::getYawRate() const {
-  return headingController_->getYawRate();
+  return yawRate_;
 }
 double PathTracker::getSteeringAngle() const {
-  return headingController_->getSteeringAngle();
+  return steeringAngle_;
 }
 
 double PathTracker::getLongitudinalVelocity() const {
@@ -41,15 +48,12 @@ void PathTracker::importCurrentPath(const Path& path) {
   currentState_ = States::NoOperation;
 }
 
-bool PathTracker::initialize(double dt) {
+bool PathTracker::initialize() {
   return true;
 }
-bool PathTracker::advance(double dt) {
+bool PathTracker::advance() {
   advanceStateMachine();
   advanceControllers();
-  return true;
-}
-bool PathTracker::loadParameters(const std::string& filename) {
   return true;
 }
 
@@ -59,8 +63,8 @@ void PathTracker::updateRobotState(const RobotState& robotState) {
 
 void PathTracker::advanceStateMachine() {
   const auto& currentPathSegment = currentPath_.segment_.at(currentPathSegment_);
-  const bool isSegmentTrackingFinished = trackingProgress_->isPathSegmentTrackingFinished(currentPathSegment, currentRobotState_);
-  const bool isPathTrackingFinished = trackingProgress_->isPathTrackingFinished(currentPath_, currentRobotState_, currentPathSegment_);
+  const bool isSegmentTrackingFinished = progressValidator_->isPathSegmentTrackingFinished(currentPathSegment, currentRobotState_);
+  const bool isPathTrackingFinished = progressValidator_->isPathTrackingFinished(currentPath_, currentRobotState_, currentPathSegment_);
 
   if (isPathTrackingFinished) {
     currentState_ = States::NoOperation;
@@ -73,10 +77,12 @@ void PathTracker::advanceStateMachine() {
     const int nSegments = currentPath_.segment_.size();
     currentPathSegment_ = bindIndexToRange(currentPathSegment_ + 1, 0, nSegments - 1);
     headingController_->updateCurrentPathSegment(currentPath_.segment_.at(currentPathSegment_));
+    headingController_->initialize();
   }
 
   if (currentState_ == States::Waiting) {
-    const bool isWaitedLongEnough = stopwatch_.getElapsedTimeSinceStartSeconds() > 2.5;
+    const double wheelReorientingTime = 2.5;
+    const bool isWaitedLongEnough = stopwatch_.getElapsedTimeSinceStartSeconds() > wheelReorientingTime;
     if (isWaitedLongEnough) {
       currentState_ = States::Driving;
     }
@@ -97,8 +103,8 @@ bool PathTracker::advanceControllers() {
 
   switch (currentState_) {
     case States::Driving: {
-      result = result && velocityController_->advance(0.01);
-      result = result && headingController_->advance(0.01);
+      result = result && velocityController_->advance();
+      result = result && headingController_->advance();
       longitudinalVelocity_ = velocityController_->getVelocity();
       break;
     }
@@ -109,7 +115,7 @@ bool PathTracker::advanceControllers() {
     case States::Waiting: {
       longitudinalVelocity_ = 0.0;
       // todo maybe update the longitudinal velocity in the heading controller
-      result = result && headingController_->advance(0.01);
+      result = result && headingController_->advance();
       break;
     }
   }
@@ -121,7 +127,7 @@ bool PathTracker::advanceControllers() {
   return result;
 }
 
-virtual void PathTracker::stopTracking(){
+void PathTracker::stopTracking() {
   currentState_ = States::NoOperation;
 }
 

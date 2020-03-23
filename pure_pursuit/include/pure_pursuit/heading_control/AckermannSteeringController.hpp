@@ -23,11 +23,11 @@ class AckermannSteeringController : public HeadingController {
   void setParameters(const AckermannSteeringCtrlParameters& parameters);
 
  private:
-  bool advanceImpl(double dt) override;
-  bool initializeImpl(double dt) override;
-  bool computeYawRate(double dt) override;
-  bool computeTurningRadius(double dt) override;
-  bool computeSteeringAngle(double dt) override;
+  bool advanceImpl() override;
+  bool initializeImpl() override;
+  bool computeYawRate() override;
+  bool computeTurningRadius() override;
+  bool computeSteeringAngle() override;
 
   AckermannSteeringCtrlParameters parameters_;
 };

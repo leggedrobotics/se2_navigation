@@ -8,7 +8,7 @@
 
 namespace pure_pursuit {
 
-bool ConstantVelocityController::computeVelocity(double dt) {
+bool ConstantVelocityController::computeVelocity() {
   desiredLongitudinalVelocity_ = constantDesiredVelocity_;
   return true;
 }

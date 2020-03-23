@@ -11,11 +11,11 @@
 
 namespace pure_pursuit {
 
-bool AckermannSteeringController::advanceImpl(double dt) {
+bool AckermannSteeringController::advanceImpl() {
   const auto drivingDirection = currentRobotState_.desiredDirection_;
   const auto& robotPose = currentRobotState_.pose_;
   const Point anchorPoint = computeAnchorPoint(currentRobotState_, activeAnchorDistance_, drivingDirection);
-  const unsigned int closestPointOnPathId = getIdOfTheClosestPointOnThePath(currentPathSegment_, robotPose.position_, lastClosesPointId_);
+  const unsigned int closestPointOnPathId = getIdOfTheClosestPointOnThePath(currentPathSegment_, robotPose.position_, lastClosestPointId_);
 
   Point lookaheadPoint;
   if (!computeLookaheadPoint(closestPointOnPathId, activeLookaheadDistance_, currentRobotState_, drivingDirection, currentPathSegment_,
@@ -38,25 +38,24 @@ bool AckermannSteeringController::advanceImpl(double dt) {
 
   steeringAngle_ = steeringAngle;
 
-  lastClosesPointId_ = closestPointOnPathId;
+  lastClosestPointId_ = closestPointOnPathId;
   return true;
 }
 
-bool AckermannSteeringController::initializeImpl(double dt) {
-  lastClosesPointId_ = 0.0;
+bool AckermannSteeringController::initializeImpl() {
+  lastClosestPointId_ = 0.0;
   appendPointAlongFinalApproachDirection(activeLookaheadDistance_ * 5.0, &currentPathSegment_);
-
   return true;
 }
 
-bool AckermannSteeringController::computeSteeringAngle(double dt) {
+bool AckermannSteeringController::computeSteeringAngle() {
   return true;
 }
-bool AckermannSteeringController::computeYawRate(double dt) {
+bool AckermannSteeringController::computeYawRate() {
   yawRate_ = currentRobotState_.desiredLongitudinalVelocity_ / parameters_.wheelBase_ * std::tan(steeringAngle_);
   return true;
 }
-bool AckermannSteeringController::computeTurningRadius(double dt) {
+bool AckermannSteeringController::computeTurningRadius() {
   const double yawRate = currentRobotState_.desiredLongitudinalVelocity_ / parameters_.wheelBase_ * std::tan(steeringAngle_);
   turningRadius_ = currentRobotState_.desiredLongitudinalVelocity_ / yawRate;
   return true;

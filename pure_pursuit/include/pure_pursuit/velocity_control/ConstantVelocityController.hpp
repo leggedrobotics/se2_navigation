@@ -18,7 +18,7 @@ class ConstantVelocityController : public LongitudinalVelocityController {
   void setDesiredVelocity(double desiredVelocity);
 
  private:
-  bool computeVelocity(double dt) override;
+  bool computeVelocity() override;
 
  protected:
   double constantDesiredVelocity_ = 0.0;

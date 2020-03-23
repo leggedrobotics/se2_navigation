@@ -16,7 +16,7 @@
 namespace pure_pursuit {
 
 struct PathPoint {
-  PathPoint() {}
+  PathPoint() = default;
   explicit PathPoint(const Point& p) : position_(p) {}
   PathPoint(double x, double y) : position_(x, y) {}
   Point position_{0.0, 0.0};

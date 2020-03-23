@@ -167,7 +167,9 @@ void findIdOfFirstPointsCloserThanLookaheadAndFirstPointsFartherThanLookahead(co
   for (; pointFartherThanLookaheadId < nPoints; ++pointFartherThanLookaheadId) {
     const auto& p = pathSegment.point_.at(pointFartherThanLookaheadId).position_;
     const double distance = (p - anchorPoint).norm();
-    if (distance > lookaheadDistance + epsilon) break;
+    if (distance > lookaheadDistance + epsilon) {
+      break;
+    }
   }
   pointFartherThanLookaheadId = bindIndexToRange(pointFartherThanLookaheadId, 0, nPoints - 1);
 
@@ -176,7 +178,9 @@ void findIdOfFirstPointsCloserThanLookaheadAndFirstPointsFartherThanLookahead(co
   for (; pointCloserThanLookaheadId >= 0; --pointCloserThanLookaheadId) {
     const auto& p = pathSegment.point_.at(pointCloserThanLookaheadId).position_;
     const double distance = (p - anchorPoint).norm();
-    if (distance < lookaheadDistance - epsilon) break;
+    if (distance < lookaheadDistance - epsilon) {
+      break;
+    }
   }
   pointCloserThanLookaheadId = bindIndexToRange(pointCloserThanLookaheadId, 0, nPoints - 1);
 

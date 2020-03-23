@@ -13,10 +13,10 @@ class PathSegment;
 class RobotState;
 class Path;
 
-class TrackingProgress {
+class ProgressValidator {
  public:
-  TrackingProgress() = default;
-  virtual ~TrackingProgress() = default;
+  ProgressValidator() = default;
+  virtual ~ProgressValidator() = default;
 
   virtual bool isPathSegmentTrackingFinished(const PathSegment& pathSegment, const RobotState& currentState);
   virtual bool isPathTrackingFinished(const Path& path, const RobotState& currentState, unsigned int currentSegmenet);

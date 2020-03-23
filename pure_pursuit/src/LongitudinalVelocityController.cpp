@@ -9,8 +9,8 @@
 
 namespace pure_pursuit {
 
-bool LongitudinalVelocityController::advance(double dt) {
-  return computeVelocity(dt);
+bool LongitudinalVelocityController::advance() {
+  return computeVelocity();
 }
 double LongitudinalVelocityController::getVelocity() const {
   return desiredLongitudinalVelocity_;
@@ -19,8 +19,8 @@ double LongitudinalVelocityController::getVelocity() const {
 void LongitudinalVelocityController::updateCurrentState(const RobotState& robState) {
   currentRobotState_ = robState;
 }
-void LongitudinalVelocityController::updateCurrentLookaheadPoint(const Point& point) {
-  currentLookaheadPoint_ = point;
+void LongitudinalVelocityController::setIsStartingNewPathSegment(bool startinNewSegment) {
+  isStartingNewPathSegmenet_ = startinNewSegment;
 }
 
 } /* namespace pure_pursuit */

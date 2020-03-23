@@ -15,18 +15,18 @@ class LongitudinalVelocityController {
   LongitudinalVelocityController() = default;
   virtual ~LongitudinalVelocityController() = default;
 
-  bool advance(double dt);
+  bool advance();
   double getVelocity() const;
   virtual void updateCurrentState(const RobotState& robState);
-  virtual void updateCurrentLookaheadPoint(const Point& point);
+  virtual void setIsStartingNewPathSegment(bool startinNewSegment);
 
  private:
-  virtual bool computeVelocity(double dt) = 0;
+  virtual bool computeVelocity() = 0;
 
  protected:
   double desiredLongitudinalVelocity_ = 0.0;
   RobotState currentRobotState_;
-  Point currentLookaheadPoint_;
+  bool isStartingNewPathSegmenet_ = false;
 };
 
 } /* namespace pure_pursuit */
