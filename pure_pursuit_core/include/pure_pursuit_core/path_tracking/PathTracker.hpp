@@ -9,7 +9,7 @@
 #include <memory>
 
 #include "pure_pursuit_core/Path.hpp"
-#include "pure_pursuit_core/Stopwatch.hpp"
+#include "pure_pursuit_core/path_tracking/Stopwatch.hpp"
 
 namespace pure_pursuit {
 
@@ -35,14 +35,14 @@ class PathTracker {
 
   bool advance();
   virtual void importCurrentPath(const Path& path);
-  virtual void stopTracking();
+  virtual void stopTracking() = 0;
   virtual void updateRobotState(const RobotState& robotState);
   virtual bool initialize();
 
  private:
   enum class States : int { NoOperation, Waiting, Driving };
-  virtual void advanceStateMachine();
-  virtual bool advanceControllers();
+  virtual void advanceStateMachine() = 0;
+  virtual bool advanceControllers() = 0;
 
   States currentState_ = States::NoOperation;
   bool isPathReceived_ = false;

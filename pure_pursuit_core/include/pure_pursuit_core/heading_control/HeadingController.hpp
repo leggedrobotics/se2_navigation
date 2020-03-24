@@ -38,14 +38,13 @@ class HeadingController {
   virtual bool computeYawRate() = 0;
   virtual bool computeTurningRadius() = 0;
   virtual bool computeSteeringAngle() = 0;
-  virtual void chooseActiveAnchorAndLookaheadDistance();
 
  protected:
+  virtual void chooseActiveAnchorAndLookaheadDistance(const HeadingControllerParameters& parameters);
   RobotState currentRobotState_;
   double turningRadius_ = 0.0;
   double yawRate_ = 0.0;
   double steeringAngle_ = 0.0;
-  HeadingControllerParameters parameters_;
   double activeAnchorDistance_ = 0.2;
   double activeLookaheadDistance_ = 0.2;
   PathSegment currentPathSegment_;

@@ -5,7 +5,7 @@
  *      Author: jelavice
  */
 
-#include "pure_pursuit_core/Stopwatch.hpp"
+#include "pure_pursuit_core/path_tracking/Stopwatch.hpp"
 
 #include <stdexcept>
 

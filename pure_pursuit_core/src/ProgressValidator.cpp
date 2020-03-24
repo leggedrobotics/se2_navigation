@@ -4,7 +4,7 @@
  *  Created on: Mar 22, 2020
  *      Author: jelavice
  */
-#include "pure_pursuit_core/ProgressValidator.hpp"
+#include "pure_pursuit_core/path_tracking/ProgressValidator.hpp"
 
 #include "pure_pursuit_core/Path.hpp"
 #include "pure_pursuit_core/math.hpp"
@@ -20,6 +20,10 @@ bool ProgressValidator::isPathSegmentTrackingFinished(const PathSegment& pathSeg
 bool ProgressValidator::isPathTrackingFinished(const Path& path, const RobotState& currentState, unsigned int currentSegment) {
   const bool isTrackingLastSegment = path.segment_.size() - 1 == currentSegment;
   return isPathSegmentTrackingFinished(path.segment_.at(currentSegment), currentState) && isTrackingLastSegment;
+}
+
+void ProgressValidator::setGoalDistanceTolerance(double tolerance) {
+  goalDistanceTolerance_ = tolerance;
 }
 
 }  // namespace pure_pursuit

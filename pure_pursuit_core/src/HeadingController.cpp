@@ -18,7 +18,6 @@ bool HeadingController::initialize() {
 }
 
 bool HeadingController::advance() {
-  chooseActiveAnchorAndLookaheadDistance();
   bool status = advanceImpl();
   status = status && computeSteeringAngle();
   status = status && computeTurningRadius();
@@ -40,16 +39,16 @@ double HeadingController::getSteeringAngle() const {
   return steeringAngle_;
 }
 
-void HeadingController::chooseActiveAnchorAndLookaheadDistance() {
+void HeadingController::chooseActiveAnchorAndLookaheadDistance(const HeadingControllerParameters& parameters) {
   switch (currentRobotState_.desiredDirection_) {
     case (DrivingDirection::FWD): {
-      activeLookaheadDistance_ = parameters_.lookaheadDistanceFwd_;
-      activeAnchorDistance_ = parameters_.anchorDistanceFwd_;
+      activeLookaheadDistance_ = parameters.lookaheadDistanceFwd_;
+      activeAnchorDistance_ = parameters.anchorDistanceFwd_;
       break;
     }
     case (DrivingDirection::BCK): {
-      activeLookaheadDistance_ = parameters_.lookaheadDistanceBck_;
-      activeAnchorDistance_ = parameters_.anchorDistanceBck_;
+      activeLookaheadDistance_ = parameters.lookaheadDistanceBck_;
+      activeAnchorDistance_ = parameters.anchorDistanceBck_;
       break;
     }
     default:

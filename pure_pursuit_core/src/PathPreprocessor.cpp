@@ -5,7 +5,7 @@
  *      Author: jelavice
  */
 
-#include "pure_pursuit_core/PathPreprocessor.hpp"
+#include "pure_pursuit_core/path_tracking/PathPreprocessor.hpp"
 
 #include <iostream>
 

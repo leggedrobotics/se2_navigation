@@ -21,8 +21,10 @@ class ProgressValidator {
   virtual bool isPathSegmentTrackingFinished(const PathSegment& pathSegment, const RobotState& currentState);
   virtual bool isPathTrackingFinished(const Path& path, const RobotState& currentState, unsigned int currentSegmenet);
 
+  void setGoalDistanceTolerance(double tolerance);
+
  protected:
-  const double goalDistanceTolerance_ = 0.05;
+  double goalDistanceTolerance_ = 0.05;
 };
 
 }  // namespace pure_pursuit

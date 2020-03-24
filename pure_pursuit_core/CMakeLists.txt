@@ -6,16 +6,17 @@ add_compile_options(-Wall -Wextra -Wpedantic)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(SRC_FILES
-  src/math.cpp
-  src/LongitudinalVelocityController.cpp
-  src/ConstantVelocityController.cpp
-  src/PathTracker.cpp
-  src/HeadingController.cpp
+  src/math.cpp 
   src/AckermannSteeringController.cpp
+  src/ConstantVelocityController.cpp
+  src/HeadingController.cpp
+  src/LongitudinalVelocityController.cpp
   src/MobileBaseHeadingController.cpp
-  src/Stopwatch.cpp
-  src/ProgressValidator.cpp
   src/PathPreprocessor.cpp
+  src/PathTracker.cpp
+  src/ProgressValidator.cpp
+  src/SimplePathTracker.cpp
+  src/Stopwatch.cpp
 )
 
 set(CATKIN_PACKAGE_DEPENDENCIES )
@@ -96,7 +97,6 @@ endif(cmake_clang_tools_FOUND)
 #############
 if(CATKIN_ENABLE_TESTING)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
-## Add gtest based cpp test target and link libraries
 catkin_add_gtest(${PROJECT_NAME}-test
   test/test_pure_pursuit.cpp
   test/test_helpers.cpp
