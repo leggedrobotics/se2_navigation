@@ -16,6 +16,10 @@ double LongitudinalVelocityController::getVelocity() const {
   return desiredLongitudinalVelocity_;
 }
 
+void LongitudinalVelocityController::updateDrivingDirection(DrivingDirection drivingDirection) {
+  drivingDirection_ = drivingDirection;
+}
+
 void LongitudinalVelocityController::updateCurrentState(const RobotState& robState) {
   currentRobotState_ = robState;
 }

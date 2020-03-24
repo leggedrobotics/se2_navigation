@@ -40,7 +40,7 @@ double HeadingController::getSteeringAngle() const {
 }
 
 void HeadingController::chooseActiveAnchorAndLookaheadDistance(const HeadingControllerParameters& parameters) {
-  switch (currentRobotState_.desiredDirection_) {
+  switch (currentPathSegment_.drivingDirection_) {
     case (DrivingDirection::FWD): {
       activeLookaheadDistance_ = parameters.lookaheadDistanceFwd_;
       activeAnchorDistance_ = parameters.anchorDistanceFwd_;

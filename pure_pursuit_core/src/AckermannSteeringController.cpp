@@ -13,7 +13,7 @@ namespace pure_pursuit {
 
 bool AckermannSteeringController::advanceImpl() {
   chooseActiveAnchorAndLookaheadDistance(parameters_);
-  const auto drivingDirection = currentRobotState_.desiredDirection_;
+  const auto drivingDirection = currentPathSegment_.drivingDirection_;
   const auto& robotPose = currentRobotState_.pose_;
   const Point anchorPoint = computeAnchorPoint(currentRobotState_, activeAnchorDistance_, drivingDirection);
   const unsigned int closestPointOnPathId = getIdOfTheClosestPointOnThePath(currentPathSegment_, robotPose.position_, lastClosestPointId_);

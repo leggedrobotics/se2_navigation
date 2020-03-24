@@ -9,7 +9,17 @@
 namespace pure_pursuit {
 
 bool ConstantVelocityController::computeVelocity() {
-  desiredLongitudinalVelocity_ = constantDesiredVelocity_;
+  switch (drivingDirection_) {
+    case DrivingDirection::FWD: {
+      desiredLongitudinalVelocity_ = constantDesiredVelocity_;
+      break;
+    }
+
+    case DrivingDirection::BCK: {
+      desiredLongitudinalVelocity_ = -constantDesiredVelocity_;
+      break;
+    }
+  }
   return true;
 }
 

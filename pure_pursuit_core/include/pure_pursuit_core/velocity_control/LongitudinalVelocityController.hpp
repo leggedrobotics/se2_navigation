@@ -17,6 +17,7 @@ class LongitudinalVelocityController {
 
   bool advance();
   double getVelocity() const;
+  void updateDrivingDirection(DrivingDirection drivingDirection);
   virtual void updateCurrentState(const RobotState& robState);
   virtual void setIsStartingNewPathSegment(bool startinNewSegment);
 
@@ -27,6 +28,7 @@ class LongitudinalVelocityController {
   double desiredLongitudinalVelocity_ = 0.0;
   RobotState currentRobotState_;
   bool isStartingNewPathSegmenet_ = false;
+  DrivingDirection drivingDirection_;
 };
 
 } /* namespace pure_pursuit */
