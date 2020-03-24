@@ -26,7 +26,6 @@ class SimplePathTracker : public PathTracker {
 
   States currentFSMState_ = States::NoOperation;
   bool isPathReceived_ = false;
-  unsigned int currentPathSegment_ = 0;
   Stopwatch stopwatch_;
   double waitingTime_ = 2.5;
 };

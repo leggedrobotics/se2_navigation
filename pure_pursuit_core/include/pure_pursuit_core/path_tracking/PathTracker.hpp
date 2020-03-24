@@ -41,14 +41,8 @@ class PathTracker {
   virtual bool initialize();
 
  private:
-  enum class States : int { NoOperation, Waiting, Driving };
   virtual void advanceStateMachine() = 0;
   virtual bool advanceControllers() = 0;
-
-  States currentState_ = States::NoOperation;
-  bool isPathReceived_ = false;
-  unsigned int currentPathSegment_ = 0;
-  Stopwatch stopwatch_;
 
  protected:
   std::shared_ptr<LongitudinalVelocityController> velocityController_;
@@ -61,6 +55,7 @@ class PathTracker {
   double turningRadius_ = 0.0;
   double yawRate_ = 0.0;
   double steeringAngle_ = 0.0;
+  unsigned int currentPathSegment_ = 0;
 };
 
 } /* namespace pure_pursuit */
