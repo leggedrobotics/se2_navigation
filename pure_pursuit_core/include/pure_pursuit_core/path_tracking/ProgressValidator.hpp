@@ -18,8 +18,8 @@ class ProgressValidator {
   ProgressValidator() = default;
   virtual ~ProgressValidator() = default;
 
-  virtual bool isPathSegmentTrackingFinished(const PathSegment& pathSegment, const RobotState& currentState);
-  virtual bool isPathTrackingFinished(const Path& path, const RobotState& currentState, unsigned int currentSegmenet);
+  virtual bool isPathSegmentTrackingFinished(const PathSegment& pathSegment, const RobotState& currentState) const;
+  virtual bool isPathTrackingFinished(const Path& path, const RobotState& currentState, unsigned int currentSegmenet) const;
 
   void setGoalDistanceTolerance(double tolerance);
 

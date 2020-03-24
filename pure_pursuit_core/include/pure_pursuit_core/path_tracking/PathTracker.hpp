@@ -27,6 +27,7 @@ class PathTracker {
   double getYawRate() const;
   double getSteeringAngle() const;
   double getLongitudinalVelocity() const;
+  bool isTrackingFinished() const;
 
   void setHeadingController(std::shared_ptr<HeadingController> ctrl);
   void setVelocityController(std::shared_ptr<LongitudinalVelocityController> ctrl);
