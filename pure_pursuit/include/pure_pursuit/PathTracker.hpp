@@ -15,6 +15,7 @@ namespace pure_pursuit {
 class LongitudinalVelocityController;
 class HeadingController;
 class ProgressValidator;
+class PathPreprocessor;
 
 class PathTracker {
  public:
@@ -25,14 +26,17 @@ class PathTracker {
   double getYawRate() const;
   double getSteeringAngle() const;
   double getLongitudinalVelocity() const;
-  void importCurrentPath(const Path& path);
-  bool advance();
-  virtual void stopTracking();
-  virtual void updateRobotState(const RobotState& robotState);
-  virtual bool initialize();
+
   void setHeadingController(std::shared_ptr<HeadingController> ctrl);
   void setVelocityController(std::shared_ptr<LongitudinalVelocityController> ctrl);
   void setProgressValidator(std::shared_ptr<ProgressValidator> validator);
+  void setPathPreprocessor(std::shared_ptr<PathPreprocessor> pathPreprocessor);
+
+  bool advance();
+  virtual void importCurrentPath(const Path& path);
+  virtual void stopTracking();
+  virtual void updateRobotState(const RobotState& robotState);
+  virtual bool initialize();
 
  private:
   enum class States : int { NoOperation, Waiting, Driving };
@@ -48,6 +52,7 @@ class PathTracker {
   std::shared_ptr<LongitudinalVelocityController> velocityController_;
   std::shared_ptr<HeadingController> headingController_;
   std::shared_ptr<ProgressValidator> progressValidator_;
+  std::shared_ptr<PathPreprocessor> pathPreprocessor_;
   Path currentPath_;
   RobotState currentRobotState_;
   double longitudinalVelocity_ = 0.0;

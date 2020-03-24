@@ -1,19 +1,18 @@
 /*
- * PathPreprocessing.cpp
+ * PathPreprocessor.cpp
  *
  *  Created on: Mar 24, 2020
  *      Author: jelavice
  */
 
-#include "pure_pursuit/PathPreprocessing.hpp"
-
 #include <iostream>
 
 #include "pure_pursuit/Path.hpp"
+#include "pure_pursuit/PathPreprocessor.hpp"
 
 namespace pure_pursuit {
 
-bool PathPreprocessing::preprocessPath(Path* path) {
+bool PathPreprocessor::preprocessPath(Path* path) {
   const int numSegmentsRemoved = removeShortPathSegments(path);
   if (path->segment_.empty()) {
     std::cout << "Path size is 0. All the segments have been erased." << std::endl;
@@ -30,11 +29,11 @@ bool PathPreprocessing::preprocessPath(Path* path) {
 
   return true;
 }
-void PathPreprocessing::setMinimumSegmentLength(double minimumLength) {
+void PathPreprocessor::setMinimumSegmentLength(double minimumLength) {
   minimumSegmentLength_ = minimumLength;
 }
 
-int PathPreprocessing::removeShortPathSegments(Path* path) {
+int PathPreprocessor::removeShortPathSegments(Path* path) {
   auto predicate = [this](const PathSegment& element) {
     const auto start = element.point_.front().position_;
     const auto goal = element.point_.back().position_;
@@ -51,7 +50,7 @@ int PathPreprocessing::removeShortPathSegments(Path* path) {
   return sizeBeforePruning - segments.size();
 }
 
-int PathPreprocessing::mergePathSegmentsWithSameDrivingDirections(Path* path) {
+int PathPreprocessor::mergePathSegmentsWithSameDrivingDirections(Path* path) {
   Path trajcetoriesCopy = *path;
   path->segment_.clear();
 

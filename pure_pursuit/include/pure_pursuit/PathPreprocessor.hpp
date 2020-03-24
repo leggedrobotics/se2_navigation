@@ -1,5 +1,5 @@
 /*
- * PathPreprocessing.hpp
+ * PathPreprocessor.hpp
  *
  *  Created on: Mar 24, 2020
  *      Author: jelavice
@@ -11,9 +11,9 @@ namespace pure_pursuit {
 
 class Path;
 
-class PathPreprocessing {
+class PathPreprocessor {
  public:
-  virtual ~PathPreprocessing() = default;
+  virtual ~PathPreprocessor() = default;
 
   virtual bool preprocessPath(Path* path);
   void setMinimumSegmentLength(double minimumLength);

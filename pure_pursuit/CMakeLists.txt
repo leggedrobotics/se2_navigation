@@ -15,7 +15,7 @@ set(SRC_FILES
   src/MobileBaseHeadingController.cpp
   src/Stopwatch.cpp
   src/ProgressValidator.cpp
-  src/PathPreprocessing.cpp
+  src/PathPreprocessor.cpp
 )
 
 set(CATKIN_PACKAGE_DEPENDENCIES )

@@ -7,6 +7,7 @@
 
 #include "pure_pursuit/PathTracker.hpp"
 
+#include "pure_pursuit/PathPreprocessor.hpp"
 #include "pure_pursuit/ProgressValidator.hpp"
 #include "pure_pursuit/heading_control/HeadingController.hpp"
 #include "pure_pursuit/math.hpp"
@@ -22,6 +23,10 @@ void PathTracker::setVelocityController(std::shared_ptr<LongitudinalVelocityCont
 }
 void PathTracker::setProgressValidator(std::shared_ptr<ProgressValidator> validator) {
   progressValidator_ = validator;
+}
+
+void PathTracker::setPathPreprocessor(std::shared_ptr<PathPreprocessor> pathPreprocessor) {
+  pathPreprocessor_ = pathPreprocessor;
 }
 
 double PathTracker::getTurningRadius() const {
