@@ -101,6 +101,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 catkin_add_gtest(${PROJECT_NAME}-test
   test/test_pure_pursuit.cpp
   test/test_helpers.cpp
+  test/AckermannSteeringControllerTest.cpp
   test/GeometryTest.cpp
   test/PathTest.cpp	
   )

@@ -64,6 +64,30 @@ bool AckermannSteeringController::computeTurningRadius() {
 
 void AckermannSteeringController::setParameters(const AckermannSteeringCtrlParameters& parameters) {
   parameters_ = parameters;
+
+  if (parameters_.anchorDistanceBck_ < 0) {
+    throw std::runtime_error("anchorDistanceBck_ is less than 0.");
+  }
+
+  if (parameters_.anchorDistanceFwd_ < 0) {
+    throw std::runtime_error("anchorDistanceFwd_ is less than 0.");
+  }
+
+  if (parameters_.lookaheadDistanceBck_ < 0) {
+    throw std::runtime_error("lookaheadDistanceBck_ is less than 0.");
+  }
+
+  if (parameters_.lookaheadDistanceFwd_ < 0) {
+    throw std::runtime_error("lookaheadDistanceFwd_ is less than 0.");
+  }
+
+  if (parameters_.wheelBase_ < 0) {
+    throw std::runtime_error("wheelBase_ is less than 0.");
+  }
+}
+
+AckermannSteeringCtrlParameters AckermannSteeringController::getParameters() const {
+  return parameters_;
 }
 
 } /* namespace pure_pursuit */
