@@ -73,4 +73,19 @@ class ProgressValidatorLoader {
   virtual ProgressValidatorParameters loadParameters(const ros::NodeHandle& nh) const;
 };
 
+/*
+ * ********************************************************
+ * ********************************************************
+ * ********************************************************
+ */
+
+class PathPreprocessorLoader {
+ public:
+  PathPreprocessorLoader() = default;
+  virtual ~PathPreprocessorLoader() = default;
+
+  virtual PathPreprocessorParameters loadParameters(const std::string& filename) const;
+  virtual PathPreprocessorParameters loadParameters(const ros::NodeHandle& nh) const;
+};
+
 } /* namespace pure_pursuit */

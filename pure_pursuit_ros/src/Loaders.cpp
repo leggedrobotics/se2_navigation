@@ -104,4 +104,27 @@ ProgressValidatorParameters ProgressValidatorLoader::loadParameters(const ros::N
   throw std::runtime_error("ProgressValidatorLoader::loadParameters not implemented");
 }
 
+/*
+ * ********************************************************
+ * ********************************************************
+ * ********************************************************
+ */
+
+PathPreprocessorParameters PathPreprocessorLoader::loadParameters(const std::string& filename) const {
+  YAML::Node basenode = YAML::LoadFile(filename);
+
+  if (basenode.IsNull()) {
+    throw std::runtime_error("PathPreprocessorLoader::loadParameters loading failed");
+  }
+
+  auto node = basenode["path_preprocessing"];
+  PathPreprocessorParameters parameters;
+  parameters.minimumSegmentLength_ = node["minimal_segment_length"].as<double>();
+
+  return parameters;
+}
+PathPreprocessorParameters PathPreprocessorLoader::loadParameters(const ros::NodeHandle& nh) const {
+  throw std::runtime_error("PathPreprocessorLoader::loadParameters not implemented");
+}
+
 } /* namespace pure_pursuit */
