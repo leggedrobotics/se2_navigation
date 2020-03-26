@@ -5,14 +5,14 @@
  *      Author: jelavice
  */
 
-#include "pure_pursuit_ros/Loaders.hpp"
+#include "pure_pursuit_ros/loaders.hpp"
 #include <ros/ros.h>
 #include <yaml-cpp/yaml.h>
 #include <stdexcept>
 
 namespace pure_pursuit {
 
-AckermannSteeringCtrlParameters AckermannSteeringControllerLoader::loadParameters(const std::string& filename) const {
+AckermannSteeringCtrlParameters loadAckermannSteeringControllerParameters(const std::string& filename) {
   YAML::Node basenode = YAML::LoadFile(filename);
 
   if (basenode.IsNull()) {
@@ -31,17 +31,8 @@ AckermannSteeringCtrlParameters AckermannSteeringControllerLoader::loadParameter
 
   return parameters;
 }
-AckermannSteeringCtrlParameters AckermannSteeringControllerLoader::loadParameters(const ros::NodeHandle& nh) const {
-  throw std::runtime_error("AckermannSteeringControllerLoader::loadParameters not implemented");
-}
 
-/*
- * ********************************************************
- * ********************************************************
- * ********************************************************
- */
-
-ConstantVelocityControllerParameters ConstantVelocityControllerLoader::loadParameters(const std::string& filename) const {
+ConstantVelocityControllerParameters loadConstantVelocityControllerParameters(const std::string& filename) {
   YAML::Node basenode = YAML::LoadFile(filename);
 
   if (basenode.IsNull()) {
@@ -54,17 +45,8 @@ ConstantVelocityControllerParameters ConstantVelocityControllerLoader::loadParam
 
   return parameters;
 }
-ConstantVelocityControllerParameters ConstantVelocityControllerLoader::loadParameters(const ros::NodeHandle& nh) const {
-  throw std::runtime_error("ConstantVelocityControllerLoader::loadParameters not implemented");
-}
 
-/*
- * ********************************************************
- * ********************************************************
- * ********************************************************
- */
-
-SimplePathTrackerParameters SimplePathTrackerLoader::loadParameters(const std::string& filename) const {
+SimplePathTrackerParameters loadSimplePathTrackerParameters(const std::string& filename) {
   YAML::Node basenode = YAML::LoadFile(filename);
 
   if (basenode.IsNull()) {
@@ -77,17 +59,8 @@ SimplePathTrackerParameters SimplePathTrackerLoader::loadParameters(const std::s
 
   return parameters;
 }
-SimplePathTrackerParameters SimplePathTrackerLoader::loadParameters(const ros::NodeHandle& nh) const {
-  throw std::runtime_error("SimplePathTrackerLoader::loadParameters not implemented");
-}
 
-/*
- * ********************************************************
- * ********************************************************
- * ********************************************************
- */
-
-ProgressValidatorParameters ProgressValidatorLoader::loadParameters(const std::string& filename) const {
+ProgressValidatorParameters loadProgressValidatorParameters(const std::string& filename) {
   YAML::Node basenode = YAML::LoadFile(filename);
 
   if (basenode.IsNull()) {
@@ -100,17 +73,8 @@ ProgressValidatorParameters ProgressValidatorLoader::loadParameters(const std::s
 
   return parameters;
 }
-ProgressValidatorParameters ProgressValidatorLoader::loadParameters(const ros::NodeHandle& nh) const {
-  throw std::runtime_error("ProgressValidatorLoader::loadParameters not implemented");
-}
 
-/*
- * ********************************************************
- * ********************************************************
- * ********************************************************
- */
-
-PathPreprocessorParameters PathPreprocessorLoader::loadParameters(const std::string& filename) const {
+PathPreprocessorParameters loadPathPreprocessorParameters(const std::string& filename) {
   YAML::Node basenode = YAML::LoadFile(filename);
 
   if (basenode.IsNull()) {
@@ -122,9 +86,6 @@ PathPreprocessorParameters PathPreprocessorLoader::loadParameters(const std::str
   parameters.minimumSegmentLength_ = node["minimal_segment_length"].as<double>();
 
   return parameters;
-}
-PathPreprocessorParameters PathPreprocessorLoader::loadParameters(const ros::NodeHandle& nh) const {
-  throw std::runtime_error("PathPreprocessorLoader::loadParameters not implemented");
 }
 
 } /* namespace pure_pursuit */
