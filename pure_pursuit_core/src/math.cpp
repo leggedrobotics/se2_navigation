@@ -33,6 +33,8 @@ double RateLimiter::limitRateOfChange(double value) {
     retValue = valuePrev_ + dt_ * minFallingRate_;
   }
 
+  valuePrev_ = retValue;
+
   return retValue;
 }
 void RateLimiter::setRisingRate(double maxRisingRate) {
@@ -74,6 +76,24 @@ double deadZone(double x, double deadzoneWidth) {
     return x + halfWidth;
   else
     return 0.0;
+}
+
+double AverageFilter::filterInputValue(double value) {
+  if (firstTime_) {
+    filteredValuePrev_ = value;
+    return value;
+  }
+
+  const double retVal = weightMostRecentMeasurement_ * value + (1.0 - weightMostRecentMeasurement_) * filteredValuePrev_;
+
+  filteredValuePrev_ = retVal;
+  return retVal;
+}
+void AverageFilter::setWeightForMostRecentMeasurement(double weight) {
+  if (weight < 0.0 || weight > 1.0) {
+    throw std::runtime_error("Average filter value must be between 0.0 and 1.0");
+  }
+  weightMostRecentMeasurement_ = weight;
 }
 
 void computeIntersection(const Line& line, const Circle& circle, Intersection* intersection) {

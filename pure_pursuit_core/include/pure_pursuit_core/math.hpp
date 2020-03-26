@@ -55,6 +55,20 @@ class RateLimiter {
   bool firstTime_ = true;
 };
 
+class AverageFilter {
+ public:
+  AverageFilter() = default;
+  ~AverageFilter() = default;
+
+  double filterInputValue(double value);
+  void setWeightForMostRecentMeasurement(double weight);
+
+ private:
+  double weightMostRecentMeasurement_ = 1.0;
+  double filteredValuePrev_ = 0.0;
+  bool firstTime_ = true;
+};
+
 template <typename T>
 int sgn(T val) {
   return (T(0) < val) - (val < T(0));
