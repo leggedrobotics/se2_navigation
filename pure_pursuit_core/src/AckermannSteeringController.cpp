@@ -91,14 +91,19 @@ void AckermannSteeringController::setParameters(const AckermannSteeringCtrlParam
     throw std::runtime_error("maxSteeringAngleMagnitude_ is less than 0.");
   }
 
-  if (parameters_.maxRateOfChange_ < 0) {
-    throw std::runtime_error("maxRateOfChange_ is less than 0.");
+  if (parameters_.maxSteeringRateOfChange_ < 0) {
+    throw std::runtime_error("maxSteeringRateOfChange_ is less than 0.");
+  }
+
+  if (parameters_.deadZoneWidth_ < 0){
+    throw std::runtime_error("deadZoneWidth_ is less than 0.");
+
   }
 
   parameters_ = parameters;
   rateLimiter_.setTimestep(parameters.dt_);
-  rateLimiter_.setFallingRate(-parameters.maxRateOfChange_);
-  rateLimiter_.setRisingRate(parameters.maxRateOfChange_);
+  rateLimiter_.setFallingRate(-parameters.maxSteeringRateOfChange_);
+  rateLimiter_.setRisingRate(parameters.maxSteeringRateOfChange_);
 
   avgFilter_.setWeightForMostRecentMeasurement(parameters.avgFilgerCurrentSampleWeight_);
 }

@@ -26,8 +26,14 @@ AckermannSteeringCtrlParameters loadAckermannSteeringControllerParameters(const 
   parameters.anchorDistanceFwd_ = node["anchor_dist_fwd"].as<double>();
   parameters.lookaheadDistanceBck_ = node["lookahead_bck"].as<double>();
   parameters.lookaheadDistanceFwd_ = node["lookahead_fwd"].as<double>();
+  parameters.deadZoneWidth_ = node["dead_zone_width"].as<double>();
+  parameters.avgFilgerCurrentSampleWeight_ = node["avg_filter_current_sample_weight"].as<double>();
 
-  parameters.wheelBase_ = node["heading_control_ackermann"]["wheel_base"].as<double>();
+  //ackermann specific
+  auto ackermannNode = node["heading_control_ackermann"];
+  parameters.wheelBase_ = ackermannNode["wheel_base"].as<double>();
+  parameters.maxSteeringAngleMagnitude_ = ackermannNode["max_steering_angle_magnitude"].as<double>();
+  parameters.maxSteeringRateOfChange_ = ackermannNode["max_steering_rate_of_change"].as<double>();
 
   return parameters;
 }
