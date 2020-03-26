@@ -19,14 +19,16 @@ class ProgressValidator;
 class PathTracker;
 class ConstantVelocityControllerParameters;
 class SimplePathTrackerParameters;
+class PathPreprocessorParameters;
+class ProgressValidatorParameters;
 
 std::unique_ptr<LongitudinalVelocityController> createConstantVelocityController(const ConstantVelocityControllerParameters& parameters);
 
 std::unique_ptr<HeadingController> createAckermannSteeringController(const AckermannSteeringCtrlParameters& parameters);
 
-std::unique_ptr<PathPreprocessor> createPathPreprocessor(double minimumSegmentLength);
+std::unique_ptr<PathPreprocessor> createPathPreprocessor(const PathPreprocessorParameters& parameters);
 
-std::unique_ptr<ProgressValidator> createProgressValidator(double goalDistanceTolerance);
+std::unique_ptr<ProgressValidator> createProgressValidator(const ProgressValidatorParameters& parameters);
 
 std::unique_ptr<PathTracker> createSimplePathTracker(const SimplePathTrackerParameters& parameters,
                                                      std::shared_ptr<LongitudinalVelocityController> velocityController,

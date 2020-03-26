@@ -26,15 +26,15 @@ std::unique_ptr<HeadingController> createAckermannSteeringController(const Acker
   return std::move(controller);
 }
 
-std::unique_ptr<PathPreprocessor> createPathPreprocessor(double minimumSegmentLength) {
+std::unique_ptr<PathPreprocessor> createPathPreprocessor(const PathPreprocessorParameters& parameters) {
   std::unique_ptr<PathPreprocessor> preprocessor = std::make_unique<PathPreprocessor>();
-  preprocessor->setMinimumSegmentLength(minimumSegmentLength);
+  preprocessor->setParameters(parameters);
   return std::move(preprocessor);
 }
 
-std::unique_ptr<ProgressValidator> createProgressValidator(double goalDistanceTolerance) {
+std::unique_ptr<ProgressValidator> createProgressValidator(const ProgressValidatorParameters& parameters) {
   std::unique_ptr<ProgressValidator> validator = std::make_unique<ProgressValidator>();
-  validator->setGoalDistanceTolerance(goalDistanceTolerance);
+  validator->setParameters(parameters);
   return std::move(validator);
 }
 

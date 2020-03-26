@@ -11,17 +11,21 @@ namespace pure_pursuit {
 
 class Path;
 
+struct PathPreprocessorParameters {
+  double minimumSegmentLength_ = 1.0;  // meters
+};
+
 class PathPreprocessor {
  public:
   virtual ~PathPreprocessor() = default;
 
   virtual bool preprocessPath(Path* path);
-  void setMinimumSegmentLength(double minimumLength);
+  void setParameters(const PathPreprocessorParameters& parameters);
 
  protected:
   int removeShortPathSegments(Path* path);
   int mergePathSegmentsWithSameDrivingDirections(Path* path);
-  double minimumSegmentLength_ = 1.0;  // meters
+  PathPreprocessorParameters parameters_;
 };
 
 } /* namespace pure_pursuit */

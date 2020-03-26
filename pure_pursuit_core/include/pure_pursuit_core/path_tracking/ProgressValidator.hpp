@@ -13,6 +13,10 @@ class PathSegment;
 class RobotState;
 class Path;
 
+struct ProgressValidatorParameters {
+  double goalDistanceTolerance_ = 0.05;
+};
+
 class ProgressValidator {
  public:
   ProgressValidator() = default;
@@ -21,10 +25,10 @@ class ProgressValidator {
   virtual bool isPathSegmentTrackingFinished(const PathSegment& pathSegment, const RobotState& currentState) const;
   virtual bool isPathTrackingFinished(const Path& path, const RobotState& currentState, unsigned int currentSegmenet) const;
 
-  void setGoalDistanceTolerance(double tolerance);
+  void setParameters(const ProgressValidatorParameters& parameters);
 
  protected:
-  double goalDistanceTolerance_ = 0.05;
+  ProgressValidatorParameters parameters_;
 };
 
 }  // namespace pure_pursuit

@@ -30,8 +30,8 @@ bool PathPreprocessor::preprocessPath(Path* path) {
 
   return true;
 }
-void PathPreprocessor::setMinimumSegmentLength(double minimumLength) {
-  minimumSegmentLength_ = minimumLength;
+void PathPreprocessor::setParameters(const PathPreprocessorParameters& parameters) {
+  parameters_ = parameters;
 }
 
 int PathPreprocessor::removeShortPathSegments(Path* path) {
@@ -39,7 +39,7 @@ int PathPreprocessor::removeShortPathSegments(Path* path) {
     const auto start = element.point_.front().position_;
     const auto goal = element.point_.back().position_;
     const double distance = (start - goal).norm();
-    const bool isTooShort = distance <= minimumSegmentLength_;
+    const bool isTooShort = distance <= parameters_.minimumSegmentLength_;
     const bool isTooFewElements = element.point_.size() < 2;
     return (isTooShort || isTooFewElements);
   };

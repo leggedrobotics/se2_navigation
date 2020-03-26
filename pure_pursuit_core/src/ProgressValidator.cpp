@@ -14,7 +14,7 @@ namespace pure_pursuit {
 bool ProgressValidator::isPathSegmentTrackingFinished(const PathSegment& pathSegment, const RobotState& currentState) const {
   const Point currPosition = currentState.pose_.position_;
   const Point goalPosition = pathSegment.point_.back().position_;
-  const bool isCloseEnough = (currPosition - goalPosition).norm() < goalDistanceTolerance_;
+  const bool isCloseEnough = (currPosition - goalPosition).norm() < parameters_.goalDistanceTolerance_;
   return isCloseEnough || isPastLastPoint(pathSegment, currPosition);
 }
 bool ProgressValidator::isPathTrackingFinished(const Path& path, const RobotState& currentState, unsigned int currentSegment) const {
@@ -22,8 +22,8 @@ bool ProgressValidator::isPathTrackingFinished(const Path& path, const RobotStat
   return isTrackingLastSegment && isPathSegmentTrackingFinished(path.segment_.at(currentSegment), currentState);
 }
 
-void ProgressValidator::setGoalDistanceTolerance(double tolerance) {
-  goalDistanceTolerance_ = tolerance;
+void ProgressValidator::setParameters(const ProgressValidatorParameters& parameters) {
+  parameters_ = parameters;
 }
 
 }  // namespace pure_pursuit
