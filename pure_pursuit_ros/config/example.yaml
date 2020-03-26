@@ -1,9 +1,8 @@
 #example config file for all sensor that we have
 
-velocity_control: 
-  desired_velocity: 1.0
-
-
+velocity_control:
+  constant_velocity_control: 
+    desired_velocity: 1.0
  
 heading_control:
   lookahead_fwd: 4.0
@@ -15,7 +14,8 @@ heading_control:
     wheel_base: 4.5 # was 3.0
  
 path_tracking:
-  waiting_time_between_direction_changes: 2.5
+  simple_path_tracker:
+    waiting_time_between_direction_changes: 2.5
   
 progress_validation:
   goal_distance_tolerance: 0.05
