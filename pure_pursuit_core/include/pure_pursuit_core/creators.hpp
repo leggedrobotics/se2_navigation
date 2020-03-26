@@ -18,6 +18,7 @@ class PathPreprocessor;
 class ProgressValidator;
 class PathTracker;
 class ConstantVelocityControllerParameters;
+class SimplePathTrackerParameters;
 
 std::unique_ptr<LongitudinalVelocityController> createConstantVelocityController(const ConstantVelocityControllerParameters& parameters);
 
@@ -27,7 +28,7 @@ std::unique_ptr<PathPreprocessor> createPathPreprocessor(double minimumSegmentLe
 
 std::unique_ptr<ProgressValidator> createProgressValidator(double goalDistanceTolerance);
 
-std::unique_ptr<PathTracker> createSimplePathTracker(double waitingTimeBetweenTurns,
+std::unique_ptr<PathTracker> createSimplePathTracker(const SimplePathTrackerParameters& parameters,
                                                      std::shared_ptr<LongitudinalVelocityController> velocityController,
                                                      std::shared_ptr<HeadingController> headingController,
                                                      std::shared_ptr<ProgressValidator> validator,

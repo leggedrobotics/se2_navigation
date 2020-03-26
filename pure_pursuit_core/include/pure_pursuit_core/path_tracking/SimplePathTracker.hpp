@@ -10,6 +10,10 @@
 
 namespace pure_pursuit {
 
+struct SimplePathTrackerParameters {
+  double waitingTimeBetweenDirectionSwitches_ = 1.0;
+};
+
 class SimplePathTracker : public PathTracker {
  public:
   SimplePathTracker() = default;
@@ -17,7 +21,7 @@ class SimplePathTracker : public PathTracker {
 
   void importCurrentPath(const Path& path) override;
   void stopTracking() override;
-  void setWaitingTimeBetweenDirectionSwitches(double time);
+  void setParameters(const SimplePathTrackerParameters& parameters);
 
  private:
   enum class States : int { NoOperation, Waiting, Driving };
@@ -27,7 +31,7 @@ class SimplePathTracker : public PathTracker {
   States currentFSMState_ = States::NoOperation;
   bool isPathReceived_ = false;
   Stopwatch stopwatch_;
-  double waitingTime_ = 2.5;
+  SimplePathTrackerParameters parameters_;
 };
 
 } /* namespace pure_pursuit */

@@ -15,8 +15,8 @@
 
 namespace pure_pursuit {
 
-void SimplePathTracker::setWaitingTimeBetweenDirectionSwitches(double time) {
-  waitingTime_ = time;
+void SimplePathTracker::setParameters(const SimplePathTrackerParameters& parameters) {
+  parameters_ = parameters;
 }
 
 void SimplePathTracker::importCurrentPath(const Path& path) {
@@ -49,7 +49,7 @@ void SimplePathTracker::advanceStateMachine() {
   }
 
   if (currentFSMState_ == States::Waiting) {
-    const bool isWaitedLongEnough = stopwatch_.getElapsedTimeSinceStartSeconds() > waitingTime_;
+    const bool isWaitedLongEnough = stopwatch_.getElapsedTimeSinceStartSeconds() > parameters_.waitingTimeBetweenDirectionSwitches_;
     if (isWaitedLongEnough) {
       currentFSMState_ = States::Driving;
     }

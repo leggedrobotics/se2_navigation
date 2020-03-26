@@ -38,13 +38,13 @@ std::unique_ptr<ProgressValidator> createProgressValidator(double goalDistanceTo
   return std::move(validator);
 }
 
-std::unique_ptr<PathTracker> createSimplePathTracker(double waitingTimeBetweenTurns,
+std::unique_ptr<PathTracker> createSimplePathTracker(const SimplePathTrackerParameters& parameters,
                                                      std::shared_ptr<LongitudinalVelocityController> velocityController,
                                                      std::shared_ptr<HeadingController> headingController,
                                                      std::shared_ptr<ProgressValidator> validator,
                                                      std::shared_ptr<PathPreprocessor> pathPreprocessor) {
   std::unique_ptr<SimplePathTracker> tracker = std::make_unique<SimplePathTracker>();
-  tracker->setWaitingTimeBetweenDirectionSwitches(waitingTimeBetweenTurns);
+  tracker->setParameters(parameters);
   tracker->setHeadingController(headingController);
   tracker->setVelocityController(velocityController);
   tracker->setProgressValidator(validator);
