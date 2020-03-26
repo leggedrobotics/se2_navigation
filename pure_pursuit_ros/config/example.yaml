@@ -5,6 +5,7 @@ velocity_control:
     desired_velocity: 1.0
     max_rate_of_change: 0.3
  
+#todo add the angle measures in degrees 
 heading_control:
   lookahead_fwd: 4.0
   lookahead_bck: 4.0
