@@ -11,12 +11,12 @@ namespace pure_pursuit {
 bool ConstantVelocityController::computeVelocity() {
   switch (drivingDirection_) {
     case DrivingDirection::FWD: {
-      desiredLongitudinalVelocity_ = parameters_.constantDesiredVelocity_;
+      desiredLongitudinalVelocity_ = rateLimiter_.limitRateOfChange(parameters_.constantDesiredVelocity_);
       break;
     }
 
     case DrivingDirection::BCK: {
-      desiredLongitudinalVelocity_ = -parameters_.constantDesiredVelocity_;
+      desiredLongitudinalVelocity_ = rateLimiter_.limitRateOfChange(-parameters_.constantDesiredVelocity_);
       break;
     }
   }
