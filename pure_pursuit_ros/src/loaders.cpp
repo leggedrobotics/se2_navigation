@@ -48,6 +48,7 @@ ConstantVelocityControllerParameters loadConstantVelocityControllerParameters(co
   auto node = basenode["constant_velocity_control"];
   ConstantVelocityControllerParameters parameters;
   parameters.constantDesiredVelocity_ = node["desired_velocity"].as<double>();
+  parameters.maxVelocityRateOfChange_ = node["max_rate_of_change"].as<double>();
 
   return parameters;
 }

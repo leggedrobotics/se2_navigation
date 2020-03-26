@@ -97,7 +97,6 @@ void AckermannSteeringController::setParameters(const AckermannSteeringCtrlParam
 
   if (parameters_.deadZoneWidth_ < 0){
     throw std::runtime_error("deadZoneWidth_ is less than 0.");
-
   }
 
   parameters_ = parameters;

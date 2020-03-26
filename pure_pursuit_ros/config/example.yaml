@@ -3,6 +3,7 @@
 velocity_control:
   constant_velocity_control: 
     desired_velocity: 1.0
+    max_rate_of_change: 0.3
  
 heading_control:
   lookahead_fwd: 4.0
