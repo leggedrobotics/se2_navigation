@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include "pure_pursuit_core/velocity_control/LongitudinalVelocityController.hpp"
 #include "pure_pursuit_core/math.hpp"
+#include "pure_pursuit_core/velocity_control/LongitudinalVelocityController.hpp"
 
 namespace pure_pursuit {
 

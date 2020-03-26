@@ -29,7 +29,7 @@ AckermannSteeringCtrlParameters loadAckermannSteeringControllerParameters(const 
   parameters.deadZoneWidth_ = node["dead_zone_width"].as<double>();
   parameters.avgFilgerCurrentSampleWeight_ = node["avg_filter_current_sample_weight"].as<double>();
 
-  //ackermann specific
+  // ackermann specific
   auto ackermannNode = node["heading_control_ackermann"];
   parameters.wheelBase_ = ackermannNode["wheel_base"].as<double>();
   parameters.maxSteeringAngleMagnitude_ = ackermannNode["max_steering_angle_magnitude"].as<double>();

@@ -39,6 +39,7 @@ class PathTracker {
   virtual void stopTracking() = 0;
   virtual void updateRobotState(const RobotState& robotState);
   virtual bool initialize();
+  //todo add the reset method here
 
  private:
   virtual void advanceStateMachine() = 0;

@@ -95,7 +95,7 @@ void AckermannSteeringController::setParameters(const AckermannSteeringCtrlParam
     throw std::runtime_error("maxSteeringRateOfChange_ is less than 0.");
   }
 
-  if (parameters_.deadZoneWidth_ < 0){
+  if (parameters_.deadZoneWidth_ < 0) {
     throw std::runtime_error("deadZoneWidth_ is less than 0.");
   }
 

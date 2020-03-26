@@ -55,8 +55,8 @@ bool PathTracker::initialize() {
 }
 bool PathTracker::advance() {
   advanceStateMachine();
-  advanceControllers();
-  return true;
+  bool result = advanceControllers();
+  return result;
 }
 
 void PathTracker::updateRobotState(const RobotState& robotState) {
