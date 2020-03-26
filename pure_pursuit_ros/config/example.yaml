@@ -1,18 +1,18 @@
 #example config file for all sensor that we have
 
-model:
- wheelBase: 4.5 # was 3.0
- 
 velocity_control: 
- maxVelocity: 1.0
+  desired_velocity: 1.0
 
+
+ 
 heading_control:
- lookaheadFWD: 4.0
- lookaheadRV: 4.0
- anchorDistFWD: 0.1
- anchorDistRV: 0.1
- maxSteeringRate: 0.2
- deadZoneSteeringWidth: 0.1
+  lookahead_fwd: 4.0
+  lookahead_bck: 4.0
+  anchor_dist_fwd: 0.1
+  anchor_dist_bck: 0.1
+  
+  heading_control_ackermann:
+    wheel_base: 4.5 # was 3.0
  
 path_tracking:
   waiting_time_between_direction_changes: 2.5

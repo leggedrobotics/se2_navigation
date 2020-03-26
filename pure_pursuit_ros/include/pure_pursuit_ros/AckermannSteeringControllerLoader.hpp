@@ -7,6 +7,7 @@
 
 #pragma once
 #include <string>
+#include "pure_pursuit_core/heading_control/AckermannSteeringController.hpp"
 
 namespace ros {
 class NodeHandle;
@@ -17,10 +18,10 @@ namespace pure_pursuit {
 class AckermannSteeringControllerLoader {
  public:
   AckermannSteeringControllerLoader() = default;
-  ~AckermannSteeringControllerLoader() = default;
+  virtual ~AckermannSteeringControllerLoader() = default;
 
-  void loadParameters(const std::string& filename) const;
-  void loadParameters(const ros::NodeHandle& nh) const;
+  virtual AckermannSteeringCtrlParameters loadParameters(const std::string& filename) const;
+  virtual AckermannSteeringCtrlParameters loadParameters(const ros::NodeHandle& nh) const;
 };
 
 } /* namespace pure_pursuit */

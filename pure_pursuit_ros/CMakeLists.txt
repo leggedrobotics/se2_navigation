@@ -24,10 +24,13 @@ if(NOT EIGEN3_FOUND)
   set(EIGEN3_INCLUDE_DIR ${EIGEN3_INCLUDE_DIRS})
 endif()
 
+find_package(yaml-cpp QUIET)
+
 catkin_package(
   INCLUDE_DIRS
     include
     ${EIGEN3_INCLUDE_DIR}
+    ${YAML_CPP_INCLUDE_DIR}
   LIBRARIES
     ${PROJECT_NAME}
   CATKIN_DEPENDS
@@ -38,7 +41,8 @@ catkin_package(
 
 include_directories(
   include
-  ${EIGEN3_INCLUDE_DIR}
+    ${EIGEN3_INCLUDE_DIR}
+    ${YAML_CPP_INCLUDE_DIR}
   SYSTEM
     ${catkin_INCLUDE_DIRS}
 )
@@ -53,6 +57,7 @@ add_dependencies(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
+  ${YAML_CPP_LIBRARIES}
 )
 
 #############
