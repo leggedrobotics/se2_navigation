@@ -8,7 +8,9 @@
 
 	<buildtool_depend>catkin</buildtool_depend>
 	
+	<depend>roscpp</depend>
 	<depend>eigen</depend>
 	<depend>pure_pursuit_core</depend>
+	<depend>yaml-cpp</depend>
 	
 </package>

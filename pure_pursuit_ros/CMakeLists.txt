@@ -10,7 +10,9 @@ set(SRC_FILES
 )
 
 set(CATKIN_PACKAGE_DEPENDENCIES
-  pure_pursuit_core)
+  roscpp
+  pure_pursuit_core
+)
 
 find_package(catkin REQUIRED
   COMPONENTS
@@ -30,13 +32,13 @@ catkin_package(
   INCLUDE_DIRS
     include
     ${EIGEN3_INCLUDE_DIR}
-    ${YAML_CPP_INCLUDE_DIR}
   LIBRARIES
     ${PROJECT_NAME}
   CATKIN_DEPENDS
    ${CATKIN_PACKAGE_DEPENDENCIES}
   DEPENDS
     Eigen3
+    yaml-cpp
 )
 
 include_directories(
