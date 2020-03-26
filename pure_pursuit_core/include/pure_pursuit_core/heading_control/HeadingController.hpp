@@ -17,6 +17,8 @@ struct HeadingControllerParameters {
   double lookaheadDistanceBck_ = 4.0;
   double anchorDistanceFwd_ = 0.2;
   double anchorDistanceBck_ = 0.2;
+  double deadZoneWidth_ = 0.0;  // rad
+  double avgFilgerCurrentSampleWeight_ = 1.0;
 };
 
 class HeadingController {

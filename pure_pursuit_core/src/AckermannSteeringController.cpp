@@ -37,7 +37,11 @@ bool AckermannSteeringController::advanceImpl() {
     return false;
   }
 
-  steeringAngle_ = steeringAngle;
+  const double filtered = avgFilter_.filterInputValue(steeringAngle);
+  const double deadZoned = deadZone(filtered, parameters_.deadZoneWidth_);
+  const double rateLimited = rateLimiter_.limitRateOfChange(deadZoned);
+  const double boundToRange = bindToRange(rateLimited, -parameters_.maxSteeringAngleMagnitude_, parameters_.maxSteeringAngleMagnitude_);
+  steeringAngle_ = boundToRange;
 
   lastClosestPointId_ = closestPointOnPathId;
   return true;
@@ -63,8 +67,6 @@ bool AckermannSteeringController::computeTurningRadius() {
 }
 
 void AckermannSteeringController::setParameters(const AckermannSteeringCtrlParameters& parameters) {
-  parameters_ = parameters;
-
   if (parameters_.anchorDistanceBck_ < 0) {
     throw std::runtime_error("anchorDistanceBck_ is less than 0.");
   }
@@ -84,6 +86,21 @@ void AckermannSteeringController::setParameters(const AckermannSteeringCtrlParam
   if (parameters_.wheelBase_ < 0) {
     throw std::runtime_error("wheelBase_ is less than 0.");
   }
+
+  if (parameters_.maxSteeringAngleMagnitude_ < 0) {
+    throw std::runtime_error("maxSteeringAngleMagnitude_ is less than 0.");
+  }
+
+  if (parameters_.maxRateOfChange_ < 0) {
+    throw std::runtime_error("maxRateOfChange_ is less than 0.");
+  }
+
+  parameters_ = parameters;
+  rateLimiter_.setTimestep(parameters.dt_);
+  rateLimiter_.setFallingRate(-parameters.maxRateOfChange_);
+  rateLimiter_.setRisingRate(parameters.maxRateOfChange_);
+
+  avgFilter_.setWeightForMostRecentMeasurement(parameters.avgFilgerCurrentSampleWeight_);
 }
 
 AckermannSteeringCtrlParameters AckermannSteeringController::getParameters() const {
