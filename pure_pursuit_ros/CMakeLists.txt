@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1.3)
+cmake_minimum_required(VERSION 3.5.1)
 project(pure_pursuit_ros)
 
 set(CMAKE_CXX_STANDARD 14)
@@ -26,7 +26,6 @@ if(NOT EIGEN3_FOUND)
   set(EIGEN3_INCLUDE_DIR ${EIGEN3_INCLUDE_DIRS})
 endif()
 
-find_package(yaml-cpp QUIET)
 
 catkin_package(
   INCLUDE_DIRS
@@ -34,11 +33,11 @@ catkin_package(
     ${EIGEN3_INCLUDE_DIR}
   LIBRARIES
     ${PROJECT_NAME}
+    yaml-cpp
   CATKIN_DEPENDS
    ${CATKIN_PACKAGE_DEPENDENCIES}
   DEPENDS
     Eigen3
-    yaml-cpp
 )
 
 include_directories(
@@ -59,7 +58,7 @@ add_dependencies(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
-  ${YAML_CPP_LIBRARIES}
+  yaml-cpp
 )
 
 #############
