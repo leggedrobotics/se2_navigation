@@ -9,5 +9,6 @@
 	<buildtool_depend>catkin</buildtool_depend>
 	
 	<depend>eigen</depend>
+	<depend>pure_pursuit_core</depend>
 	
 </package>
