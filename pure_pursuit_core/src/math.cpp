@@ -19,6 +19,63 @@ Line::Line(double x1, double y1, double x2, double y2) : p1_(x1, y1), p2_(x2, y2
 Circle::Circle(const Point& c, double r) : center_(c), r_(r) {}
 Circle::Circle(double x, double y, double r) : center_(x, y), r_(r) {}
 
+double RateLimiter::limitRateOfChange(double value) {
+  if (firstTime_) {
+    valuePrev_ = value;
+    return value;
+  }
+  double retValue = value;
+  if (value > valuePrev_ + dt_ * maxRisingRate_) {
+    retValue = valuePrev_ + dt_ * maxRisingRate_;
+  }
+
+  if (value < valuePrev_ + dt_ * minFallingRate_) {
+    retValue = valuePrev_ + dt_ * minFallingRate_;
+  }
+
+  return retValue;
+}
+void RateLimiter::setRisingRate(double maxRisingRate) {
+  if (maxRisingRate < 0) {
+    throw std::runtime_error("Rising rate cannot be negative.");
+  }
+  maxRisingRate_ = maxRisingRate;
+}
+void RateLimiter::setFallingRate(double minFallingRate) {
+  if (minFallingRate > 0) {
+    throw std::runtime_error("Falling rate cannot be positive");
+  }
+  minFallingRate_ = minFallingRate;
+}
+void RateLimiter::setTimestep(double dt) {
+  if (dt < 0) {
+    throw std::runtime_error("Time step cannot be negative");
+  }
+  dt_ = dt;
+}
+
+double bindToRange(double value, double lo, double hi) {
+  if (value < lo) {
+    return lo;
+  }
+
+  if (value > hi) {
+    return hi;
+  }
+
+  return value;
+}
+
+double deadZone(double x, double deadzoneWidth) {
+  const double halfWidth = deadzoneWidth / 2.0;
+  if (x > halfWidth)
+    return x - halfWidth;
+  else if (x < halfWidth)
+    return x + halfWidth;
+  else
+    return 0.0;
+}
+
 void computeIntersection(const Line& line, const Circle& circle, Intersection* intersection) {
   /*need to shift everything to the origin so that the formulas for the intersection are valid
    * those are taken from: http://mathworld.wolfram.com/Circle-LineIntersection.html

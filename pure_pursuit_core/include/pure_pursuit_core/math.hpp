@@ -37,11 +37,31 @@ struct Intersection {
   SolutionCase solutionCase_;
 };
 
+class RateLimiter {
+ public:
+  RateLimiter() = default;
+  ~RateLimiter() = default;
+
+  double limitRateOfChange(double value);
+  void setRisingRate(double maxRisingRate);
+  void setFallingRate(double minFallingRate);
+  void setTimestep(double dt);
+
+ private:
+  double dt_ = 0.01;
+  double maxRisingRate_ = 1.0;
+  double minFallingRate_ = -1.0;
+  double valuePrev_ = 0.0;
+  bool firstTime_ = true;
+};
+
 template <typename T>
 int sgn(T val) {
   return (T(0) < val) - (val < T(0));
 }
 
+double deadZone(double x, double deadzoneWidth);
+double bindToRange(double value, double lo, double hi);
 unsigned int bindIndexToRange(int idReq, int lo, int hi);
 bool isAlmostZero(double val);
 bool isClose(double val1, double val2);
