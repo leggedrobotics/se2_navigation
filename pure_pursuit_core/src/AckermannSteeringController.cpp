@@ -67,35 +67,35 @@ bool AckermannSteeringController::computeTurningRadius() {
 }
 
 void AckermannSteeringController::setParameters(const AckermannSteeringCtrlParameters& parameters) {
-  if (parameters_.anchorDistanceBck_ < 0) {
+  if (parameters.anchorDistanceBck_ < 0) {
     throw std::runtime_error("anchorDistanceBck_ is less than 0.");
   }
 
-  if (parameters_.anchorDistanceFwd_ < 0) {
+  if (parameters.anchorDistanceFwd_ < 0) {
     throw std::runtime_error("anchorDistanceFwd_ is less than 0.");
   }
 
-  if (parameters_.lookaheadDistanceBck_ < 0) {
+  if (parameters.lookaheadDistanceBck_ < 0) {
     throw std::runtime_error("lookaheadDistanceBck_ is less than 0.");
   }
 
-  if (parameters_.lookaheadDistanceFwd_ < 0) {
+  if (parameters.lookaheadDistanceFwd_ < 0) {
     throw std::runtime_error("lookaheadDistanceFwd_ is less than 0.");
   }
 
-  if (parameters_.wheelBase_ < 0) {
+  if (parameters.wheelBase_ < 0) {
     throw std::runtime_error("wheelBase_ is less than 0.");
   }
 
-  if (parameters_.maxSteeringAngleMagnitude_ < 0) {
+  if (parameters.maxSteeringAngleMagnitude_ < 0) {
     throw std::runtime_error("maxSteeringAngleMagnitude_ is less than 0.");
   }
 
-  if (parameters_.maxSteeringRateOfChange_ < 0) {
+  if (parameters.maxSteeringRateOfChange_ < 0) {
     throw std::runtime_error("maxSteeringRateOfChange_ is less than 0.");
   }
 
-  if (parameters_.deadZoneWidth_ < 0) {
+  if (parameters.deadZoneWidth_ < 0) {
     throw std::runtime_error("deadZoneWidth_ is less than 0.");
   }
 

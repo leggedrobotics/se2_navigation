@@ -24,11 +24,11 @@ bool ConstantVelocityController::computeVelocity() {
 }
 
 void ConstantVelocityController::setParameters(const ConstantVelocityControllerParameters& parameters) {
-  if (parameters_.maxVelocityRateOfChange_ < 0) {
+  if (parameters.maxVelocityRateOfChange_ < 0) {
     throw std::runtime_error("maxVelocityRateOfChange_ is less than 0.");
   }
 
-  if (parameters_.timestep_ < 0) {
+  if (parameters.timestep_ < 0) {
     throw std::runtime_error("timestep_ is less than 0.");
   }
 
