@@ -1,24 +1,21 @@
-#example config file for all sensor that we have
-
 velocity_control:
   constant_velocity_control: 
     desired_velocity: 1.0
     max_rate_of_change: 0.3
  
-#todo add the angle measures in degrees 
 heading_control:
-  lookahead_fwd: 4.0
+  lookahead_fwd: 4.5
   lookahead_bck: 4.0
-  anchor_dist_fwd: 0.1
-  anchor_dist_bck: 0.1
+  anchor_dist_fwd: 1.0
+  anchor_dist_bck: 0.5
   dead_zone_width: 0.0
-  avg_filter_current_sample_weight: 1.0
+  avg_filter_current_sample_weight: 0.1
   
   
   heading_control_ackermann:
-    wheel_base: 4.5 # was 3.0
-    max_steering_rate_of_change: 0.15
-    max_steering_angle_magnitude: 0.5
+    wheel_base: 5.0 # was 3.0
+    max_steering_rate_of_change_in_deg_per_sec: 10
+    max_steering_angle_magnitude_in_deg: 5 
  
 path_tracking:
   simple_path_tracker:
@@ -29,3 +26,4 @@ progress_validation:
 
 path_preprocessing:
   minimal_segment_length: 1.0
+

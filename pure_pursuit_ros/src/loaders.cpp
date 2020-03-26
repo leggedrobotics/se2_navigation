@@ -12,6 +12,8 @@
 
 namespace pure_pursuit {
 
+constexpr double degToRad = 180.0 / M_PI;
+
 AckermannSteeringCtrlParameters loadAckermannSteeringControllerParameters(const std::string& filename) {
   YAML::Node basenode = YAML::LoadFile(filename);
 
@@ -32,8 +34,8 @@ AckermannSteeringCtrlParameters loadAckermannSteeringControllerParameters(const 
   // ackermann specific
   auto ackermannNode = node["heading_control_ackermann"];
   parameters.wheelBase_ = ackermannNode["wheel_base"].as<double>();
-  parameters.maxSteeringAngleMagnitude_ = ackermannNode["max_steering_angle_magnitude"].as<double>();
-  parameters.maxSteeringRateOfChange_ = ackermannNode["max_steering_rate_of_change"].as<double>();
+  parameters.maxSteeringAngleMagnitude_ = degToRad * ackermannNode["max_steering_angle_magnitude_in_deg"].as<double>();
+  parameters.maxSteeringRateOfChange_ = degToRad * ackermannNode["max_steering_rate_of_change_in_deg_per_sec"].as<double>();
 
   return parameters;
 }
