@@ -17,11 +17,16 @@ class AckermannSteeringCtrlParameters;
 class PathPreprocessor;
 class ProgressValidator;
 class PathTracker;
+class ConstantVelocityControllerParameters;
 
-std::unique_ptr<LongitudinalVelocityController> createConstantVelocityController(double desiredConstantVelocity);
+std::unique_ptr<LongitudinalVelocityController> createConstantVelocityController(const ConstantVelocityControllerParameters& parameters);
+
 std::unique_ptr<HeadingController> createAckermannSteeringController(const AckermannSteeringCtrlParameters& parameters);
+
 std::unique_ptr<PathPreprocessor> createPathPreprocessor(double minimumSegmentLength);
+
 std::unique_ptr<ProgressValidator> createProgressValidator(double goalDistanceTolerance);
+
 std::unique_ptr<PathTracker> createSimplePathTracker(double waitingTimeBetweenTurns,
                                                      std::shared_ptr<LongitudinalVelocityController> velocityController,
                                                      std::shared_ptr<HeadingController> headingController,

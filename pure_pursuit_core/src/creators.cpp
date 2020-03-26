@@ -14,9 +14,9 @@
 
 namespace pure_pursuit {
 
-std::unique_ptr<LongitudinalVelocityController> createConstantVelocityController(double desiredConstantVelocity) {
+std::unique_ptr<LongitudinalVelocityController> createConstantVelocityController(const ConstantVelocityControllerParameters& parameters) {
   std::unique_ptr<ConstantVelocityController> controller = std::make_unique<ConstantVelocityController>();
-  controller->setDesiredVelocity(desiredConstantVelocity);
+  controller->setParameters(parameters);
   return std::move(controller);
 }
 

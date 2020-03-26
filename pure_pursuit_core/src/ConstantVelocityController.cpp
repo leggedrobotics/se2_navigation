@@ -11,20 +11,20 @@ namespace pure_pursuit {
 bool ConstantVelocityController::computeVelocity() {
   switch (drivingDirection_) {
     case DrivingDirection::FWD: {
-      desiredLongitudinalVelocity_ = constantDesiredVelocity_;
+      desiredLongitudinalVelocity_ = parameters_.constantDesiredVelocity_;
       break;
     }
 
     case DrivingDirection::BCK: {
-      desiredLongitudinalVelocity_ = -constantDesiredVelocity_;
+      desiredLongitudinalVelocity_ = -parameters_.constantDesiredVelocity_;
       break;
     }
   }
   return true;
 }
 
-void ConstantVelocityController::setDesiredVelocity(double desiredVelocity) {
-  constantDesiredVelocity_ = desiredVelocity;
+void ConstantVelocityController::setParameters(const ConstantVelocityControllerParameters& parameters) {
+  parameters_ = parameters;
 }
 
 } /* namespace pure_pursuit */

@@ -11,17 +11,21 @@
 
 namespace pure_pursuit {
 
+struct ConstantVelocityControllerParameters {
+  double constantDesiredVelocity_ = 0.0;
+};
+
 class ConstantVelocityController : public LongitudinalVelocityController {
  public:
   ConstantVelocityController() = default;
   ~ConstantVelocityController() override = default;
-  void setDesiredVelocity(double desiredVelocity);
+  void setParameters(const ConstantVelocityControllerParameters& parameters);
 
  private:
   bool computeVelocity() override;
 
  protected:
-  double constantDesiredVelocity_ = 0.0;
+  ConstantVelocityControllerParameters parameters_;
 };
 
 } /* namespace pure_pursuit */

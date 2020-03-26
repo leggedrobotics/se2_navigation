@@ -6,7 +6,7 @@ add_compile_options(-Wall -Wextra -Wpedantic)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(SRC_FILES
-  src/AckermannSteeringControllerLoader.cpp
+  src/Loaders.cpp
 )
 
 set(CATKIN_PACKAGE_DEPENDENCIES

@@ -24,4 +24,19 @@ class AckermannSteeringControllerLoader {
   virtual AckermannSteeringCtrlParameters loadParameters(const ros::NodeHandle& nh) const;
 };
 
+/*
+ * ********************************************************
+ * ********************************************************
+ * ********************************************************
+ */
+
+class ConstantVelocityControllerLoader {
+ public:
+  ConstantVelocityControllerLoader() = default;
+  virtual ~ConstantVelocityControllerLoader() = default;
+
+  virtual AckermannSteeringCtrlParameters loadParameters(const std::string& filename) const;
+  virtual AckermannSteeringCtrlParameters loadParameters(const ros::NodeHandle& nh) const;
+};
+
 } /* namespace pure_pursuit */
