@@ -39,6 +39,10 @@ double HeadingController::getSteeringAngle() const {
   return steeringAngle_;
 }
 
+void HeadingController::updateCurrentVelocity(const Vector& v) {
+  currentVelocity_ = v;
+}
+
 void HeadingController::chooseActiveAnchorAndLookaheadDistance(const HeadingControllerParameters& parameters) {
   switch (currentPathSegment_.drivingDirection_) {
     case (DrivingDirection::FWD): {

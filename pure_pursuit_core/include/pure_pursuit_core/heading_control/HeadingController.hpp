@@ -30,6 +30,7 @@ class HeadingController {
   bool advance();
   virtual void updateCurrentPathSegment(const PathSegment& pathSegment);
   virtual void updateCurrentState(const RobotState& robState);
+  void updateCurrentVelocity(const Vector& v);
   double getTurningRadius() const;
   double getYawRate() const;
   double getSteeringAngle() const;
@@ -51,6 +52,7 @@ class HeadingController {
   double activeLookaheadDistance_ = 0.2;
   PathSegment currentPathSegment_;
   unsigned int lastClosestPointId_ = 0;
+  Vector currentVelocity_;
 };
 
 }  // namespace pure_pursuit

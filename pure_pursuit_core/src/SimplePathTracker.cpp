@@ -79,7 +79,8 @@ bool SimplePathTracker::advanceControllers() {
   velocityController_->updateCurrentState(currentRobotState_);
   velocityController_->updateDrivingDirection(currentDrivingDirection_);
   headingController_->updateCurrentState(currentRobotState_);
-  std::cout << "Current state: " << static_cast<int>(currentFSMState_) << std::endl;
+  headingController_->updateCurrentVelocity(Vector(longitudinalVelocity_, 0.0));
+//  std::cout << "Current state: " << static_cast<int>(currentFSMState_) << std::endl;
   switch (currentFSMState_) {
     case States::Driving: {
       const bool velControllerStatus = velocityController_->advance();
@@ -87,8 +88,8 @@ bool SimplePathTracker::advanceControllers() {
       const bool headingControllerStatus = headingController_->advance();
       result = result && headingControllerStatus;
       longitudinalVelocity_ = velocityController_->getVelocity();
-      std::cout << "velocity controller status: " << std::boolalpha << velControllerStatus << std::endl;
-      std::cout << "heading controller status: " << std::boolalpha << headingControllerStatus << std::endl;
+//      std::cout << "velocity controller status: " << std::boolalpha << velControllerStatus << std::endl;
+//      std::cout << "heading controller status: " << std::boolalpha << headingControllerStatus << std::endl;
       break;
     }
     case States::NoOperation: {
@@ -106,17 +107,18 @@ bool SimplePathTracker::advanceControllers() {
   turningRadius_ = headingController_->getTurningRadius();
   yawRate_ = headingController_->getYawRate();
   steeringAngle_ = headingController_->getSteeringAngle();
-
-  std::cout << "turning radius: " << turningRadius_ << std::endl;
-  std::cout << "result: " << std::boolalpha << result << std::endl;
+//
+//  std::cout << "turning radius: " << turningRadius_ << std::endl;
+//  std::cout << "result: " << std::boolalpha << result << std::endl;
   result = result && std::isfinite(turningRadius_);
-  std::cout << "steering angle: " << steeringAngle_ << std::endl;
-  std::cout << "result: " << std::boolalpha << result << std::endl;
+//  std::cout << "steering angle: " << steeringAngle_ << std::endl;
+//  std::cout << "result: " << std::boolalpha << result << std::endl;
   result = result && std::isfinite(yawRate_);
-  std::cout << "yaw rate: " << yawRate_ << std::endl;
-  std::cout << "result: " << std::boolalpha << result << std::endl;
+//  std::cout << "yaw rate: " << yawRate_ << std::endl;
+//  std::cout << "result: " << std::boolalpha << result << std::endl;
   result = result && std::isfinite(steeringAngle_);
-  std::cout << "result: " << std::boolalpha << result << std::endl;
+//  std::cout << "result: " << std::boolalpha << result << std::endl;
+
   return result;
 }
 
