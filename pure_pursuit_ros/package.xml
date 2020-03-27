@@ -13,5 +13,6 @@
 	<depend>pure_pursuit_core</depend>
 	<depend>yaml-cpp</depend>
 	<depend>visualization_msgs</depend>
+	<depend>nav_msgs</depend>
 	
 </package>

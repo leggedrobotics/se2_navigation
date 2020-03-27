@@ -8,12 +8,14 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(SRC_FILES
   src/loaders.cpp
   src/SimplePathTrackerRos.cpp
+  src/AckermannSteeringControllerRos.cpp
 )
 
 set(CATKIN_PACKAGE_DEPENDENCIES
   roscpp
   pure_pursuit_core
   visualization_msgs
+  nav_msgs
 )
 
 find_package(catkin REQUIRED
