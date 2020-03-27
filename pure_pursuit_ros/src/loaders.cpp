@@ -12,7 +12,7 @@
 
 namespace pure_pursuit {
 
-constexpr double degToRad = 180.0 / M_PI;
+constexpr double degToRad = M_PI / 180.0;
 
 AckermannSteeringCtrlParameters loadAckermannSteeringControllerParameters(const std::string& filename) {
   YAML::Node basenode = YAML::LoadFile(filename);
