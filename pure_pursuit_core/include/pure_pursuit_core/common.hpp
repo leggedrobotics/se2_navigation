@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <ostream>
 #include "pure_pursuit_core/typedefs.hpp"
 
 namespace pure_pursuit {
@@ -20,6 +21,7 @@ struct RobotPose {
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
   Point position_{0.0, 0.0};
   double yaw_ = 0.0;
+  friend std::ostream& operator<<(std::ostream& out, const RobotPose& robotPose);
 };
 
 struct RobotTwist {
@@ -33,6 +35,10 @@ struct RobotState {
   RobotTwist twist_;
   DrivingDirection desiredDirection_;
   double desiredLongitudinalVelocity_;
+
+  friend std::ostream& operator<<(std::ostream& out, const RobotState& robotState);
 };
+
+std::string toString(DrivingDirection direction);
 
 } /* namespace pure_pursuit */

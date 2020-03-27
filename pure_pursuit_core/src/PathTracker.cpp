@@ -7,6 +7,8 @@
 
 #include "pure_pursuit_core/path_tracking/PathTracker.hpp"
 
+#include <iostream>
+
 #include "pure_pursuit_core/heading_control/HeadingController.hpp"
 #include "pure_pursuit_core/math.hpp"
 #include "pure_pursuit_core/path_tracking/PathPreprocessor.hpp"
@@ -55,6 +57,7 @@ bool PathTracker::initialize() {
 }
 bool PathTracker::advance() {
   advanceStateMachine();
+  std::cout << "Advanced state machine" << std::endl;
   bool result = advanceControllers();
   return result;
 }

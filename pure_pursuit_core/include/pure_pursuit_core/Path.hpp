@@ -19,15 +19,18 @@ struct PathPoint {
   explicit PathPoint(const Point& p) : position_(p) {}
   PathPoint(double x, double y) : position_(x, y) {}
   Point position_{0.0, 0.0};
+  friend std::ostream& operator<<(std::ostream& out, const PathPoint& pathPoint);
 };
 
 struct PathSegment {
   DrivingDirection drivingDirection_;
   std::vector<PathPoint> point_;
+  friend std::ostream& operator<<(std::ostream& out, const PathSegment& pathSegment);
 };
 
 struct Path {
   std::vector<PathSegment> segment_;
+  friend std::ostream& operator<<(std::ostream& out, const Path& path);
 };
 
 }  // namespace pure_pursuit

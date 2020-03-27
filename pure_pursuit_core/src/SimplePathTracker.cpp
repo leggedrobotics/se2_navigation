@@ -7,6 +7,8 @@
 
 #include "pure_pursuit_core/path_tracking/SimplePathTracker.hpp"
 
+#include <iostream>
+
 #include "pure_pursuit_core/heading_control/HeadingController.hpp"
 #include "pure_pursuit_core/math.hpp"
 #include "pure_pursuit_core/path_tracking/PathPreprocessor.hpp"
@@ -69,9 +71,13 @@ bool SimplePathTracker::advanceControllers() {
 
   switch (currentFSMState_) {
     case States::Driving: {
-      result = result && velocityController_->advance();
-      result = result && headingController_->advance();
+      const bool velControllerStatus = velocityController_->advance();
+      result = result && velControllerStatus;
+      const bool headingControllerStatus = headingController_->advance();
+      result = result && headingControllerStatus;
       longitudinalVelocity_ = velocityController_->getVelocity();
+      std::cout << "velocity controller status: " << std::boolalpha << velControllerStatus << std::endl;
+      std::cout << "heading controller status: " << std::boolalpha << headingControllerStatus << std::endl;
       break;
     }
     case States::NoOperation: {

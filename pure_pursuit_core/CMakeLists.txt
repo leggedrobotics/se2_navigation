@@ -7,6 +7,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(SRC_FILES
   src/creators.cpp
+  src/common.cpp
   src/math.cpp 
   src/AckermannSteeringController.cpp
   src/ConstantVelocityController.cpp
