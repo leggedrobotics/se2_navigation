@@ -63,7 +63,8 @@ bool AckermannSteeringController::advanceImpl() {
 
 bool AckermannSteeringController::initializeImpl() {
   lastClosestPointId_ = 0.0;
-  appendPointAlongFinalApproachDirection(activeLookaheadDistance_ * 5.0, &currentPathSegment_);
+  const double extendingLength = std::max(parameters_.lookaheadDistanceFwd_, parameters_.anchorDistanceBck_);
+  appendPointAlongFinalApproachDirection(10.0 * extendingLength, &currentPathSegment_);
   return true;
 }
 
