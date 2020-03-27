@@ -280,6 +280,7 @@ bool computeLookaheadAngle(const Point& lookaheadPoint, const Point& anchorPoint
 
   /* if the point is indeed in front of the robot, the cosine should be positive*/
   if (cosAngle < 0) {
+    std::cerr << "Error when computing lookahead angle. cos angle is negative" << std::endl;
     return false;
   }
 
@@ -305,6 +306,7 @@ bool computeLookaheadAngle(const Point& lookaheadPoint, const Point& anchorPoint
   }
 
   if (std::isnan(angle) || std::isinf(angle)) {
+    std::cerr << "Error when computing lookahead angle. angle not finite" << std::endl;
     return false;
   }
 
@@ -328,7 +330,7 @@ Point computeAnchorPoint(const RobotState& robotState, double anchorDistance, Dr
 
 bool computeLookaheadPoint(unsigned int closestPointOnPathSegmentId, double lookaheadDistance, const RobotState& robotState,
                            DrivingDirection drivingDirection, const PathSegment& pathSegment, Point* lookaheadPoint) {
-  const Point anchorPoint = computeAnchorPoint(robotState, lookaheadDistance, robotState.desiredDirection_);
+  const Point anchorPoint = computeAnchorPoint(robotState, lookaheadDistance, drivingDirection);
   unsigned int fartherPointId, closerPointId;
   findIdOfFirstPointsCloserThanLookaheadAndFirstPointsFartherThanLookahead(pathSegment, anchorPoint, closestPointOnPathSegmentId,
                                                                            lookaheadDistance, &closerPointId, &fartherPointId);
@@ -347,7 +349,7 @@ bool computeLookaheadPoint(unsigned int closestPointOnPathSegmentId, double look
       return true;
     }
     case Intersection::SolutionCase::TWO_SOLUTIONS: {
-      const Vector heading = computeDesiredHeadingVector(robotState.pose_.yaw_, robotState.desiredDirection_);
+      const Vector heading = computeDesiredHeadingVector(robotState.pose_.yaw_, drivingDirection);
       const Point origin = robotState.pose_.position_;
       *lookaheadPoint = chooseCorrectLookaheadPoint(intersection, heading, origin);
       return true;

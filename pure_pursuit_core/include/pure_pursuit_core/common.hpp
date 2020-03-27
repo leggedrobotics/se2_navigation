@@ -33,7 +33,6 @@ struct RobotTwist {
 struct RobotState {
   RobotPose pose_;
   RobotTwist twist_;
-  DrivingDirection desiredDirection_;
   double desiredLongitudinalVelocity_;
 
   friend std::ostream& operator<<(std::ostream& out, const RobotState& robotState);

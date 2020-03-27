@@ -68,7 +68,7 @@ void PathTracker::updateRobotState(const RobotState& robotState) {
 }
 
 bool PathTracker::isTrackingFinished() const {
-  return progressValidator_->isPathTrackingFinished(currentPath_, currentRobotState_, currentPathSegment_);
+  return progressValidator_->isPathTrackingFinished(currentPath_, currentRobotState_, currentPathSegmentId_);
 }
 
 } /* namespace pure_pursuit */

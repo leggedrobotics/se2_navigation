@@ -13,18 +13,14 @@
 
 namespace pure_pursuit {
 
-bool AckermannSteeringController::advanceImpl()
-{
+bool AckermannSteeringController::advanceImpl() {
   std::cout << "Current Robot state: " << currentRobotState_ << std::endl;
 
   chooseActiveAnchorAndLookaheadDistance(parameters_);
   const auto drivingDirection = currentPathSegment_.drivingDirection_;
   const auto& robotPose = currentRobotState_.pose_;
-  const Point anchorPoint = computeAnchorPoint(currentRobotState_, activeAnchorDistance_,
-                                               drivingDirection);
-  const unsigned int closestPointOnPathId = getIdOfTheClosestPointOnThePath(currentPathSegment_,
-                                                                            robotPose.position_,
-                                                                            lastClosestPointId_);
+  const Point anchorPoint = computeAnchorPoint(currentRobotState_, activeAnchorDistance_, drivingDirection);
+  const unsigned int closestPointOnPathId = getIdOfTheClosestPointOnThePath(currentPathSegment_, robotPose.position_, lastClosestPointId_);
 
   std::cout << "Active lookahead: " << activeLookaheadDistance_ << std::endl;
   std::cout << "Active anchor: " << activeAnchorDistance_ << std::endl;
@@ -32,22 +28,21 @@ bool AckermannSteeringController::advanceImpl()
   std::cout << "AnchorPoint: " << anchorPoint.transpose() << std::endl;
   std::cout << "closest id: " << closestPointOnPathId << std::endl;
   Point lookaheadPoint;
-  if (!computeLookaheadPoint(closestPointOnPathId, activeLookaheadDistance_, currentRobotState_,
-                             drivingDirection, currentPathSegment_, &lookaheadPoint)) {
+  if (!computeLookaheadPoint(closestPointOnPathId, activeLookaheadDistance_, currentRobotState_, drivingDirection, currentPathSegment_,
+                             &lookaheadPoint)) {
     return false;
   }
   std::cout << "lookahead point: " << lookaheadPoint.transpose() << std::endl;
   double lookaheadAngle = 0.0;
   const auto heading = computeDesiredHeadingVector(robotPose.yaw_, drivingDirection);
-  if (!computeLookaheadAngle(lookaheadPoint, anchorPoint, heading, drivingDirection,
-                             &lookaheadAngle)) {
+  std::cout << "Heading direction: " << heading.transpose() << std::endl;
+  if (!computeLookaheadAngle(lookaheadPoint, anchorPoint, heading, drivingDirection, &lookaheadAngle)) {
     return false;
   }
   std::cout << "lookahead angle: " << lookaheadAngle << std::endl;
 
-  const double steeringAngle = computeSteeringAngleCmd(lookaheadAngle, activeLookaheadDistance_,
-                                                       activeAnchorDistance_,
-                                                       parameters_.wheelBase_);
+  const double steeringAngle =
+      computeSteeringAngleCmd(lookaheadAngle, activeLookaheadDistance_, activeAnchorDistance_, parameters_.wheelBase_);
 
   std::cout << "Steering angle: " << steeringAngle << std::endl;
   if (std::isnan(steeringAngle) || std::isinf(steeringAngle)) {
@@ -60,41 +55,35 @@ bool AckermannSteeringController::advanceImpl()
   std::cout << "dead zoned: " << deadZoned << std::endl;
   const double rateLimited = rateLimiter_.limitRateOfChange(deadZoned);
   std::cout << "rate limited: " << rateLimited << std::endl;
-  const double boundToRange = bindToRange(rateLimited, -parameters_.maxSteeringAngleMagnitude_,
-                                          parameters_.maxSteeringAngleMagnitude_);
+  const double boundToRange = bindToRange(rateLimited, -parameters_.maxSteeringAngleMagnitude_, parameters_.maxSteeringAngleMagnitude_);
   steeringAngle_ = boundToRange;
   std::cout << "bound to range: " << boundToRange << std::endl;
   lastClosestPointId_ = closestPointOnPathId;
   return true;
 }
 
-bool AckermannSteeringController::initializeImpl()
-{
+bool AckermannSteeringController::initializeImpl() {
   lastClosestPointId_ = 0.0;
   appendPointAlongFinalApproachDirection(activeLookaheadDistance_ * 5.0, &currentPathSegment_);
   return true;
 }
 
-bool AckermannSteeringController::computeSteeringAngle()
-{
+bool AckermannSteeringController::computeSteeringAngle() {
   return true;
 }
-bool AckermannSteeringController::computeYawRate()
-{
-  yawRate_ = currentRobotState_.desiredLongitudinalVelocity_ / parameters_.wheelBase_
-      * std::sin(steeringAngle_) / (std::cos(steeringAngle_) + 1e-4);
+bool AckermannSteeringController::computeYawRate() {
+  yawRate_ = std::fabs(currentRobotState_.desiredLongitudinalVelocity_) / parameters_.wheelBase_ * std::sin(steeringAngle_) /
+             (std::cos(steeringAngle_) + 1e-4);
   return true;
 }
-bool AckermannSteeringController::computeTurningRadius()
-{
-  const double yawRate = currentRobotState_.desiredLongitudinalVelocity_ / parameters_.wheelBase_
-      * std::sin(steeringAngle_) / (std::cos(steeringAngle_) + 1e-4);
+bool AckermannSteeringController::computeTurningRadius() {
+  const double yawRate = std::fabs(currentRobotState_.desiredLongitudinalVelocity_) / parameters_.wheelBase_ * std::sin(steeringAngle_) /
+                         (std::cos(steeringAngle_) + 1e-4);
   turningRadius_ = currentRobotState_.desiredLongitudinalVelocity_ / yawRate;
   return true;
 }
 
-void AckermannSteeringController::setParameters(const AckermannSteeringCtrlParameters& parameters)
-{
+void AckermannSteeringController::setParameters(const AckermannSteeringCtrlParameters& parameters) {
   if (parameters.anchorDistanceBck_ < 0) {
     throw std::runtime_error("anchorDistanceBck_ is less than 0.");
   }
@@ -135,8 +124,7 @@ void AckermannSteeringController::setParameters(const AckermannSteeringCtrlParam
   avgFilter_.setWeightForMostRecentMeasurement(parameters.avgFilgerCurrentSampleWeight_);
 }
 
-AckermannSteeringCtrlParameters AckermannSteeringController::getParameters() const
-{
+AckermannSteeringCtrlParameters AckermannSteeringController::getParameters() const {
   return parameters_;
 }
 

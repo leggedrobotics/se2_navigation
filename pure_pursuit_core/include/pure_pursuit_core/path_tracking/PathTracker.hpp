@@ -56,7 +56,8 @@ class PathTracker {
   double turningRadius_ = 0.0;
   double yawRate_ = 0.0;
   double steeringAngle_ = 0.0;
-  unsigned int currentPathSegment_ = 0;
+  unsigned int currentPathSegmentId_ = 0;
+  DrivingDirection currentDrivingDirection_;
 };
 
 } /* namespace pure_pursuit */
