@@ -62,7 +62,7 @@ SimplePathTrackerParameters loadSimplePathTrackerParameters(const std::string& f
     throw std::runtime_error("SimplePathTrackerLoader::loadParameters loading failed");
   }
 
-  auto node = basenode["path_tracking"];
+  auto node = basenode["path_tracking"]["simple_path_tracker"];
   SimplePathTrackerParameters parameters;
   parameters.waitingTimeBetweenDirectionSwitches_ = node["waiting_time_between_direction_changes"].as<double>();
 
