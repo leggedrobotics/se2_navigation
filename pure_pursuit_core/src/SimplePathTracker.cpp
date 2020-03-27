@@ -96,6 +96,10 @@ bool SimplePathTracker::advanceControllers() {
   yawRate_ = headingController_->getYawRate();
   steeringAngle_ = headingController_->getSteeringAngle();
 
+  std::cout << "steering angle: " << steeringAngle_ << std::endl;
+  std::cout << "turning radius: " << turningRadius_ << std::endl;
+  std::cout << "yaw rate: " << yawRate_ << std::endl;
+
   result = result && std::isfinite(turningRadius_);
   result = result && std::isfinite(yawRate_);
   result = result && std::isfinite(steeringAngle_);

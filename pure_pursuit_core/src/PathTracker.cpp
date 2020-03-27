@@ -59,6 +59,7 @@ bool PathTracker::advance() {
   advanceStateMachine();
   std::cout << "Advanced state machine" << std::endl;
   bool result = advanceControllers();
+  std::cout << "Advanced controllers, status: " << std::boolalpha << result << std::endl;
   return result;
 }
 
