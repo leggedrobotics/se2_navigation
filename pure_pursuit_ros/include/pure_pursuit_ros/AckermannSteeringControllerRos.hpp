@@ -24,11 +24,17 @@ class AckermannSteeringControllerRos : public AckermannSteeringController {
   void publishAnchorPoint() const;
   void publishPathSegment() const;
   void publishLookaheadPoint() const;
+  void publishP1() const;
+  void publishP2() const;
 
   ros::NodeHandle* nh_;
   ros::Publisher lookaheadPointPub_;
   ros::Publisher anchorPointPub_;
   ros::Publisher pathSegmentPub_;
+
+  ros::Publisher p1Pub_;
+  ros::Publisher p2Pub_;
+  Point p1_, p2_;
 };
 
 std::unique_ptr<HeadingController> createAckermannSteeringControllerRos(const AckermannSteeringCtrlParameters& parameters,
