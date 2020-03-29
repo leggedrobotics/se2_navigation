@@ -149,7 +149,6 @@ Vector computeNormalizedFinalApproachDirection(const PathSegment& pathSegment) {
   if (pathSegment.point_.size() < 2) {
     throw std::runtime_error("Path segment should have at lest two points");
   }
-  Vector direction;
   const int secondLast = pathSegment.point_.size() - 2;
   const int last = pathSegment.point_.size() - 1;
   const Vector notNormalizedApproachDirection = pathSegment.point_.at(last).position_ - pathSegment.point_.at(secondLast).position_;
@@ -176,14 +175,15 @@ Vector computeDesiredHeadingVector(double yawAngle, DrivingDirection desiredDriv
 
 Point chooseCorrectLookaheadPoint(const Intersection& intersection, const Vector& desiredHeading, const Point& origin) {
   // radii vectors w.r.t. to the local frame
-  const Vector r1 = intersection.p1_ - origin;
-  const Vector r2 = intersection.p2_ - origin;
+  const Vector r1 = (intersection.p1_ - origin).normalized();
+  const Vector r2 = (intersection.p2_ - origin).normalized();
 
   /*Pick a point that is in front i.e. where the cos of the angle is >= 0
    * one should always be + the other one -*/
   const double voteP1 = desiredHeading.transpose() * r1;
   const double voteP2 = desiredHeading.transpose() * r2;
   assert(sgn(voteP1) + sgn(voteP2) == 0);
+  //std::cout << "p1: " << voteP1 << ", p2: " << voteP2 << std::endl;
   if (voteP1 >= voteP2) {
     return intersection.p1_;
   } else {
@@ -242,7 +242,7 @@ void findIdOfFirstPointsCloserThanLookaheadAndFirstPointsFartherThanLookahead(co
                                                                               unsigned int* closerPointId, unsigned int* fartherPointId) {
   const int nPoints = pathSegment.point_.size();
   /* okay find the first point ahead of the robot that is further than the lookahead distance */
-  const double epsilon = 0.03;
+  const double epsilon = 0.05;
   int pointFartherThanLookaheadId = startingPoint;
   for (; pointFartherThanLookaheadId < nPoints; ++pointFartherThanLookaheadId) {
     const auto& p = pathSegment.point_.at(pointFartherThanLookaheadId).position_;

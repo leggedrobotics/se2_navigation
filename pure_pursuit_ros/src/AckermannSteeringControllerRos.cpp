@@ -53,6 +53,11 @@ void AckermannSteeringControllerRos::publishAnchorPoint() const {
   anchorPoint.pose.position.x = currentAnchorPoint_.x();
   anchorPoint.pose.position.y = currentAnchorPoint_.y();
   anchorPoint.pose.position.z = 0.0;
+
+  anchorPoint.pose.orientation.x = 0.0;
+  anchorPoint.pose.orientation.y = 0.0;
+  anchorPoint.pose.orientation.z = 0.0;
+  anchorPoint.pose.orientation.w = 1.0;
   anchorPointPub_.publish(anchorPoint);
 }
 void AckermannSteeringControllerRos::publishPathSegment() const {
@@ -97,7 +102,11 @@ void AckermannSteeringControllerRos::publishLookaheadPoint() const {
   lookaheadPoint.pose.position.x = currentLookaheadPoint_.x();
   lookaheadPoint.pose.position.y = currentLookaheadPoint_.y();
   lookaheadPoint.pose.position.z = 0.0;
-  anchorPointPub_.publish(lookaheadPoint);
+  lookaheadPoint.pose.orientation.x = 0.0;
+  lookaheadPoint.pose.orientation.y = 0.0;
+  lookaheadPoint.pose.orientation.z = 0.0;
+  lookaheadPoint.pose.orientation.w = 1.0;
+  lookaheadPointPub_.publish(lookaheadPoint);
 }
 
 std::unique_ptr<HeadingController> createAckermannSteeringControllerRos(const AckermannSteeringCtrlParameters& parameters,
