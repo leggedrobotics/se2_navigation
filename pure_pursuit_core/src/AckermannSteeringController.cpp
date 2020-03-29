@@ -29,6 +29,7 @@ bool AckermannSteeringController::advanceImpl() {
   //  std::cout << "closest id: " << closestPointOnPathId << std::endl;
   if (!computeLookaheadPoint(closestPointOnPathId, activeLookaheadDistance_, currentRobotState_, drivingDirection, currentPathSegment_,
                              &currentLookaheadPoint_)) {
+    std::cerr << "AckermannSteeringController: Failed to compute lookahead point." << std::endl;
     return false;
   }
   const Point lookaheadPoint = currentLookaheadPoint_;
@@ -38,6 +39,7 @@ bool AckermannSteeringController::advanceImpl() {
   const auto heading = computeDesiredHeadingVector(robotPose.yaw_, drivingDirection);
   //  std::cout << "Heading direction: " << heading.transpose() << std::endl;
   if (!computeLookaheadAngle(lookaheadPoint, anchorPoint, heading, drivingDirection, &lookaheadAngle)) {
+    std::cerr << "AckermannSteeringController: Failed to compute lookahead angle" << std::endl;
     return false;
   }
   //  std::cout << "lookahead angle: " << lookaheadAngle << std::endl;
@@ -47,6 +49,7 @@ bool AckermannSteeringController::advanceImpl() {
 
   //  std::cout << "Steering angle: " << steeringAngle << std::endl;
   if (std::isnan(steeringAngle) || std::isinf(steeringAngle)) {
+    std::cerr << "AckermannSteeringController: Computed steering angle is nan" << std::endl;
     return false;
   }
 
