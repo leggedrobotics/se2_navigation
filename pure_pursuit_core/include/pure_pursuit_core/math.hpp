@@ -96,6 +96,6 @@ bool computeLookaheadAngle(const Point& lookaheadPoint, const Point& anchorPoint
 double computeSteeringAngleCmd(double lookaheadAngle, double lookaheadDistance, double anchorDistancte, double wheelBase);
 Point computeAnchorPoint(const RobotPose& robotState, double anchorDistance, DrivingDirection drivingDirection);
 bool computeLookaheadPoint(unsigned int closestPointOnPathSegmentId, double lookaheadDistance, const RobotState& robotState,
-                           DrivingDirection drivingDirection, const PathSegment& pathSegment, Point* lookaheadPoint);
+                           DrivingDirection drivingDirection, const PathSegment& pathSegment, double anchorDistance, Point* lookaheadPoint);
 
 } /* namespace pure_pursuit */

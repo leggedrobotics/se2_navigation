@@ -20,19 +20,20 @@ bool AckermannSteeringController::advanceImpl() {
   const Point anchorPoint = computeAnchorPoint(currentRobotState_.pose_, activeAnchorDistance_, drivingDirection);
   currentAnchorPoint_ = anchorPoint;
   const unsigned int closestPointOnPathId = getIdOfTheClosestPointOnThePath(currentPathSegment_, robotPose.position_, lastClosestPointId_);
-
+  //
   //  std::cout << "Current Robot state: " << currentRobotState_ << std::endl;
   //  std::cout << "Active lookahead: " << activeLookaheadDistance_ << std::endl;
   //  std::cout << "Active anchor: " << activeAnchorDistance_ << std::endl;
   //  std::cout << "Driving direction: " << static_cast<int>(drivingDirection) << std::endl;
   //  std::cout << "AnchorPoint: " << anchorPoint.transpose() << std::endl;
   //  std::cout << "closest id: " << closestPointOnPathId << std::endl;
+  Point lookaheadPoint;
   if (!computeLookaheadPoint(closestPointOnPathId, activeLookaheadDistance_, currentRobotState_, drivingDirection, currentPathSegment_,
-                             &currentLookaheadPoint_)) {
+                             activeAnchorDistance_, &lookaheadPoint)) {
     std::cerr << "AckermannSteeringController: Failed to compute lookahead point." << std::endl;
     return false;
   }
-  const Point lookaheadPoint = currentLookaheadPoint_;
+  currentLookaheadPoint_ = lookaheadPoint;
 
   //  std::cout << "lookahead point: " << lookaheadPoint.transpose() << std::endl;
   double lookaheadAngle = 0.0;

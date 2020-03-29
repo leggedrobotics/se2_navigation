@@ -177,15 +177,22 @@ Vector computeDesiredHeadingVector(double yawAngle, DrivingDirection desiredDriv
 
 Point chooseCorrectLookaheadPoint(const Intersection& intersection, const Vector& desiredHeading, const Point& origin) {
   // radii vectors w.r.t. to the local frame
-  const Vector r1 = (intersection.p1_ - origin).normalized();
-  const Vector r2 = (intersection.p2_ - origin).normalized();
+  const Vector r1 = intersection.p1_ - origin;
+  const Vector r2 = intersection.p2_ - origin;
+
+  std::cout << "r1: " << r1.transpose() << std::endl;
+  std::cout << "r2: " << r2.transpose() << std::endl;
+  std::cout << "p1: " << intersection.p1_.transpose() << std::endl;
+  std::cout << "p2: " << intersection.p2_.transpose() << std::endl;
+  std::cout << "origin: " << origin.transpose() << std::endl;
+  std::cout << "Heading: " << desiredHeading.transpose() << std::endl;
 
   /*Pick a point that is in front i.e. where the cos of the angle is >= 0
    * one should always be + the other one -*/
   const double voteP1 = desiredHeading.transpose() * r1;
   const double voteP2 = desiredHeading.transpose() * r2;
   assert(sgn(voteP1) + sgn(voteP2) == 0);
-  // std::cout << "p1: " << voteP1 << ", p2: " << voteP2 << std::endl;
+  std::cout << "votep1: " << voteP1 << ", votep2: " << voteP2 << std::endl;
   if (voteP1 >= voteP2) {
     return intersection.p1_;
   } else {
@@ -332,8 +339,10 @@ Point computeAnchorPoint(const RobotPose& robotPose, double anchorDistance, Driv
 }
 
 bool computeLookaheadPoint(unsigned int closestPointOnPathSegmentId, double lookaheadDistance, const RobotState& robotState,
-                           DrivingDirection drivingDirection, const PathSegment& pathSegment, Point* lookaheadPoint) {
-  const Point anchorPoint = computeAnchorPoint(robotState.pose_, lookaheadDistance, drivingDirection);
+                           DrivingDirection drivingDirection, const PathSegment& pathSegment, double anchorDistance,
+                           Point* lookaheadPoint) {
+  const Point anchorPoint = computeAnchorPoint(robotState.pose_, anchorDistance, drivingDirection);
+  std::cout << "Anchor point: " << anchorPoint.transpose() << std::endl;
   unsigned int fartherPointId, closerPointId;
   findIdOfFirstPointsCloserThanLookaheadAndFirstPointsFartherThanLookahead(pathSegment, anchorPoint, closestPointOnPathSegmentId,
                                                                            lookaheadDistance, &closerPointId, &fartherPointId);
