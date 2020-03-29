@@ -94,7 +94,7 @@ Point chooseCorrectLookaheadPoint(const Intersection& intersection, const Vector
 bool computeLookaheadAngle(const Point& lookaheadPoint, const Point& anchorPoint, const Vector& heading, DrivingDirection drivingDirection,
                            double* lookaheadAngle);
 double computeSteeringAngleCmd(double lookaheadAngle, double lookaheadDistance, double anchorDistancte, double wheelBase);
-Point computeAnchorPoint(const RobotState& robotState, double anchorDistance, DrivingDirection drivingDirection);
+Point computeAnchorPoint(const RobotPose& robotState, double anchorDistance, DrivingDirection drivingDirection);
 bool computeLookaheadPoint(unsigned int closestPointOnPathSegmentId, double lookaheadDistance, const RobotState& robotState,
                            DrivingDirection drivingDirection, const PathSegment& pathSegment, Point* lookaheadPoint);
 

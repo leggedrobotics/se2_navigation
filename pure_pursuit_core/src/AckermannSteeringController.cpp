@@ -17,7 +17,7 @@ bool AckermannSteeringController::advanceImpl() {
   chooseActiveAnchorAndLookaheadDistance(parameters_);
   const auto drivingDirection = currentPathSegment_.drivingDirection_;
   const auto& robotPose = currentRobotState_.pose_;
-  const Point anchorPoint = computeAnchorPoint(currentRobotState_, activeAnchorDistance_, drivingDirection);
+  const Point anchorPoint = computeAnchorPoint(currentRobotState_.pose_, activeAnchorDistance_, drivingDirection);
   currentAnchorPoint_ = anchorPoint;
   const unsigned int closestPointOnPathId = getIdOfTheClosestPointOnThePath(currentPathSegment_, robotPose.position_, lastClosestPointId_);
 

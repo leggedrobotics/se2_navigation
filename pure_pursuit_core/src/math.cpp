@@ -326,14 +326,14 @@ double computeSteeringAngleCmd(double lookaheadAngle, double lookaheadDistance, 
   return steeringAngle;
 }
 
-Point computeAnchorPoint(const RobotState& robotState, double anchorDistance, DrivingDirection drivingDirection) {
-  const Vector heading = computeDesiredHeadingVector(robotState.pose_.yaw_, drivingDirection);
-  return Point(robotState.pose_.position_ + anchorDistance * heading);
+Point computeAnchorPoint(const RobotPose& robotPose, double anchorDistance, DrivingDirection drivingDirection) {
+  const Vector heading = computeDesiredHeadingVector(robotPose.yaw_, drivingDirection);
+  return Point(robotPose.position_ + anchorDistance * heading);
 }
 
 bool computeLookaheadPoint(unsigned int closestPointOnPathSegmentId, double lookaheadDistance, const RobotState& robotState,
                            DrivingDirection drivingDirection, const PathSegment& pathSegment, Point* lookaheadPoint) {
-  const Point anchorPoint = computeAnchorPoint(robotState, lookaheadDistance, drivingDirection);
+  const Point anchorPoint = computeAnchorPoint(robotState.pose_, lookaheadDistance, drivingDirection);
   unsigned int fartherPointId, closerPointId;
   findIdOfFirstPointsCloserThanLookaheadAndFirstPointsFartherThanLookahead(pathSegment, anchorPoint, closestPointOnPathSegmentId,
                                                                            lookaheadDistance, &closerPointId, &fartherPointId);
