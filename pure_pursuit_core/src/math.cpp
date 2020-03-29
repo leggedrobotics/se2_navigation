@@ -145,18 +145,19 @@ bool isClose(double val1, double val2) {
   return std::fabs(val1 - val2) < zeroThreshold;
 }
 
-Vector computeFinalApproachDirection(const PathSegment& pathSegment) {
+Vector computeNormalizedFinalApproachDirection(const PathSegment& pathSegment) {
   if (pathSegment.point_.size() < 2) {
     throw std::runtime_error("Path segment should have at lest two points");
   }
   Vector direction;
   const int secondLast = pathSegment.point_.size() - 2;
   const int last = pathSegment.point_.size() - 1;
-  return pathSegment.point_.at(last).position_ - pathSegment.point_.at(secondLast).position_;
+  const Vector notNormalizedApproachDirection = pathSegment.point_.at(last).position_ - pathSegment.point_.at(secondLast).position_;
+  return notNormalizedApproachDirection.normalized();
 }
 
 void appendPointAlongFinalApproachDirection(double extendingDistance, PathSegment* pathSegment) {
-  const Vector extendingDirection = computeFinalApproachDirection(*pathSegment);
+  const Vector extendingDirection = computeNormalizedFinalApproachDirection(*pathSegment);
   const Point lastPoint = pathSegment->point_.back().position_;
 
   PathPoint appendedPoint(lastPoint + extendingDistance * extendingDirection);
@@ -229,7 +230,7 @@ unsigned int bindIndexToRange(int idReq, int lo, int hi) {
 bool isPastLastPoint(const PathSegment& pathSegment, const Point& robPos) {
   const unsigned int nPointsInSegment = pathSegment.point_.size();
 
-  const Vector finalApproach = computeFinalApproachDirection(pathSegment);
+  const Vector finalApproach = computeNormalizedFinalApproachDirection(pathSegment);
   const Point secondLastPoint = pathSegment.point_.back().position_;
   const Vector robPositionToSecondLast = secondLastPoint - robPos;
 

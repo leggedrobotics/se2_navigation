@@ -81,7 +81,7 @@ bool isAlmostZero(double val);
 bool isClose(double val1, double val2);
 
 void computeIntersection(const Line& line, const Circle& circle, Intersection* intersection);
-Vector computeFinalApproachDirection(const PathSegment& pathSegment);
+Vector computeNormalizedFinalApproachDirection(const PathSegment& pathSegment);
 void appendPointAlongFinalApproachDirection(double extendingDistance, PathSegment* pathSegment);
 Vector computeDesiredHeadingVector(double yawAngle, DrivingDirection desiredDrivingDirection);
 Matrix rotationMatrix(double angle);
