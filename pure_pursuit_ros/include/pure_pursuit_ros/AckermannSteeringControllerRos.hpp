@@ -20,10 +20,18 @@ class AckermannSteeringControllerRos : public AckermannSteeringController {
 
  private:
   void initRos();
+  bool advanceImpl() override;
+  void publishAnchorPoint() const;
+  void publishPathSegment() const;
+  void publishLookaheadPoint() const;
 
   ros::NodeHandle* nh_;
   ros::Publisher lookaheadPointPub_;
+  ros::Publisher anchorPointPub_;
   ros::Publisher pathSegmentPub_;
 };
+
+std::unique_ptr<HeadingController> createAckermannSteeringControllerRos(const AckermannSteeringCtrlParameters& parameters,
+                                                                        ros::NodeHandle* nh);
 
 } /* namespace pure_pursuit */

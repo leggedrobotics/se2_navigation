@@ -27,7 +27,7 @@ class AckermannSteeringController : public HeadingController {
   void setParameters(const AckermannSteeringCtrlParameters& parameters);
   AckermannSteeringCtrlParameters getParameters() const;
 
- private:
+ protected:
   bool advanceImpl() override;
   bool initializeImpl() override;
   bool computeYawRate() override;
@@ -37,6 +37,7 @@ class AckermannSteeringController : public HeadingController {
   AckermannSteeringCtrlParameters parameters_;
   RateLimiter rateLimiter_;
   AverageFilter avgFilter_;
+  Point currentAnchorPoint_, currentLookaheadPoint_;
 };
 
 }  // namespace pure_pursuit
