@@ -103,6 +103,8 @@ void computeIntersection(const Line& line, const Circle& circle, Intersection* i
    * they're valid for the circle centered around the origin.
    */
 
+  auto sign = [](double x) { return x < 0 ? -1.0 : 1.0; };
+
   const double x1 = line.p1_.x() - circle.center_.x();
   const double x2 = line.p2_.x() - circle.center_.x();
   const double y1 = line.p1_.y() - circle.center_.y();
@@ -110,9 +112,9 @@ void computeIntersection(const Line& line, const Circle& circle, Intersection* i
 
   const double dx = x2 - x1;
   const double dy = y2 - y1;
-  const double dr = dx * dx + dy * dy;
+  const double dr2 = dx * dx + dy * dy;
   const double D = x1 * y2 - x2 * y1;
-  const double discriminant = circle.r_ * circle.r_ * dr - D * D;
+  const double discriminant = circle.r_ * circle.r_ * dr2 - D * D;
 
   if (discriminant < -zeroThreshold) {
     intersection->solutionCase_ = Intersection::SolutionCase::NO_SOLUTION;
@@ -120,8 +122,8 @@ void computeIntersection(const Line& line, const Circle& circle, Intersection* i
   }
 
   const double sqrtDiscriminant = std::sqrt(discriminant);
-  Point solution1((D * dy + sgn(dy) * dx * sqrtDiscriminant) / dr, (-D * dx + std::abs(dy) * sqrtDiscriminant) / dr);
-  Point solution2((D * dy - sgn(dy) * dx * sqrtDiscriminant) / dr, (-D * dx - std::abs(dy) * sqrtDiscriminant) / dr);
+  Point solution1((D * dy + sign(dy) * dx * sqrtDiscriminant) / dr2, (-D * dx + std::abs(dy) * sqrtDiscriminant) / dr2);
+  Point solution2((D * dy - sign(dy) * dx * sqrtDiscriminant) / dr2, (-D * dx - std::abs(dy) * sqrtDiscriminant) / dr2);
 
   // translate solution back from the origin
   solution1 += circle.center_;
@@ -183,7 +185,7 @@ Point chooseCorrectLookaheadPoint(const Intersection& intersection, const Vector
   const double voteP1 = desiredHeading.transpose() * r1;
   const double voteP2 = desiredHeading.transpose() * r2;
   assert(sgn(voteP1) + sgn(voteP2) == 0);
-  //std::cout << "p1: " << voteP1 << ", p2: " << voteP2 << std::endl;
+  // std::cout << "p1: " << voteP1 << ", p2: " << voteP2 << std::endl;
   if (voteP1 >= voteP2) {
     return intersection.p1_;
   } else {

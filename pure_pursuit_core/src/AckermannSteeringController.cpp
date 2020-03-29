@@ -65,8 +65,6 @@ bool AckermannSteeringController::advanceImpl() {
 
 bool AckermannSteeringController::initializeImpl() {
   lastClosestPointId_ = 0.0;
-  const double extendingLength = 2.0 * std::max(parameters_.lookaheadDistanceFwd_, parameters_.anchorDistanceBck_);
-  appendPointAlongFinalApproachDirection(extendingLength, &currentPathSegment_);
   return true;
 }
 
@@ -83,6 +81,13 @@ bool AckermannSteeringController::computeTurningRadius() {
   const double yawRate = v / parameters_.wheelBase_ * std::tan(steeringAngle_);
   turningRadius_ = v / (std::fabs(yawRate) + 1e-4) * sgn(yawRate);
   return true;
+}
+
+void AckermannSteeringController::updateCurrentPathSegment(const PathSegment& pathSegment) {
+  lastClosestPointId_ = 0;  // reset
+  currentPathSegment_ = pathSegment;
+  const double extendingLength = 2.0 * std::max(parameters_.lookaheadDistanceFwd_, parameters_.anchorDistanceBck_);
+  appendPointAlongFinalApproachDirection(extendingLength, &currentPathSegment_);
 }
 
 void AckermannSteeringController::setParameters(const AckermannSteeringCtrlParameters& parameters) {
