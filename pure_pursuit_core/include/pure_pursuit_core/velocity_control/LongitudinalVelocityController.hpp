@@ -6,6 +6,7 @@
  */
 
 #pragma once
+#include "pure_pursuit_core/Path.hpp"
 #include "pure_pursuit_core/common.hpp"
 
 namespace pure_pursuit {
@@ -18,8 +19,11 @@ class LongitudinalVelocityController {
   bool advance();
   double getVelocity() const;
   void updateDrivingDirection(DrivingDirection drivingDirection);
+
   virtual void updateCurrentState(const RobotState& robState);
   virtual void setIsStartingNewPathSegment(bool startinNewSegment);
+  virtual bool initialize();
+  virtual void updateCurrentPathSegment(const PathSegment& pathSegment);
 
  private:
   virtual bool computeVelocity() = 0;
@@ -29,6 +33,7 @@ class LongitudinalVelocityController {
   RobotState currentRobotState_;
   bool isStartingNewPathSegmenet_ = false;
   DrivingDirection drivingDirection_;
+  PathSegment currentPathSegment_;
 };
 
 } /* namespace pure_pursuit */

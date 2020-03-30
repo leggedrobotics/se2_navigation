@@ -12,6 +12,13 @@ namespace pure_pursuit {
 bool LongitudinalVelocityController::advance() {
   return computeVelocity();
 }
+void LongitudinalVelocityController::updateCurrentPathSegment(const PathSegment& pathSegment) {
+  currentPathSegment_ = pathSegment;
+}
+
+bool LongitudinalVelocityController::initialize() {
+  return true;
+}
 double LongitudinalVelocityController::getVelocity() const {
   return desiredLongitudinalVelocity_;
 }
