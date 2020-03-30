@@ -21,11 +21,14 @@ class SimplePathTrackerRos : public SimplePathTracker {
   void importCurrentPath(const Path& path) override;
 
  private:
+  bool advanceControllers() override;
   void initRos();
   void publishPath(const Path& path) const;
+  void publishRobotPose() const;
 
   ros::NodeHandle* nh_;
   ros::Publisher pathPub_;
+  ros::Publisher robotPosePub_;
 };
 
 std::unique_ptr<PathTracker> createSimplePathTrackerRos(const SimplePathTrackerParameters& parameters,

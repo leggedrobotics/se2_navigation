@@ -23,7 +23,7 @@ class SimplePathTracker : public PathTracker {
   void stopTracking() override;
   void setParameters(const SimplePathTrackerParameters& parameters);
 
- private:
+ protected:
   enum class States : int { NoOperation, Waiting, Driving };
   void advanceStateMachine() override;
   bool advanceControllers() override;

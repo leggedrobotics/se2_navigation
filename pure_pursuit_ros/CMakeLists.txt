@@ -16,6 +16,7 @@ set(CATKIN_PACKAGE_DEPENDENCIES
   pure_pursuit_core
   visualization_msgs
   nav_msgs
+  tf2
 )
 
 find_package(catkin REQUIRED

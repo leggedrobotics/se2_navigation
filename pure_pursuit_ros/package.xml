@@ -14,5 +14,6 @@
 	<depend>yaml-cpp</depend>
 	<depend>visualization_msgs</depend>
 	<depend>nav_msgs</depend>
+	<depend>tf2</depend>
 	
 </package>
