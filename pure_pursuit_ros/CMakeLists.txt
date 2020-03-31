@@ -6,6 +6,7 @@ add_compile_options(-Wall -Wextra -Wpedantic)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(SRC_FILES
+  src/loaders.cpp
   src/visualization_helpers.cpp
   src/SimplePathTrackerRos.cpp
   src/AckermannSteeringControllerRos.cpp

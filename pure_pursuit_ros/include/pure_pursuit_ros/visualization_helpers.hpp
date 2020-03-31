@@ -18,6 +18,7 @@ class Color : public std_msgs::ColorRGBA {
   Color();
   Color(double red, double green, double blue);
   Color(double red, double green, double blue, double alpha);
+  Color operator*(double scalar) const;
 
   static const Color White() { return Color(1.0, 1.0, 1.0); }
   static const Color Black() { return Color(0.0, 0.0, 0.0); }
@@ -34,6 +35,8 @@ class Color : public std_msgs::ColorRGBA {
   static const Color Magenta() { return Color(0.78, 0.0, 0.9); }
 };
 
+Color operator*(double scalar, const Color& c);
+
 geometry_msgs::Point createPoint(double x, double y, double z);
 
 void drawAxes(const Eigen::Vector3d& p, const Eigen::Quaterniond& q, double scale, double line_width, visualization_msgs::Marker* marker);
@@ -48,6 +51,9 @@ void drawAxesArrows(const Eigen::Vector3d& p, const Eigen::Quaterniond& q, doubl
                     visualization_msgs::MarkerArray* marker_array);
 
 void drawSphere(const Eigen::Vector3d& p, const Color& color, double diameter, visualization_msgs::Marker* marker);
+
+void drawSphereList(const std::vector<geometry_msgs::Point>& points, const Color& color, double diameter,
+                    visualization_msgs::Marker* marker);
 
 geometry_msgs::Quaternion toQuaternion(double roll, double pitch, double yaw);
 

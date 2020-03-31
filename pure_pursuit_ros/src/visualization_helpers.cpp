@@ -40,6 +40,17 @@ Color::Color(double red, double green, double blue, double alpha) : Color() {
   a = alpha;
 }
 
+Color Color::operator*(double scalar) const {
+  Color ret = *this;
+  ret.r *= scalar;
+  ret.g *= scalar;
+  ret.b *= scalar;
+  return ret;
+}
+Color operator*(double scalar, const Color& c) {
+  return c * scalar;
+}
+
 geometry_msgs::Point createPoint(double x, double y, double z) {
   geometry_msgs::Point p;
   p.x = x;
@@ -75,6 +86,25 @@ void drawSphere(const Eigen::Vector3d& p, const Color& color, double diameter, v
   marker->pose.orientation.y = 0.0;
   marker->pose.orientation.z = 0.0;
   marker->pose.orientation.w = 1.0;
+}
+
+void drawSphereList(const std::vector<geometry_msgs::Point>& points, const Color& color, double diameter,
+                    visualization_msgs::Marker* marker) {
+  marker->color = color;
+  const double radius = diameter / 2.0;
+  marker->scale.x = radius;
+  marker->scale.y = radius;
+  marker->scale.z = radius;
+  marker->action = visualization_msgs::Marker::ADD;
+  marker->type = visualization_msgs::Marker::SPHERE_LIST;
+  marker->color = color;
+  marker->pose.position = createPoint(0.0, 0.0, 0.0);
+  // set a unit quaternion such that rviz doesn't complain
+  marker->pose.orientation.x = 0.0;
+  marker->pose.orientation.y = 0.0;
+  marker->pose.orientation.z = 0.0;
+  marker->pose.orientation.w = 1.0;
+  marker->points = points;
 }
 
 void drawAxes(const Eigen::Vector3d& p, const Eigen::Quaterniond& q, double scale, double line_width, visualization_msgs::Marker* marker) {

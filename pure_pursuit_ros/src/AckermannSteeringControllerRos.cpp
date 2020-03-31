@@ -78,24 +78,14 @@ void AckermannSteeringControllerRos::publishPathSegment() const {
   visualization_msgs::Marker pathSegment;
   pathSegment.header.frame_id = "map";
   pathSegment.ns = "";
-  pathSegment.color.a = 1;
-  pathSegment.scale.x = 0.2;
-  pathSegment.scale.y = 0.2;
-  pathSegment.scale.z = 0.2;
-  pathSegment.action = visualization_msgs::Marker::ADD;
-  pathSegment.type = visualization_msgs::Marker::SPHERE_LIST;
-  pathSegment.color.r = 0.78;
-  pathSegment.color.g = 0.0;
-  pathSegment.color.b = 0.9;
   pathSegment.header.stamp = ros::Time::now();
-  pathSegment.points.reserve(currentPathSegment_.point_.size());
+  std::vector<geometry_msgs::Point> points;
+  points.reserve(currentPathSegment_.point_.size());
   for (const auto& point : currentPathSegment_.point_) {
-    geometry_msgs::Point markerPoint;
-    markerPoint.x = point.position_.x();
-    markerPoint.y = point.position_.y();
-    markerPoint.z = 0.0;
-    pathSegment.points.push_back(markerPoint);
+    points.push_back(createPoint(point.position_.x(), point.position_.y(), 0.0));
   }
+
+  drawSphereList(points, Color::Magenta(), 0.2, &pathSegment);
 
   pathSegmentPub_.publish(pathSegment);
 }
@@ -115,7 +105,7 @@ void AckermannSteeringControllerRos::publishP1() const {
   p1.ns = "";
   p1.header.stamp = ros::Time::now();
   const Eigen::Vector3d position(p1_.x(), p1_.y(), 0.0);
-  drawSphere(position, Color::Yellow(), 0.3, &p1);
+  drawSphere(position, Color::Blue(), 0.3, &p1);
   p1Pub_.publish(p1);
 }
 void AckermannSteeringControllerRos::publishP2() const {
@@ -124,7 +114,7 @@ void AckermannSteeringControllerRos::publishP2() const {
   p2.ns = "";
   p2.header.stamp = ros::Time::now();
   const Eigen::Vector3d position(p2_.x(), p2_.y(), 0.0);
-  drawSphere(position, Color::Yellow(), 0.3, &p2);
+  drawSphere(position, Color::Blue(), 0.3, &p2);
   p2Pub_.publish(p2);
 }
 

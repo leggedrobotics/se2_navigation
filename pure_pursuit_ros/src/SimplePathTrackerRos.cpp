@@ -56,38 +56,26 @@ void SimplePathTrackerRos::publishPath(const Path& path) const {
   visualization_msgs::MarkerArray msg;
   int id = 0;
   double z = 0;
-  visualization_msgs::Marker markerPrototype;
-  markerPrototype.header.frame_id = "map";
-  markerPrototype.ns = "";
-  markerPrototype.color.a = 1;
-  markerPrototype.scale.x = 0.2;
-  markerPrototype.scale.y = 0.2;
-  markerPrototype.scale.z = 0.2;
-  markerPrototype.action = visualization_msgs::Marker::ADD;
 
-  markerPrototype.type = visualization_msgs::Marker::SPHERE_LIST;
   msg.markers.reserve(path.segment_.size());
   for (const auto& segment : path.segment_) {
-    visualization_msgs::Marker marker = markerPrototype;
-    if (segment.drivingDirection_ == DrivingDirection::FWD) {
-      marker.color.r = 0.0;
-      marker.color.g = 0.8;
-      marker.color.b = 0.0;
-    } else {
-      marker.color.r = 0.8;
-      marker.color.g = 0.0;
-      marker.color.b = 0.0;
-    }
+    visualization_msgs::Marker marker;
+    marker.header.frame_id = "map";
+    marker.ns = "";
     marker.header.stamp = ros::Time::now();
     marker.id = id++;
-    marker.points.reserve(segment.point_.size());
+    const double diameter = 0.2;
+    std::vector<geometry_msgs::Point> points;
+    points.reserve(segment.point_.size());
     for (const auto& point : segment.point_) {
-      geometry_msgs::Point markerPoint;
-      markerPoint.x = point.position_.x();
-      markerPoint.y = point.position_.y();
-      markerPoint.z = z;
-      marker.points.push_back(markerPoint);
+      points.push_back(createPoint(point.position_.x(), point.position_.y(), z));
     }
+    if (segment.drivingDirection_ == DrivingDirection::FWD) {
+      drawSphereList(points, 0.8 * Color::Green(), diameter, &marker);
+    } else {
+      drawSphereList(points, 0.8 * Color::Red(), diameter, &marker);
+    }
+
     msg.markers.push_back(marker);
     z += 0.2;
   }
