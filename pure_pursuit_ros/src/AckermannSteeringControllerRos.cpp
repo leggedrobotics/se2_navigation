@@ -35,22 +35,22 @@ bool AckermannSteeringControllerRos::advanceImpl() {
   /* debug
    * todo remove commented out stuff as the classes become more tested
    */
-//  const auto drivingDirection = currentPathSegment_.drivingDirection_;
-//  const auto& robotPose = currentRobotState_.pose_;
-//  const auto& pathSegment = currentPathSegment_;
-//  const unsigned int closestPointOnPathId = getIdOfTheClosestPointOnThePath(currentPathSegment_, robotPose.position_, lastClosestPointId_);
-//  unsigned int fartherPointId, closerPointId;
-//  findIdOfFirstPointsCloserThanLookaheadAndFirstPointsFartherThanLookahead(pathSegment, currentAnchorPoint_, closestPointOnPathId,
-//                                                                           activeLookaheadDistance_, &closerPointId, &fartherPointId);
-//
-//  const Line line(pathSegment.point_.at(closerPointId).position_, pathSegment.point_.at(fartherPointId).position_);
-//  const Circle circle(currentAnchorPoint_, activeLookaheadDistance_);
-//  Intersection intersection;
-//  computeIntersection(line, circle, &intersection);
-//  p1_ = intersection.p1_;
-//  p2_ = intersection.p2_;
-//  publishP1();
-//  publishP2();
+  //  const auto drivingDirection = currentPathSegment_.drivingDirection_;
+  //  const auto& robotPose = currentRobotState_.pose_;
+  //  const auto& pathSegment = currentPathSegment_;
+  //  const unsigned int closestPointOnPathId = getIdOfTheClosestPointOnThePath(currentPathSegment_, robotPose.position_,
+  //  lastClosestPointId_); unsigned int fartherPointId, closerPointId;
+  //  findIdOfFirstPointsCloserThanLookaheadAndFirstPointsFartherThanLookahead(pathSegment, currentAnchorPoint_, closestPointOnPathId,
+  //                                                                           activeLookaheadDistance_, &closerPointId, &fartherPointId);
+  //
+  //  const Line line(pathSegment.point_.at(closerPointId).position_, pathSegment.point_.at(fartherPointId).position_);
+  //  const Circle circle(currentAnchorPoint_, activeLookaheadDistance_);
+  //  Intersection intersection;
+  //  computeIntersection(line, circle, &intersection);
+  //  p1_ = intersection.p1_;
+  //  p2_ = intersection.p2_;
+  //  publishP1();
+  //  publishP2();
   /*
    * debug
    */
