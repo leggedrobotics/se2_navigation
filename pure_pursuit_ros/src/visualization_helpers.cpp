@@ -31,6 +31,18 @@
 
 namespace pure_pursuit {
 
+template <typename T, typename Limits>
+void clamp(T* val, Limits lo, Limits hi) {
+  if (*val > hi) {
+    *val = hi;
+    return;
+  }
+  if (*val < lo) {
+    *val = lo;
+    return;
+  }
+}
+
 Color::Color() : std_msgs::ColorRGBA() {}
 Color::Color(double red, double green, double blue) : Color(red, green, blue, 1.0) {}
 Color::Color(double red, double green, double blue, double alpha) : Color() {
@@ -45,6 +57,9 @@ Color Color::operator*(double scalar) const {
   ret.r *= scalar;
   ret.g *= scalar;
   ret.b *= scalar;
+  clamp(&ret.r, 0.0, 1.0);
+  clamp(&ret.g, 0.0, 1.0);
+  clamp(&ret.b, 0.0, 1.0);
   return ret;
 }
 Color operator*(double scalar, const Color& c) {
