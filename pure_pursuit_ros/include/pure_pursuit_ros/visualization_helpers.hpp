@@ -11,7 +11,7 @@
 #include <visualization_msgs/MarkerArray.h>
 #include <Eigen/Dense>
 
-namespace pure_pursuit_ros {
+namespace pure_pursuit {
 
 class Color : public std_msgs::ColorRGBA {
  public:
@@ -38,13 +38,17 @@ geometry_msgs::Point createPoint(double x, double y, double z);
 
 void drawAxes(const Eigen::Vector3d& p, const Eigen::Quaterniond& q, double scale, double line_width, visualization_msgs::Marker* marker);
 
-void drawArrowPositionOrientation(const Eigen::Vector3d& p, const Eigen::Quaterniond& q, const std_msgs::ColorRGBA& color, double length,
-                                  double diameter, visualization_msgs::Marker* marker);
+void drawArrowFromPositionOrientation(const Eigen::Vector3d& p, const Eigen::Quaterniond& q, const std_msgs::ColorRGBA& color,
+                                      double length, double diameter, visualization_msgs::Marker* marker);
 
-inline void drawArrowPoints(const Eigen::Vector3d& p1, const Eigen::Vector3d& p2, const std_msgs::ColorRGBA& color, double diameter,
-                            visualization_msgs::Marker* marker);
+void drawArrowFromPoints(const Eigen::Vector3d& p1, const Eigen::Vector3d& p2, const std_msgs::ColorRGBA& color, double diameter,
+                         visualization_msgs::Marker* marker);
 
 void drawAxesArrows(const Eigen::Vector3d& p, const Eigen::Quaterniond& q, double scale, double diameter,
                     visualization_msgs::MarkerArray* marker_array);
 
-} /*namespace pure_pursuit_ros */
+void drawSphere(const Eigen::Vector3d& p, const Color& color, double diameter, visualization_msgs::Marker* marker);
+
+geometry_msgs::Quaternion toQuaternion(double roll, double pitch, double yaw);
+
+} /*namespace pure_pursuit */

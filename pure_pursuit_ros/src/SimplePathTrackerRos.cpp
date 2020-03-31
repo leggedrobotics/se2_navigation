@@ -6,7 +6,10 @@
  */
 
 #include "pure_pursuit_ros/SimplePathTrackerRos.hpp"
-#include <tf2/LinearMath/Quaternion.h>
+
+#include "pure_pursuit_ros/visualization_helpers.hpp"
+
+#include <eigen_conversions/eigen_msg.h>
 #include <visualization_msgs/MarkerArray.h>
 #include <thread>
 
@@ -25,27 +28,12 @@ void SimplePathTrackerRos::publishRobotPose() const {
 
   robotPose.header.frame_id = "map";
   robotPose.ns = "";
-  robotPose.color.a = 1;
-  robotPose.scale.x = 0.5;
-  robotPose.scale.y = 0.2;
-  robotPose.scale.z = 0.2;
-  robotPose.action = visualization_msgs::Marker::ADD;
-  robotPose.type = visualization_msgs::Marker::ARROW;
-  robotPose.color.r = 1.0;
-  robotPose.color.g = 0.87;
-  robotPose.color.b = 0.0;
   robotPose.header.stamp = ros::Time::now();
-  robotPose.pose.position.x = currentRobotState_.pose_.position_.x();
-  robotPose.pose.position.y = currentRobotState_.pose_.position_.y();
-  robotPose.pose.position.z = 0.15;
 
-  tf2::Quaternion q;
-  q.setRPY(0.0, 0.0, currentRobotState_.pose_.yaw_);
-
-  robotPose.pose.orientation.x = q.x();
-  robotPose.pose.orientation.y = q.y();
-  robotPose.pose.orientation.z = q.z();
-  robotPose.pose.orientation.w = q.w();
+  const Eigen::Vector3d position(currentRobotState_.pose_.position_.x(), currentRobotState_.pose_.position_.y(), 0.15);
+  Eigen::Quaterniond q;
+  tf::quaternionMsgToEigen(toQuaternion(0.0, 0.0, currentRobotState_.pose_.yaw_), q);
+  drawArrowFromPositionOrientation(position, q, Color::Yellow(), 0.5, 0.2, &robotPose);
 
   robotPosePub_.publish(robotPose);
 }

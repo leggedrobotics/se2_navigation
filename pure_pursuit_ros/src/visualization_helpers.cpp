@@ -27,8 +27,9 @@
 #include "pure_pursuit_ros/visualization_helpers.hpp"
 
 #include <eigen_conversions/eigen_msg.h>
+#include <tf2/LinearMath/Quaternion.h>
 
-namespace pure_pursuit_ros {
+namespace pure_pursuit {
 
 Color::Color() : std_msgs::ColorRGBA() {}
 Color::Color(double red, double green, double blue) : Color(red, green, blue, 1.0) {}
@@ -45,6 +46,35 @@ geometry_msgs::Point createPoint(double x, double y, double z) {
   p.y = y;
   p.z = z;
   return p;
+}
+
+geometry_msgs::Quaternion toQuaternion(double roll, double pitch, double yaw) {
+  tf2::Quaternion q;
+  q.setRPY(roll, pitch, yaw);
+  geometry_msgs::Quaternion retVal;
+  retVal.x = q.x();
+  retVal.y = q.y();
+  retVal.z = q.z();
+  retVal.w = q.w();
+  return retVal;
+}
+
+void drawSphere(const Eigen::Vector3d& p, const Color& color, double diameter, visualization_msgs::Marker* marker) {
+  marker->color = color;
+  const double radius = diameter / 2.0;
+  marker->scale.x = radius;
+  marker->scale.y = radius;
+  marker->scale.z = radius;
+  marker->action = visualization_msgs::Marker::ADD;
+  marker->type = visualization_msgs::Marker::SPHERE;
+  marker->color = color;
+  marker->pose.position = createPoint(p.x(), p.y(), p.z());
+
+  // set a unit quaternion such that rviz doesn't complain
+  marker->pose.orientation.x = 0.0;
+  marker->pose.orientation.y = 0.0;
+  marker->pose.orientation.z = 0.0;
+  marker->pose.orientation.w = 1.0;
 }
 
 void drawAxes(const Eigen::Vector3d& p, const Eigen::Quaterniond& q, double scale, double line_width, visualization_msgs::Marker* marker) {
@@ -73,8 +103,8 @@ void drawAxes(const Eigen::Vector3d& p, const Eigen::Quaterniond& q, double scal
   tf::quaternionEigenToMsg(q, marker->pose.orientation);
 }
 
-void drawArrowPositionOrientation(const Eigen::Vector3d& p, const Eigen::Quaterniond& q, const std_msgs::ColorRGBA& color, double length,
-                                  double diameter, visualization_msgs::Marker* marker) {
+void drawArrowFromPositionOrientation(const Eigen::Vector3d& p, const Eigen::Quaterniond& q, const std_msgs::ColorRGBA& color,
+                                      double length, double diameter, visualization_msgs::Marker* marker) {
   marker->type = visualization_msgs::Marker::ARROW;
   marker->action = visualization_msgs::Marker::ADD;
   marker->color = color;
@@ -87,8 +117,8 @@ void drawArrowPositionOrientation(const Eigen::Vector3d& p, const Eigen::Quatern
   marker->scale.z = diameter;
 }
 
-void drawArrowPoints(const Eigen::Vector3d& p1, const Eigen::Vector3d& p2, const std_msgs::ColorRGBA& color, double diameter,
-                     visualization_msgs::Marker* marker) {
+void drawArrowFromPoints(const Eigen::Vector3d& p1, const Eigen::Vector3d& p2, const std_msgs::ColorRGBA& color, double diameter,
+                         visualization_msgs::Marker* marker) {
   marker->type = visualization_msgs::Marker::ARROW;
   marker->action = visualization_msgs::Marker::ADD;
   marker->color = color;
@@ -108,9 +138,9 @@ void drawAxesArrows(const Eigen::Vector3d& p, const Eigen::Quaterniond& q, doubl
   Eigen::Vector3d origin;
   origin.setZero();
 
-  drawArrowPoints(origin + p, q * Eigen::Vector3d::UnitX() * scale + p, Color::Red(), diameter, &marker_array->markers[0]);
-  drawArrowPoints(origin + p, q * Eigen::Vector3d::UnitY() * scale + p, Color::Green(), diameter, &marker_array->markers[1]);
-  drawArrowPoints(origin + p, q * Eigen::Vector3d::UnitZ() * scale + p, Color::Blue(), diameter, &marker_array->markers[2]);
+  drawArrowFromPoints(origin + p, q * Eigen::Vector3d::UnitX() * scale + p, Color::Red(), diameter, &marker_array->markers[0]);
+  drawArrowFromPoints(origin + p, q * Eigen::Vector3d::UnitY() * scale + p, Color::Green(), diameter, &marker_array->markers[1]);
+  drawArrowFromPoints(origin + p, q * Eigen::Vector3d::UnitZ() * scale + p, Color::Blue(), diameter, &marker_array->markers[2]);
 }
 
-} /*namespace pure_pursuit_ros */
+} /*namespace pure_pursuit */

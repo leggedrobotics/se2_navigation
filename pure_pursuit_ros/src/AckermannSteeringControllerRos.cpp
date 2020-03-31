@@ -9,6 +9,7 @@
 #include <visualization_msgs/Marker.h>
 #include <thread>
 #include "pure_pursuit_core/math.hpp"
+#include "pure_pursuit_ros/visualization_helpers.hpp"
 
 namespace pure_pursuit {
 
@@ -68,24 +69,9 @@ void AckermannSteeringControllerRos::publishAnchorPoint() const {
   visualization_msgs::Marker anchorPoint;
   anchorPoint.header.frame_id = "map";
   anchorPoint.ns = "";
-  anchorPoint.color.a = 1;
-  anchorPoint.scale.x = 0.3;
-  anchorPoint.scale.y = 0.3;
-  anchorPoint.scale.z = 0.3;
-  anchorPoint.action = visualization_msgs::Marker::ADD;
-  anchorPoint.type = visualization_msgs::Marker::SPHERE;
-  anchorPoint.color.r = 1.0;
-  anchorPoint.color.g = 0.87;
-  anchorPoint.color.b = 0.0;
   anchorPoint.header.stamp = ros::Time::now();
-  anchorPoint.pose.position.x = currentAnchorPoint_.x();
-  anchorPoint.pose.position.y = currentAnchorPoint_.y();
-  anchorPoint.pose.position.z = 0.0;
-
-  anchorPoint.pose.orientation.x = 0.0;
-  anchorPoint.pose.orientation.y = 0.0;
-  anchorPoint.pose.orientation.z = 0.0;
-  anchorPoint.pose.orientation.w = 1.0;
+  const Eigen::Vector3d position(currentAnchorPoint_.x(), currentAnchorPoint_.y(), 0.0);
+  drawSphere(position, Color::Yellow(), 0.3, &anchorPoint);
   anchorPointPub_.publish(anchorPoint);
 }
 void AckermannSteeringControllerRos::publishPathSegment() const {
@@ -117,73 +103,29 @@ void AckermannSteeringControllerRos::publishLookaheadPoint() const {
   visualization_msgs::Marker lookaheadPoint;
   lookaheadPoint.header.frame_id = "map";
   lookaheadPoint.ns = "";
-  lookaheadPoint.color.a = 1;
-  lookaheadPoint.scale.x = 0.3;
-  lookaheadPoint.scale.y = 0.3;
-  lookaheadPoint.scale.z = 0.3;
-  lookaheadPoint.action = visualization_msgs::Marker::ADD;
-  lookaheadPoint.type = visualization_msgs::Marker::SPHERE;
-  lookaheadPoint.color.r = 1.0;
-  lookaheadPoint.color.g = 0.87;
-  lookaheadPoint.color.b = 0.0;
   lookaheadPoint.header.stamp = ros::Time::now();
-  lookaheadPoint.pose.position.x = currentLookaheadPoint_.x();
-  lookaheadPoint.pose.position.y = currentLookaheadPoint_.y();
-  lookaheadPoint.pose.position.z = 0.0;
-  lookaheadPoint.pose.orientation.x = 0.0;
-  lookaheadPoint.pose.orientation.y = 0.0;
-  lookaheadPoint.pose.orientation.z = 0.0;
-  lookaheadPoint.pose.orientation.w = 1.0;
+  const Eigen::Vector3d position(currentLookaheadPoint_.x(), currentLookaheadPoint_.y(), 0.0);
+  drawSphere(position, Color::Yellow(), 0.3, &lookaheadPoint);
   lookaheadPointPub_.publish(lookaheadPoint);
 }
 
 void AckermannSteeringControllerRos::publishP1() const {
-  visualization_msgs::Marker anchorPoint;
-  anchorPoint.header.frame_id = "map";
-  anchorPoint.ns = "";
-  anchorPoint.color.a = 1;
-  anchorPoint.scale.x = 0.3;
-  anchorPoint.scale.y = 0.3;
-  anchorPoint.scale.z = 0.3;
-  anchorPoint.action = visualization_msgs::Marker::ADD;
-  anchorPoint.type = visualization_msgs::Marker::SPHERE;
-  anchorPoint.color.r = 0.0;
-  anchorPoint.color.g = 0.0;
-  anchorPoint.color.b = 1.0;
-  anchorPoint.header.stamp = ros::Time::now();
-  anchorPoint.pose.position.x = p1_.x();
-  anchorPoint.pose.position.y = p1_.y();
-  anchorPoint.pose.position.z = 0.0;
-
-  anchorPoint.pose.orientation.x = 0.0;
-  anchorPoint.pose.orientation.y = 0.0;
-  anchorPoint.pose.orientation.z = 0.0;
-  anchorPoint.pose.orientation.w = 1.0;
-  p1Pub_.publish(anchorPoint);
+  visualization_msgs::Marker p1;
+  p1.header.frame_id = "map";
+  p1.ns = "";
+  p1.header.stamp = ros::Time::now();
+  const Eigen::Vector3d position(p1_.x(), p1_.y(), 0.0);
+  drawSphere(position, Color::Yellow(), 0.3, &p1);
+  p1Pub_.publish(p1);
 }
 void AckermannSteeringControllerRos::publishP2() const {
-  visualization_msgs::Marker anchorPoint;
-  anchorPoint.header.frame_id = "map";
-  anchorPoint.ns = "";
-  anchorPoint.color.a = 1;
-  anchorPoint.scale.x = 0.3;
-  anchorPoint.scale.y = 0.3;
-  anchorPoint.scale.z = 0.3;
-  anchorPoint.action = visualization_msgs::Marker::ADD;
-  anchorPoint.type = visualization_msgs::Marker::SPHERE;
-  anchorPoint.color.r = 0.0;
-  anchorPoint.color.g = 0.0;
-  anchorPoint.color.b = 1.0;
-  anchorPoint.header.stamp = ros::Time::now();
-  anchorPoint.pose.position.x = p2_.x();
-  anchorPoint.pose.position.y = p2_.y();
-  anchorPoint.pose.position.z = 0.0;
-
-  anchorPoint.pose.orientation.x = 0.0;
-  anchorPoint.pose.orientation.y = 0.0;
-  anchorPoint.pose.orientation.z = 0.0;
-  anchorPoint.pose.orientation.w = 1.0;
-  p2Pub_.publish(anchorPoint);
+  visualization_msgs::Marker p2;
+  p2.header.frame_id = "map";
+  p2.ns = "";
+  p2.header.stamp = ros::Time::now();
+  const Eigen::Vector3d position(p2_.x(), p2_.y(), 0.0);
+  drawSphere(position, Color::Yellow(), 0.3, &p2);
+  p2Pub_.publish(p2);
 }
 
 std::unique_ptr<HeadingController> createAckermannSteeringControllerRos(const AckermannSteeringCtrlParameters& parameters,
