@@ -10,7 +10,6 @@
 // Math
 #include <cmath>
 #include "test_helpers.hpp"
-#include "pure_pursuit_core/creators.hpp"
 #include "pure_pursuit_core/heading_control/AckermannSteeringController.hpp"
 
 namespace ppt = pure_pursuit_test;
