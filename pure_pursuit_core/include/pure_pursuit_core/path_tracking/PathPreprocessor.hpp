@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <memory>
+
 namespace pure_pursuit {
 
 class Path;
@@ -27,5 +29,7 @@ class PathPreprocessor {
   int mergePathSegmentsWithSameDrivingDirections(Path* path);
   PathPreprocessorParameters parameters_;
 };
+
+std::unique_ptr<PathPreprocessor> createPathPreprocessor(const PathPreprocessorParameters& parameters);
 
 } /* namespace pure_pursuit */

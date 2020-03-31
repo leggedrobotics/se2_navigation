@@ -139,4 +139,10 @@ AckermannSteeringCtrlParameters AckermannSteeringController::getParameters() con
   return parameters_;
 }
 
+std::unique_ptr<HeadingController> createAckermannSteeringController(const AckermannSteeringCtrlParameters& parameters) {
+  std::unique_ptr<AckermannSteeringController> controller = std::make_unique<AckermannSteeringController>();
+  controller->setParameters(parameters);
+  return std::move(controller);
+}
+
 } /* namespace pure_pursuit */

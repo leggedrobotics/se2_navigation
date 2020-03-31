@@ -84,4 +84,10 @@ int PathPreprocessor::mergePathSegmentsWithSameDrivingDirections(Path* path) {
   return piecesGluedTogether;
 }
 
+std::unique_ptr<PathPreprocessor> createPathPreprocessor(const PathPreprocessorParameters& parameters) {
+  std::unique_ptr<PathPreprocessor> preprocessor = std::make_unique<PathPreprocessor>();
+  preprocessor->setParameters(parameters);
+  return std::move(preprocessor);
+}
+
 } /* namespace pure_pursuit */

@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <memory>
+
 #include "pure_pursuit_core/math.hpp"
 #include "pure_pursuit_core/velocity_control/LongitudinalVelocityController.hpp"
 
@@ -31,5 +33,7 @@ class ConstantVelocityController : public LongitudinalVelocityController {
   ConstantVelocityControllerParameters parameters_;
   RateLimiter rateLimiter_;
 };
+
+std::unique_ptr<LongitudinalVelocityController> createConstantVelocityController(const ConstantVelocityControllerParameters& parameters);
 
 } /* namespace pure_pursuit */

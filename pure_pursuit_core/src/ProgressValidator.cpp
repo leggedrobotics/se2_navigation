@@ -26,4 +26,10 @@ void ProgressValidator::setParameters(const ProgressValidatorParameters& paramet
   parameters_ = parameters;
 }
 
+std::unique_ptr<ProgressValidator> createProgressValidator(const ProgressValidatorParameters& parameters) {
+  std::unique_ptr<ProgressValidator> validator = std::make_unique<ProgressValidator>();
+  validator->setParameters(parameters);
+  return std::move(validator);
+}
+
 }  // namespace pure_pursuit

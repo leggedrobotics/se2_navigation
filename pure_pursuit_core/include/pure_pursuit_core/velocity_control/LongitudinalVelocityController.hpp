@@ -6,6 +6,7 @@
  */
 
 #pragma once
+
 #include "pure_pursuit_core/Path.hpp"
 #include "pure_pursuit_core/common.hpp"
 

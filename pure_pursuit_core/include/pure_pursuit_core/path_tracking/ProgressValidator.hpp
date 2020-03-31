@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <memory>
+
 namespace pure_pursuit {
 
 class PathSegment;
@@ -30,5 +32,7 @@ class ProgressValidator {
  protected:
   ProgressValidatorParameters parameters_;
 };
+
+std::unique_ptr<ProgressValidator> createProgressValidator(const ProgressValidatorParameters& parameters);
 
 }  // namespace pure_pursuit

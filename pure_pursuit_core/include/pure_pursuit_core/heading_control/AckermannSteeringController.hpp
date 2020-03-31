@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <memory>
+
 #include "pure_pursuit_core/heading_control/HeadingController.hpp"
 #include "pure_pursuit_core/math.hpp"
 
@@ -40,5 +42,7 @@ class AckermannSteeringController : public HeadingController {
   AverageFilter avgFilter_;
   Point currentAnchorPoint_, currentLookaheadPoint_;
 };
+
+std::unique_ptr<HeadingController> createAckermannSteeringController(const AckermannSteeringCtrlParameters& parameters);
 
 }  // namespace pure_pursuit

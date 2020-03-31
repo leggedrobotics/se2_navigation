@@ -6,6 +6,9 @@
  */
 
 #pragma once
+
+#include <memory>
+
 #include "pure_pursuit_core/path_tracking/PathTracker.hpp"
 
 namespace pure_pursuit {
@@ -33,5 +36,11 @@ class SimplePathTracker : public PathTracker {
   Stopwatch stopwatch_;
   SimplePathTrackerParameters parameters_;
 };
+
+std::unique_ptr<PathTracker> createSimplePathTracker(const SimplePathTrackerParameters& parameters,
+                                                     std::shared_ptr<LongitudinalVelocityController> velocityController,
+                                                     std::shared_ptr<HeadingController> headingController,
+                                                     std::shared_ptr<ProgressValidator> validator,
+                                                     std::shared_ptr<PathPreprocessor> pathPreprocessor);
 
 } /* namespace pure_pursuit */

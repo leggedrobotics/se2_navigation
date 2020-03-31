@@ -38,4 +38,10 @@ void ConstantVelocityController::setParameters(const ConstantVelocityControllerP
   rateLimiter_.setTimestep(parameters.timestep_);
 }
 
+std::unique_ptr<LongitudinalVelocityController> createConstantVelocityController(const ConstantVelocityControllerParameters& parameters) {
+  std::unique_ptr<ConstantVelocityController> controller = std::make_unique<ConstantVelocityController>();
+  controller->setParameters(parameters);
+  return std::move(controller);
+}
+
 } /* namespace pure_pursuit */
