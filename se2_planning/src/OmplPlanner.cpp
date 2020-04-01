@@ -42,8 +42,8 @@ bool OmplPlanner::reset() {
 bool OmplPlanner::initialize() {
   bool status = initializeConcreteImpl();
 
-  ompl::base::SpaceInformationPtr si(simpleSetup_->getSpaceInformation());
-  simpleSetup_->setStateValidityChecker(std::bind(&OmplPlanner::isStateValid, this, si.get(), std::placeholders::_1));
+  ompl::base::SpaceInformationPtr si_ = simpleSetup_->getSpaceInformation();
+  simpleSetup_->setStateValidityChecker(std::bind(&OmplPlanner::isStateValid, this, si_.get(), std::placeholders::_1));
 
   return status;
 }
