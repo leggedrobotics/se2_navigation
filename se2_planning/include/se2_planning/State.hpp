@@ -10,23 +10,19 @@
 
 namespace se2_planning {
 
-struct State
-{
+struct State {
+  template <class T>
+  const T* as() const {
+    BOOST_CONCEPT_ASSERT((boost::Convertible<T*, State*>));
 
-  template<class T>
-  const T *as() const
-  {
-    BOOST_CONCEPT_ASSERT((boost::Convertible<T *, State *>));
-
-    return static_cast<const T *>(this);
+    return static_cast<const T*>(this);
   }
 
-  template<class T>
-  T *as()
-  {
-    BOOST_CONCEPT_ASSERT((boost::Convertible<T *, State *>));
+  template <class T>
+  T* as() {
+    BOOST_CONCEPT_ASSERT((boost::Convertible<T*, State*>));
 
-    return static_cast<T *>(this);
+    return static_cast<T*>(this);
   }
 
  protected:
@@ -34,4 +30,24 @@ struct State
   virtual ~State() = default;
 };
 
-} /* se2_planning */
+struct Path {
+  template <class T>
+  const T* as() const {
+    BOOST_CONCEPT_ASSERT((boost::Convertible<T*, Path*>));
+
+    return static_cast<const T*>(this);
+  }
+
+  template <class T>
+  T* as() {
+    BOOST_CONCEPT_ASSERT((boost::Convertible<T*, Path*>));
+
+    return static_cast<T*>(this);
+  }
+
+ protected:
+  Path() = default;
+  virtual ~Path() = default;
+};
+
+}  // namespace se2_planning

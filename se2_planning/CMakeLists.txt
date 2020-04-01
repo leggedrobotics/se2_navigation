@@ -6,11 +6,10 @@ add_compile_options(-Wall -Wextra -Wpedantic)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(SRC_FILES
-
+  src/OmplPlanner.cpp
 )
 
 set(CATKIN_PACKAGE_DEPENDENCIES 
-  any_ompl
   roscpp
 )
 
@@ -27,6 +26,7 @@ if(NOT EIGEN3_FOUND)
 endif()
 
 find_package(Boost REQUIRED)
+find_package(ompl REQUIRED)
 
 catkin_package(
   INCLUDE_DIRS
@@ -39,12 +39,14 @@ catkin_package(
   DEPENDS
     Eigen3
     Boost
+    ompl
 )
 
 include_directories(
   include
     ${EIGEN3_INCLUDE_DIR}
     ${Boost_INCLUDE_DIRS}
+    ${OMPL_INCLUDE_DIRS}
   SYSTEM
     ${catkin_INCLUDE_DIRS}
 )
@@ -59,6 +61,8 @@ add_dependencies(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
+  ${Boost_LIBRARIES}
+  ${OMPL_LIBRARIES}
 )
 
 add_executable(se2_planner_node

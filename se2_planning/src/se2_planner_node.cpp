@@ -5,14 +5,11 @@
  *      Author: jelavice
  */
 
-
 #include <ros/ros.h>
 
-int main(int argc, char **argv) {
-
+int main(int argc, char** argv) {
   ros::init(argc, argv, "se2_planner_node");
   ros::NodeHandle nh;
-
 
   ros::spin();
 
