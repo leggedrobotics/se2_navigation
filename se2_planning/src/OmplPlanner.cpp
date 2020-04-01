@@ -19,7 +19,7 @@ void OmplPlanner::setGoalState(const State& goalState) {
 }
 
 void OmplPlanner::getPath(Path* path) const {
-  convert(*path_, path);
+  convert(path_, path);
 }
 
 bool OmplPlanner::plan() {
@@ -32,6 +32,8 @@ bool OmplPlanner::plan() {
 
   // simplify solution
   simpleSetup_->simplifySolution();
+
+  path_ = simpleSetup_->getSolutionPath();
 
   return status;
 }

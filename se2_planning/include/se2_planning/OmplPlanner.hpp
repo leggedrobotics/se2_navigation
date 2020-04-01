@@ -29,7 +29,6 @@ class OmplPlanner : public Planner {
  protected:
   virtual bool initializeConcreteImpl() = 0;
   virtual bool planConcreteImpl() = 0;
-  virtual void setStateSpaceBoundaries() = 0;
   virtual bool isStateValid(const ompl::base::SpaceInformation* si, const ompl::base::State* state) = 0;
   virtual ompl::base::ScopedStatePtr convert(const State& state) const = 0;
   virtual void convert(const ompl::geometric::PathGeometric& pathOmpl, Path* path) const = 0;
@@ -38,8 +37,9 @@ class OmplPlanner : public Planner {
   ompl::geometric::SimpleSetupPtr simpleSetup_;
   ompl::base::RealVectorBounds stateSpaceBounds_;
   ompl::base::ScopedStatePtr startState_, goalState_;
-  std::shared_ptr<ompl::geometric::PathGeometric> path_;
+  ompl::geometric::PathGeometric path_;
   double maxPlanningDuration_ = 1.0;
+  ompl::geometric::SimpleSetup simpleSetup;
 };
 
 }  // namespace se2_planning
