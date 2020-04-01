@@ -11,5 +11,6 @@
 	<depend>eigen</depend>
 	<depend>any_ompl</depend>
 	<depend>boost</depend>
+	<depend>roscpp</depend>
 	
 </package>
