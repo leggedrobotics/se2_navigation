@@ -11,6 +11,9 @@
 
 #include "ompl/base/spaces/ReedsSheppStateSpace.h"
 
+#include "ompl/base/Planner.h"
+#include "ompl/geometric/planners/rrt/RRTstar.h"
+
 namespace se2_planning {
 
 template <typename T>
@@ -26,6 +29,12 @@ bool OmplReedsSheppPlanner::initializeConcreteImpl() {
   const int statSpaceDim = 2;
   bounds_ = std::make_unique<ompl::base::RealVectorBounds>(statSpaceDim);
   setStateSpaceBoundaries();
+  auto si = simpleSetup_->getSpaceInformation();
+  auto planner = std::make_shared<ompl::geometric::RRTstar>(si);
+  const double range = 10.0;
+  // todo read this from somewhere
+  planner->setRange(range);
+  simpleSetup_->setPlanner(planner);
   return true;
 }
 bool OmplReedsSheppPlanner::planConcreteImpl() {
@@ -46,7 +55,7 @@ bool OmplReedsSheppPlanner::isStateValid(const ompl::base::SpaceInformation* si,
 }
 ompl::base::ScopedStatePtr OmplReedsSheppPlanner::convert(const State& state) const {
   ompl::base::ScopedStatePtr stateOmpl(std::make_shared<ompl::base::ScopedState<> >(stateSpace_));
-  ompl::base::SE2StateSpace::StateType* s = ((*stateOmpl)())->as<ompl::base::SE2StateSpace::StateType>();
+  auto s = ((*stateOmpl)())->as<ompl::base::SE2StateSpace::StateType>();
   auto rsState = state.as<ReedsSheppState>();
   s->setX(rsState->x_);
   s->setY(rsState->y_);
