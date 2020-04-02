@@ -17,6 +17,7 @@ struct ReedsSheppState : public State {
   double x_ = 0.0;
   double y_ = 0.0;
   double yaw_ = 0.0;
+  Direction direction_ = Direction::NOP;
 };
 
 class OmplReedsSheppPlanner : public OmplPlanner {

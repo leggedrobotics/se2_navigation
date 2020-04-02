@@ -7,6 +7,8 @@
 
 #include "se2_planning/OmplReedsSheppPlanner.hpp"
 
+#include <memory>
+
 #include "ompl/base/spaces/ReedsSheppStateSpace.h"
 
 namespace se2_planning {
@@ -43,7 +45,13 @@ bool OmplReedsSheppPlanner::isStateValid(const ompl::base::SpaceInformation* si,
   return true;
 }
 ompl::base::ScopedStatePtr OmplReedsSheppPlanner::convert(const State& state) const {
-  ompl::base::ScopedStatePtr stateOmpl;
+  ompl::base::ScopedStatePtr stateOmpl(std::make_shared<ompl::base::ScopedState<> >(stateSpace_));
+  ompl::base::SE2StateSpace::StateType* s = ((*stateOmpl)())->as<ompl::base::SE2StateSpace::StateType>();
+  auto rsState = state.as<ReedsSheppState>();
+  s->setX(rsState->x_);
+  s->setY(rsState->y_);
+  s->setYaw(rsState->yaw_);
+
   return stateOmpl;
 }
 void OmplReedsSheppPlanner::convert(const ompl::geometric::PathGeometric& pathOmpl, Path* path) const {

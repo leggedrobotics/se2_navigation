@@ -14,6 +14,14 @@ int main(int argc, char** argv) {
   ros::NodeHandle nh;
 
   se2_planning::OmplReedsSheppPlanner planner;
+  planner.initialize();
+  using namespace se2_planning;
+  ReedsSheppState start, goal;
+  goal.x_ = 10.0;
+  goal.y_ = 10.0;
+  planner.setStartingState(start);
+  planner.setGoalState(goal);
+  planner.plan();
 
   ros::spin();
 
