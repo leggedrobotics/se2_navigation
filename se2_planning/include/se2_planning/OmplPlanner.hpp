@@ -19,16 +19,14 @@ class OmplPlanner : public Planner {
   ~OmplPlanner() override = default;
 
   bool reset() override;
-  bool plan() final;
-  bool initialize() final;
+  bool plan() override;
+  bool initialize() override;
   void setStartingState(const State& startingState) final;
   void setGoalState(const State& goalState) final;
   void getPath(Path* path) const final;
   void setMaxPlanningDuration(double T);
 
  protected:
-  virtual bool initializeConcreteImpl() = 0;
-  virtual bool planConcreteImpl() = 0;
   virtual bool isStateValid(const ompl::base::SpaceInformation* si, const ompl::base::State* state) = 0;
   virtual ompl::base::ScopedStatePtr convert(const State& state) const = 0;
   virtual void convert(const ompl::geometric::PathGeometric& pathOmpl, Path* path) const = 0;

@@ -21,10 +21,11 @@ class OmplReedsSheppPlannerRos : public OmplReedsSheppPlanner {
   explicit OmplReedsSheppPlannerRos(ros::NodeHandle* nh);
   ~OmplReedsSheppPlannerRos() override = default;
 
+  bool initialize() final;
+  bool plan() final;
+
  private:
   void initRos();
-  bool initializeConcreteImpl() final;
-  bool planConcreteImpl() final;
   void publishPathNavMsgs() const;
 
   ros::NodeHandle* nh_;

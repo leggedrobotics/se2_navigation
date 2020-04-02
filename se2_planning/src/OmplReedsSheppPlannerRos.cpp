@@ -6,6 +6,9 @@
  */
 
 #include "se2_planning/OmplReedsSheppPlannerRos.hpp"
+
+#include <thread>
+
 #include <nav_msgs/Path.h>
 #include <tf/transform_datatypes.h>
 
@@ -15,12 +18,17 @@ OmplReedsSheppPlannerRos::OmplReedsSheppPlannerRos(ros::NodeHandle* nh) : BASE()
   initRos();
 }
 
-bool OmplReedsSheppPlannerRos::initializeConcreteImpl() {
-  bool result = BASE::initializeConcreteImpl();
+bool OmplReedsSheppPlannerRos::initialize() {
+  bool result = BASE::initialize();
+  std::cout << "ros planner initialized" << std::endl;
   return result;
 }
-bool OmplReedsSheppPlannerRos::planConcreteImpl() {
-  bool result = BASE::planConcreteImpl();
+bool OmplReedsSheppPlannerRos::plan() {
+  std::cout << "Planning in OmplReedsSheppPlanner" << std::endl;
+  bool result = BASE::plan();
+
+  std::thread t([this]() { publishPathNavMsgs(); });
+  t.detach();
 
   return result;
 }
@@ -31,9 +39,12 @@ void OmplReedsSheppPlannerRos::initRos() {
 
 void OmplReedsSheppPlannerRos::publishPathNavMsgs() const {
   ReedsSheppPath rsPath;
+  std::cout << "Here2" << std::endl;
   getPath(&rsPath);
+  std::cout << "Here3" << std::endl;
 
   nav_msgs::Path msg = se2_planning::convert(rsPath);
+  std::cout << "Here4" << std::endl;
   pathNavMsgsPublisher_.publish(msg);
 }
 
@@ -51,6 +62,8 @@ geometry_msgs::Pose convert(const ReedsSheppState& state, double z) {
 
 nav_msgs::Path convert(const ReedsSheppPath& path) {
   nav_msgs::Path pathOut;
+  pathOut.header.frame_id = "map";
+  pathOut.header.stamp = ros::Time::now();
   pathOut.poses.reserve(2000);  // just a guess
   for (const auto& segment : path.segment_) {
     for (const auto& point : segment.point_) {

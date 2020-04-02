@@ -22,7 +22,7 @@ int sgn(T val) {
   return (T(0) < val) - (val < T(0));
 }
 
-bool OmplReedsSheppPlanner::initializeConcreteImpl() {
+bool OmplReedsSheppPlanner::initialize() {
   // todo load from somewhere
   const double turningRadius = 1.0;
   stateSpace_.reset(new ompl::base::ReedsSheppStateSpace(turningRadius));
@@ -38,10 +38,15 @@ bool OmplReedsSheppPlanner::initializeConcreteImpl() {
   simpleSetup_->setPlanner(planner);
   ompl::base::OptimizationObjectivePtr optimizationObjective(std::make_shared<ompl::base::PathLengthOptimizationObjective>(si));
   simpleSetup_->setOptimizationObjective(optimizationObjective);
+
+  BASE::initialize();
+
+  std::cout << "Initialized" << std::endl;
   return true;
 }
-bool OmplReedsSheppPlanner::planConcreteImpl() {
-  return true;
+bool OmplReedsSheppPlanner::plan() {
+  std::cout << "Planning in OmplReedsSheppPlanner" << std::endl;
+  return BASE::plan();
 }
 void OmplReedsSheppPlanner::setStateSpaceBoundaries() {
   // todo load from somewhere
@@ -74,7 +79,10 @@ void OmplReedsSheppPlanner::convert(const ompl::geometric::PathGeometric& pathOm
   const double resolution = 0.05;
   const unsigned int numPoints = static_cast<unsigned int>(std::ceil(std::fabs(pathOmpl.length()) / resolution));
   interpolatedPath.interpolate(numPoints);
-
+  std::cout << "Here 11" << std::endl;
+  std::cout << "Num points: " << numPoints << std::endl;
+  std::cout << "Length: " << pathOmpl.length() << std::endl;
+  std::cout << "num points in the input path: " << pathOmpl.getStateCount() << std::endl;
   unsigned int idStart = 0;
   ReedsSheppPathSegment::Direction prevDirection;
   for (; idStart < interpolatedPath.getStateCount(); ++idStart) {
@@ -93,16 +101,22 @@ void OmplReedsSheppPlanner::convert(const ompl::geometric::PathGeometric& pathOm
       break;  // break for
     }
   }
-
+  std::cout << "Here 12" << std::endl;
   auto returnPath = path->as<ReedsSheppPath>();
   returnPath->segment_.clear();
   returnPath->segment_.reserve(interpolatedPath.getStateCount());
-  ReedsSheppState point = se2_planning::convert(interpolatedPath.getState(idStart));
+  std::cout << "Here 121" << std::endl;
+  std::cout << "IdStart " << idStart << std::endl;
+  auto stateOmpl = interpolatedPath.getState(idStart);
+  ReedsSheppState point = se2_planning::convert(stateOmpl);
+  std::cout << "Here 122" << std::endl;
+
   ReedsSheppPathSegment currentSegment;
   currentSegment.point_.push_back(point);
   currentSegment.direction_ = prevDirection;
   auto currDirection = prevDirection;
   const int lastElemId = interpolatedPath.getStateCount() - 1;
+  std::cout << "Here 13" << std::endl;
   for (unsigned int i = idStart + 1; i < lastElemId; i++) {
     const int sign = getDistanceSignAt(interpolatedPath, idStart);
     switch (sign) {
@@ -137,6 +151,7 @@ void OmplReedsSheppPlanner::convert(const ompl::geometric::PathGeometric& pathOm
 
     prevDirection = currDirection;
   }
+  std::cout << "Here 15" << std::endl;
 }
 
 int OmplReedsSheppPlanner::getDistanceSignAt(const ompl::geometric::PathGeometric& path, unsigned int id) const {
@@ -156,8 +171,14 @@ double getLongestSegment(const double* array, int N) {
 }
 
 ReedsSheppState convert(const ompl::base::State* s) {
-  const auto* rsState = s->as<ompl::base::SE2StateSpace::StateType>();
+  if (s == nullptr) {
+    std::cout << "s is null ptr" << std::endl;
+  }
+  auto rsState = s->as<ompl::base::SE2StateSpace::StateType>();
   ReedsSheppState retState;
+  if (rsState == nullptr) {
+    std::cout << "cast failed state is null ptr" << std::endl;
+  }
   retState.x_ = rsState->getX();
   retState.y_ = rsState->getY();
   retState.yaw_ = rsState->getYaw();

@@ -34,10 +34,11 @@ class OmplReedsSheppPlanner : public OmplPlanner {
   OmplReedsSheppPlanner() = default;
   ~OmplReedsSheppPlanner() override = default;
 
+  bool initialize() override;
+  bool plan() override;
+
  protected:
   void setStateSpaceBoundaries();
-  bool initializeConcreteImpl() override;
-  bool planConcreteImpl() override;
   bool isStateValid(const ompl::base::SpaceInformation* si, const ompl::base::State* state) final;
   ompl::base::ScopedStatePtr convert(const State& state) const final;
   void convert(const ompl::geometric::PathGeometric& pathOmpl, Path* path) const final;

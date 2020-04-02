@@ -7,13 +7,14 @@
 
 #include <ros/ros.h>
 
-#include "se2_planning/OmplReedsSheppPlanner.hpp"
+#include "se2_planning/OmplReedsSheppPlannerRos.hpp"
 
 int main(int argc, char** argv) {
   ros::init(argc, argv, "se2_planner_node");
   ros::NodeHandle nh;
 
-  se2_planning::OmplReedsSheppPlanner planner;
+  se2_planning::OmplReedsSheppPlannerRos planner(&nh);
+  //  se2_planning::OmplReedsSheppPlanner planner;
   planner.initialize();
   using namespace se2_planning;
   ReedsSheppState start, goal;
