@@ -12,5 +12,7 @@
 	<depend>any_ompl</depend>
 	<depend>boost</depend>
 	<depend>roscpp</depend>
+	<depend>nav_msgs</depend>
+	<depend>tf2</depend>
 	
 </package>

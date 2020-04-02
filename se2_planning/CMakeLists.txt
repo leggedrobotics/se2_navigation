@@ -8,10 +8,13 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(SRC_FILES
   src/OmplPlanner.cpp
   src/OmplReedsSheppPlanner.cpp
+  src/OmplReedsSheppPlannerRos.cpp
 )
 
 set(CATKIN_PACKAGE_DEPENDENCIES 
   roscpp
+  nav_msgs
+  tf2
 )
 
 find_package(catkin REQUIRED
