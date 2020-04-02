@@ -12,6 +12,7 @@
 #include "ompl/base/spaces/ReedsSheppStateSpace.h"
 
 #include "ompl/base/Planner.h"
+#include "ompl/base/objectives/PathLengthOptimizationObjective.h"
 #include "ompl/geometric/planners/rrt/RRTstar.h"
 
 namespace se2_planning {
@@ -31,10 +32,12 @@ bool OmplReedsSheppPlanner::initializeConcreteImpl() {
   setStateSpaceBoundaries();
   auto si = simpleSetup_->getSpaceInformation();
   auto planner = std::make_shared<ompl::geometric::RRTstar>(si);
-  const double range = 10.0;
+  const double range = 15.0;
   // todo read this from somewhere
   planner->setRange(range);
   simpleSetup_->setPlanner(planner);
+  ompl::base::OptimizationObjectivePtr optimizationObjective(std::make_shared<ompl::base::PathLengthOptimizationObjective>(si));
+  simpleSetup_->setOptimizationObjective(optimizationObjective);
   return true;
 }
 bool OmplReedsSheppPlanner::planConcreteImpl() {
@@ -63,17 +66,103 @@ ompl::base::ScopedStatePtr OmplReedsSheppPlanner::convert(const State& state) co
 
   return stateOmpl;
 }
+
 void OmplReedsSheppPlanner::convert(const ompl::geometric::PathGeometric& pathOmpl, Path* path) const {
-  auto pathOmplCopy = pathOmpl;
-  unsigned int numPoints = 100;
+  using Direction = ReedsSheppPathSegment::Direction;
+  auto interpolatedPath = pathOmpl;
   // todo get from params
-  pathOmplCopy.interpolate(numPoints);
-  for (unsigned int i = 1; i < pathOmplCopy.getStateCount(); i++) {
-    const ompl::base::State* prevState = pathOmplCopy.getState(i - 1);
-    const ompl::base::State* state = pathOmplCopy.getState(i);
-    const auto rsPath = stateSpace_->as<ompl::base::ReedsSheppStateSpace>()->reedsShepp(prevState, state);
+  const double resolution = 0.05;
+  const unsigned int numPoints = static_cast<unsigned int>(std::ceil(std::fabs(pathOmpl.length()) / resolution));
+  interpolatedPath.interpolate(numPoints);
+
+  unsigned int idStart = 0;
+  ReedsSheppPathSegment::Direction prevDirection;
+  for (; idStart < interpolatedPath.getStateCount(); ++idStart) {
+    const int sign = getDistanceSignAt(interpolatedPath, idStart);
+    if (sign != 0) {
+      switch (sign) {
+        case 1: {
+          prevDirection = Direction::FWD;
+          break;
+        }
+        case -1: {
+          prevDirection = Direction::BCK;
+          break;
+        }
+      }
+      break;  // break for
+    }
+  }
+
+  auto returnPath = path->as<ReedsSheppPath>();
+  returnPath->segment_.clear();
+  returnPath->segment_.reserve(interpolatedPath.getStateCount());
+  ReedsSheppState point = se2_planning::convert(interpolatedPath.getState(idStart));
+  ReedsSheppPathSegment currentSegment;
+  currentSegment.point_.push_back(point);
+  currentSegment.direction_ = prevDirection;
+  auto currDirection = prevDirection;
+  const int lastElemId = interpolatedPath.getStateCount() - 1;
+  for (unsigned int i = idStart + 1; i < lastElemId; i++) {
+    const int sign = getDistanceSignAt(interpolatedPath, idStart);
+    switch (sign) {
+      case 0: {
+        continue;
+      }
+      case 1: {
+        currDirection = Direction::FWD;
+        break;
+      }
+      case -1: {
+        currDirection = Direction::BCK;
+        break;
+      }
+    }
+    ReedsSheppState point = se2_planning::convert(interpolatedPath.getState(i));
+    if (currDirection != prevDirection) {
+      returnPath->segment_.push_back(currentSegment);
+      currentSegment.direction_ = currDirection;
+      currentSegment.point_.clear();
+      currentSegment.point_.reserve(numPoints);
+      currentSegment.point_.push_back(point);
+    } else {
+      currentSegment.point_.push_back(point);
+    }
+
+    if (i == lastElemId - 1) {
+      currentSegment.point_.push_back(se2_planning::convert(interpolatedPath.getState(i + 1)));
+      returnPath->segment_.push_back(currentSegment);
+      break;
+    }
+
+    prevDirection = currDirection;
   }
 }
 
-}  // namespace se2_planning
-/* namespace se2_planning */
+int OmplReedsSheppPlanner::getDistanceSignAt(const ompl::geometric::PathGeometric& path, unsigned int id) const {
+  const ompl::base::State* currState = path.getState(id);
+  const ompl::base::State* stateNext = path.getState(id + 1);
+  const auto rsPath = stateSpace_->as<ompl::base::ReedsSheppStateSpace>()->reedsShepp(currState, stateNext);
+  const double longestSegment = getLongestSegment(rsPath.length_, 5);
+  return sgn(longestSegment);
+}
+
+double getLongestSegment(const double* array, int N) {
+  double pathLengths[5];
+  std::transform(array, array + N, pathLengths, [](double l) -> double { return std::fabs(l); });
+  double* maxElemIt = std::max_element(pathLengths, pathLengths + N);
+  const int maxElemId = maxElemIt - pathLengths;
+  return array[maxElemId];
+}
+
+ReedsSheppState convert(const ompl::base::State* s) {
+  const auto* rsState = s->as<ompl::base::SE2StateSpace::StateType>();
+  ReedsSheppState retState;
+  retState.x_ = rsState->getX();
+  retState.y_ = rsState->getY();
+  retState.yaw_ = rsState->getYaw();
+
+  return retState;
+}
+
+} /* namespace se2_planning */

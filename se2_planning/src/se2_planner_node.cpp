@@ -18,10 +18,12 @@ int main(int argc, char** argv) {
   using namespace se2_planning;
   ReedsSheppState start, goal;
   goal.x_ = 10.0;
-  goal.y_ = 10.0;
+  goal.y_ = 0.0;
   planner.setStartingState(start);
   planner.setGoalState(goal);
   planner.plan();
+  ReedsSheppPath path;
+  planner.getPath(&path);
 
   ros::spin();
 

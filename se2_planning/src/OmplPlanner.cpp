@@ -30,9 +30,6 @@ bool OmplPlanner::plan() {
     return false;
   }
 
-  // simplify solution
-  simpleSetup_->simplifySolution();
-
   *path_ = simpleSetup_->getSolutionPath();
 
   return status;
