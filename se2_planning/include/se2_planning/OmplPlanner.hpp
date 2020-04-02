@@ -35,11 +35,9 @@ class OmplPlanner : public Planner {
 
   ompl::base::StateSpacePtr stateSpace_;
   ompl::geometric::SimpleSetupPtr simpleSetup_;
-  ompl::base::RealVectorBounds stateSpaceBounds_;
   ompl::base::ScopedStatePtr startState_, goalState_;
-  ompl::geometric::PathGeometric path_;
+  std::unique_ptr<ompl::geometric::PathGeometric> path_;
   double maxPlanningDuration_ = 1.0;
-  ompl::geometric::SimpleSetup simpleSetup;
 };
 
 }  // namespace se2_planning
