@@ -15,16 +15,19 @@ struct ReedsSheppState : public State {
   double x_ = 0.0;
   double y_ = 0.0;
   double yaw_ = 0.0;
+  friend std::ostream& operator<<(std::ostream& out, const ReedsSheppState& rsState);
 };
 
 struct ReedsSheppPathSegment {
   enum class Direction : int { FWD, BCK };
   Direction direction_ = Direction::FWD;
   std::vector<ReedsSheppState> point_;
+  friend std::ostream& operator<<(std::ostream& out, const ReedsSheppPathSegment& segment);
 };
 
 struct ReedsSheppPath : public Path {
   std::vector<ReedsSheppPathSegment> segment_;
+  friend std::ostream& operator<<(std::ostream& out, const ReedsSheppPath& path);
 };
 
 class OmplReedsSheppPlanner : public OmplPlanner {
@@ -47,8 +50,8 @@ class OmplReedsSheppPlanner : public OmplPlanner {
   std::unique_ptr<ompl::base::RealVectorBounds> bounds_;
 };
 
+std::string toString(ReedsSheppPathSegment::Direction direction);
 ReedsSheppState convert(const ompl::base::State* s);
-double getLongestSegment(const double* array, int N);
 ompl::geometric::PathGeometric interpolatePath(const ompl::geometric::PathGeometric& inputPath, double deisredResolution);
 
 } /* namespace se2_planning */

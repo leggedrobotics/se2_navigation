@@ -24,7 +24,7 @@ int sgn(T val) {
 
 bool OmplReedsSheppPlanner::initialize() {
   // todo load from somewhere
-  const double turningRadius = 1.0;
+  const double turningRadius = 10.0;
   stateSpace_.reset(new ompl::base::ReedsSheppStateSpace(turningRadius));
   simpleSetup_.reset(new ompl::geometric::SimpleSetup(stateSpace_));
   const int statSpaceDim = 2;
@@ -113,7 +113,7 @@ void OmplReedsSheppPlanner::convert(const ompl::geometric::PathGeometric& pathOm
 
   // iterate from the first state onwards
   for (unsigned int i = idStart + 1; i < lastElemId; i++) {
-    const int sign = getDistanceSignAt(interpolatedPath, idStart);
+    const int sign = getDistanceSignAt(interpolatedPath, i);
     switch (sign) {
       case 0: {
         continue;  // NOP state ignored
@@ -154,16 +154,13 @@ int OmplReedsSheppPlanner::getDistanceSignAt(const ompl::geometric::PathGeometri
   const ompl::base::State* currState = path.getState(id);
   const ompl::base::State* stateNext = path.getState(id + 1);
   const auto rsPath = stateSpace_->as<ompl::base::ReedsSheppStateSpace>()->reedsShepp(currState, stateNext);
-  const double longestSegment = getLongestSegment(rsPath.length_, 5);
-  return sgn(longestSegment);
-}
-
-double getLongestSegment(const double* array, int N) {
-  double pathLengths[5];
-  std::transform(array, array + N, pathLengths, [](double l) -> double { return std::fabs(l); });
-  double* maxElemIt = std::max_element(pathLengths, pathLengths + N);
-  const int maxElemId = maxElemIt - pathLengths;
-  return array[maxElemId];
+  const int numElemInRsPathLength = 5;
+  std::vector<double> signedLengths(numElemInRsPathLength), lengths(numElemInRsPathLength);
+  signedLengths.assign(rsPath.length_, rsPath.length_ + numElemInRsPathLength);
+  std::transform(signedLengths.begin(), signedLengths.end(), lengths.begin(), [](double x) -> double { return std::fabs(x); });
+  auto maxElemIt = std::max_element(lengths.begin(), lengths.end());
+  const int maxElemId = maxElemIt - lengths.begin();
+  return sgn(signedLengths.at(maxElemId));
 }
 
 ReedsSheppState convert(const ompl::base::State* s) {
@@ -179,10 +176,42 @@ ReedsSheppState convert(const ompl::base::State* s) {
 ompl::geometric::PathGeometric interpolatePath(const ompl::geometric::PathGeometric& inputPath, double deisredResolution) {
   auto interpolatedPath = inputPath;
   // todo get from params
-  const double resolution = 0.05;
+  const double resolution = 0.2;
   const unsigned int numPoints = static_cast<unsigned int>(std::ceil(std::fabs(inputPath.length()) / resolution));
   interpolatedPath.interpolate(numPoints);
   return interpolatedPath;
+}
+
+std::ostream& operator<<(std::ostream& out, const ReedsSheppState& rsState) {
+  out << "x =" << rsState.x_ << ", y=" << rsState.y_ << ", yaw=" << rsState.yaw_;  // actual output done here
+  return out;
+}
+
+std::string toString(ReedsSheppPathSegment::Direction direction) {
+  switch (direction) {
+    case ReedsSheppPathSegment::Direction::FWD:
+      return "FWD";
+    case ReedsSheppPathSegment::Direction::BCK:
+      return "BCK";
+  }
+}
+std::ostream& operator<<(std::ostream& out, const ReedsSheppPathSegment& pathSegment) {
+  out << "direction=" << toString(pathSegment.direction_) << ", numPoints: " << pathSegment.point_.size() << "\n";
+  out << "Points: \n";
+  for (const auto& point : pathSegment.point_) {
+    out << point << "\n";
+  }
+  return out;
+}
+
+std::ostream& operator<<(std::ostream& out, const ReedsSheppPath& path) {
+  const int N = path.segment_.size();
+  out << "num segments: " << N << "\n";
+  for (int i = 0; i < N; ++i) {
+    out << "segment: " << i << "\n";
+    out << path.segment_.at(i);
+  }
+  return out;
 }
 
 } /* namespace se2_planning */

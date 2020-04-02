@@ -25,6 +25,8 @@ int main(int argc, char** argv) {
   planner.plan();
   ReedsSheppPath path;
   planner.getPath(&path);
+  std::cout << "Planned path: " << std::endl;
+  std::cout << path << std::endl;
 
   ros::spin();
 
