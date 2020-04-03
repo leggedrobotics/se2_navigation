@@ -41,6 +41,7 @@ class OmplReedsSheppPlanner : public OmplPlanner {
   bool plan() override;
 
  protected:
+  void initializeStateSpace() final;
   void setStateSpaceBoundaries();
   bool isStateValid(const ompl::base::SpaceInformation* si, const ompl::base::State* state) final;
   ompl::base::ScopedStatePtr convert(const State& state) const final;

@@ -40,6 +40,12 @@ bool OmplPlanner::reset() {
   return true;
 }
 bool OmplPlanner::initialize() {
+  initializeStateSpace();
+  if (stateSpace_ == nullptr) {
+    std::cerr << "OmplPlanner:: state space is nullptr" << std::endl;
+    return false;
+  }
+  simpleSetup_.reset(new ompl::geometric::SimpleSetup(stateSpace_));
   ompl::base::SpaceInformationPtr si = simpleSetup_->getSpaceInformation();
   simpleSetup_->setStateValidityChecker(std::bind(&OmplPlanner::isStateValid, this, si.get(), std::placeholders::_1));
   path_ = std::make_unique<ompl::geometric::PathGeometric>(si);

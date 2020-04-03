@@ -23,13 +23,7 @@ int sgn(T val) {
 }
 
 bool OmplReedsSheppPlanner::initialize() {
-  // todo load from somewhere
-  const double turningRadius = 10.0;
-  stateSpace_.reset(new ompl::base::ReedsSheppStateSpace(turningRadius));
-  simpleSetup_.reset(new ompl::geometric::SimpleSetup(stateSpace_));
-  const int statSpaceDim = 2;
-  bounds_ = std::make_unique<ompl::base::RealVectorBounds>(statSpaceDim);
-  setStateSpaceBoundaries();
+  BASE::initialize();
   auto si = simpleSetup_->getSpaceInformation();
   auto planner = std::make_shared<ompl::geometric::RRTstar>(si);
   const double range = 15.0;
@@ -38,9 +32,17 @@ bool OmplReedsSheppPlanner::initialize() {
   simpleSetup_->setPlanner(planner);
   ompl::base::OptimizationObjectivePtr optimizationObjective(std::make_shared<ompl::base::PathLengthOptimizationObjective>(si));
   simpleSetup_->setOptimizationObjective(optimizationObjective);
-  BASE::initialize();
 
   return true;
+}
+
+void OmplReedsSheppPlanner::initializeStateSpace() {
+  // todo load from somewhere
+  const double turningRadius = 10.0;
+  stateSpace_.reset(new ompl::base::ReedsSheppStateSpace(turningRadius));
+  const int statSpaceDim = 2;
+  bounds_ = std::make_unique<ompl::base::RealVectorBounds>(statSpaceDim);
+  setStateSpaceBoundaries();
 }
 bool OmplReedsSheppPlanner::plan() {
   return BASE::plan();

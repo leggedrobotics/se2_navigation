@@ -27,6 +27,7 @@ class OmplPlanner : public Planner {
   void setMaxPlanningDuration(double T);
 
  protected:
+  virtual void initializeStateSpace() = 0;
   virtual bool isStateValid(const ompl::base::SpaceInformation* si, const ompl::base::State* state) = 0;
   virtual ompl::base::ScopedStatePtr convert(const State& state) const = 0;
   virtual void convert(const ompl::geometric::PathGeometric& pathOmpl, Path* path) const = 0;
