@@ -14,18 +14,10 @@ namespace se2_planning_rviz {
 //TODO make thes separate pose widgets
 
 PoseWidget::PoseWidget(const std::string& id, QWidget* parent)
-    : PoseWidget(id, false, parent)
-{
-
-}
-
-PoseWidget::PoseWidget(const std::string& id, bool is6DOF, QWidget* parent)
     : QWidget(parent),
-      is6DOF_(is6DOF),
       id_(id)
-
 {
-  createTable();
+  reateTable();
 }
 
 void PoseWidget::createTable()

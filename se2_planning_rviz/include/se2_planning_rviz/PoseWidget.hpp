@@ -18,7 +18,6 @@ class PoseWidget : public QWidget
   Q_OBJECT
  public:
   explicit PoseWidget(const std::string& id, QWidget* parent = 0);
-  explicit PoseWidget(const std::string& id, bool is6DOF, QWidget* parent = 0 );
 
   std::string id() const
   {
@@ -50,8 +49,6 @@ public Q_SLOTS:
   {
     return rad * 180.0 / M_PI;
   }
-
-  bool is6DOF_ = false;
 
   // QT stuff:
   QTableWidget* table_widget_;
