@@ -7,16 +7,19 @@
 
 #include <ros/ros.h>
 
-#include "../include/se2_planning_ros/OmplReedsSheppPlannerRos.hpp"
+#include "se2_planning_ros/loaders.hpp"
 
 int main(int argc, char** argv) {
-  ros::init(argc, argv, "se2_planner_node");
-  ros::NodeHandle nh;
-
-  se2_planning::OmplReedsSheppPlannerRos planner(&nh);
-  //  se2_planning::OmplReedsSheppPlanner planner;
-  planner.initialize();
   using namespace se2_planning;
+
+  ros::init(argc, argv, "se2_planner_node");
+  ros::NodeHandle nh("~");
+
+  std::string filename = nh.param<std::string>("/ompl_planner_ros/parameter_path", "ompl_rs_planner_ros/nav_msgs_path");
+  const auto parameters = loadParameters(filename);
+  se2_planning::OmplReedsSheppPlannerRos planner(&nh);
+  planner.setParameters(parameters);
+  planner.initialize();
   ReedsSheppState start, goal;
   goal.x_ = 0.0;
   goal.y_ = 10.0;

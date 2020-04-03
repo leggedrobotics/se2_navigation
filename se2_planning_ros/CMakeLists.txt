@@ -7,6 +7,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(SRC_FILES
   src/OmplReedsSheppPlannerRos.cpp
+  src/loaders.cpp
 )
 
 set(CATKIN_PACKAGE_DEPENDENCIES 
@@ -37,6 +38,7 @@ catkin_package(
     ${EIGEN3_INCLUDE_DIR}
   LIBRARIES
     ${PROJECT_NAME}
+    yaml-cpp
   CATKIN_DEPENDS
    ${CATKIN_PACKAGE_DEPENDENCIES}
   DEPENDS
@@ -50,6 +52,7 @@ include_directories(
     ${EIGEN3_INCLUDE_DIR}
     ${Boost_INCLUDE_DIRS}
     ${OMPL_INCLUDE_DIRS}
+    ${YAML_CPP_INCLUDE_DIR}
   SYSTEM
     ${catkin_INCLUDE_DIRS}
 )
@@ -66,6 +69,7 @@ target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
   ${Boost_LIBRARIES}
   ${OMPL_LIBRARIES}
+  yaml-cpp
 )
 
 add_executable(se2_planner_node

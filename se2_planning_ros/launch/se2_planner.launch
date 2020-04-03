@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <launch>
+
+    <param name="/ompl_planner_ros/parameter_path" type="string"
+		value="$(find se2_planning_ros)/config/reeds_shepp_planner_ros.yaml" />
+
 	<node name="se2_planner_node" pkg="se2_planning_ros"
 		type="se2_planner_node" output="screen" launch-prefix="">
 	</node>
