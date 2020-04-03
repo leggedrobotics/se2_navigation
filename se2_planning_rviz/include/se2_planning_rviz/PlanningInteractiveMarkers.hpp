@@ -2,9 +2,8 @@
 
 #include <interactive_markers/interactive_marker_server.h>
 #include <ros/ros.h>
-#include <m545_planner_msgs/PathState.h>
 #include <geometry_msgs/Pose.h>
-//#include "m545_planner_interface/markers/helpers.h"
+#include "se2_visualization_ros/visualization_helpers.hpp"
 
 namespace se2_planning_rviz {
 
@@ -23,7 +22,7 @@ class PlanningInteractiveMarkers
   // Bind callback for whenever pose updates.
   void setPoseUpdatedCallback(const PoseUpdatedFunctionType& function);
 
-  void initialize(m545_planner_interface::Color start_goal_color, const double scale);
+  void initialize(const se2_visualization_ros::Color &start_goal_color, const double scale);
   void initialize();
 
   void enableSetPoseMarker(const geometry_msgs::Pose& pose);
@@ -48,7 +47,7 @@ class PlanningInteractiveMarkers
 
  private:
   // Creates markers without adding them to the marker server.
-  void createMarkers(m545_planner_interface::Color start_goal_color, const double scale);
+  void createMarkers(se2_visualization_ros::Color start_goal_color, const double scale);
 
   // ROS stuff.
   ros::NodeHandle nh_;

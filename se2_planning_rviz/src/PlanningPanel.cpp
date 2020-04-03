@@ -37,8 +37,8 @@ PlanningPanel::PlanningPanel(QWidget* parent)
 
 void PlanningPanel::onInitialize()
 {
-  const double markerScale = 5.0;
-  interactive_markers_.initialize(m545_planner_interface::Color::Orange(), markerScale);
+  const double markerScale = 3.0;
+  interactive_markers_.initialize(se2_visualization_ros::Color::Orange(), markerScale);
   interactive_markers_.setPoseUpdatedCallback(
       std::bind(&PlanningPanel::updateInteractiveMarkerPose, this, std::placeholders::_1));
 
@@ -295,33 +295,33 @@ interactive_markers_.updateMarkerPose(id, pose);
 void PlanningPanel::callPublishPlanRequest()
 {
 
-std::thread t([this] {
-
-m545_planner_msgs::PathRequest msg;
-m545_planner_msgs::PathState startPoint;
-m545_planner_msgs::PathState goalPoint;
-
-const bool useCurrentStateAsStartingPose = currentStateAsStartCheckBox_->isChecked();
-
-if (useCurrentStateAsStartingPose) {
-  getStartPoseFromService(&(startPoint.pose));
-  lastPose_ = startPoint.pose;  //update last state
-  finishEditing("start");
-} else {
-  getStartPoseFromWidget(&(startPoint.pose));
-}
-
-goal_pose_widget_->getPose(&(goalPoint.pose));
-
-msg.start = startPoint;
-msg.goal = goalPoint;
-msg.action = msg.PLAN;
-
-plan_request_pub_.publish(msg);
-
-});
-
-t.detach();
+//std::thread t([this] {
+//
+//m545_planner_msgs::PathRequest msg;
+//m545_planner_msgs::PathState startPoint;
+//m545_planner_msgs::PathState goalPoint;
+//
+//const bool useCurrentStateAsStartingPose = currentStateAsStartCheckBox_->isChecked();
+//
+//if (useCurrentStateAsStartingPose) {
+//  getStartPoseFromService(&(startPoint.pose));
+//  lastPose_ = startPoint.pose;  //update last state
+//  finishEditing("start");
+//} else {
+//  getStartPoseFromWidget(&(startPoint.pose));
+//}
+//
+//goal_pose_widget_->getPose(&(goalPoint.pose));
+//
+//msg.start = startPoint;
+//msg.goal = goalPoint;
+//msg.action = msg.PLAN;
+//
+//plan_request_pub_.publish(msg);
+//
+//});
+//
+//t.detach();
 
 }
 
@@ -331,69 +331,69 @@ start_pose_widget_->getPose(startPoint);
 }
 void PlanningPanel::getStartPoseFromService(geometry_msgs::Pose *startPoint)
 {
-m545_planner_msgs::CurrentState::Request req;
-req.query = "dummy";
-req.frame = "map";
-m545_planner_msgs::CurrentState::Response res;
-
-std::string service_name = currentStateServiceName_.toStdString();
-
-try {
-ROS_DEBUG_STREAM("Service name: " << service_name);
-if (false == ros::service::call(service_name, req, res)) {
-  ROS_WARN_STREAM("Couldn't call service: " << service_name);
-}
-} catch (const std::exception& e) {
-ROS_ERROR_STREAM("Service Exception: " << e.what());
-}
-*startPoint = res.currentState.pose;
+//m545_planner_msgs::CurrentState::Request req;
+//req.query = "dummy";
+//req.frame = "map";
+//m545_planner_msgs::CurrentState::Response res;
+//
+//std::string service_name = currentStateServiceName_.toStdString();
+//
+//try {
+//ROS_DEBUG_STREAM("Service name: " << service_name);
+//if (false == ros::service::call(service_name, req, res)) {
+//  ROS_WARN_STREAM("Couldn't call service: " << service_name);
+//}
+//} catch (const std::exception& e) {
+//ROS_ERROR_STREAM("Service Exception: " << e.what());
+//}
+//*startPoint = res.currentState.pose;
 
 }
 
 void PlanningPanel::callPublishTrackingCommand()
 {
-
-using namespace m545_planner_msgs;
-PathFollowerCommand msg;
-PathFollowerCommandRos msgRos;
-
-msg.command_ = PathFollowerCommand::Command::StartTracking;
-path_follower_command_pub_.publish(PathFollowerCommandConversion::convert(msg));
+//
+//using namespace m545_planner_msgs;
+//PathFollowerCommand msg;
+//PathFollowerCommandRos msgRos;
+//
+//msg.command_ = PathFollowerCommand::Command::StartTracking;
+//path_follower_command_pub_.publish(PathFollowerCommandConversion::convert(msg));
 
 }
 
 void PlanningPanel::callPublishStopTrackingCommand()
 {
 
-using namespace m545_planner_msgs;
-PathFollowerCommand msg;
-PathFollowerCommandRos msgRos;
-
-msg.command_ = PathFollowerCommand::Command::StopTracking;
-path_follower_command_pub_.publish(PathFollowerCommandConversion::convert(msg));
+//using namespace m545_planner_msgs;
+//PathFollowerCommand msg;
+//PathFollowerCommandRos msgRos;
+//
+//msg.command_ = PathFollowerCommand::Command::StopTracking;
+//path_follower_command_pub_.publish(PathFollowerCommandConversion::convert(msg));
 
 }
 
 void PlanningPanel::advertiseControllerCommand()
 {
-std::string topic = controllerCommandTopicName_.toStdString();
-if (topic.empty())
-return;
-using namespace m545_planner_msgs;
-const bool isLatchPublishers = false;
-ROS_INFO_STREAM("GUI: Sending the controller command on topic: " << topic);
-path_follower_command_pub_ = nh_.advertise<PathFollowerCommandRos>(topic, 1, isLatchPublishers);
+//std::string topic = controllerCommandTopicName_.toStdString();
+//if (topic.empty())
+//return;
+//using namespace m545_planner_msgs;
+//const bool isLatchPublishers = false;
+//ROS_INFO_STREAM("GUI: Sending the controller command on topic: " << topic);
+//path_follower_command_pub_ = nh_.advertise<PathFollowerCommandRos>(topic, 1, isLatchPublishers);
 
 }
 void PlanningPanel::advertisePathRequest()
 {
-std::string topic = pathRequestTopicName_.toStdString();
-if (topic.empty())
-return;
-using namespace m545_planner_msgs;
-const bool isLatchPublishers = false;
-ROS_INFO_STREAM("GUI: Sending plan request on topic: " << topic);
-plan_request_pub_ = nh_.advertise<PathRequest>(topic, 1, isLatchPublishers);
+//std::string topic = pathRequestTopicName_.toStdString();
+//if (topic.empty())
+//return;
+//using namespace m545_planner_msgs;
+//const bool isLatchPublishers = false;
+//ROS_INFO_STREAM("GUI: Sending plan request on topic: " << topic);
+//plan_request_pub_ = nh_.advertise<PathRequest>(topic, 1, isLatchPublishers);
 }
 
 }  /* namespace se2_planning_rviz */

@@ -28,7 +28,7 @@ void PlanningInteractiveMarkers::setFrameId(const std::string& frame_id)
   marker_prototype_.header.frame_id = frame_id_;
 }
 
-void PlanningInteractiveMarkers::initialize(m545_planner_interface::Color start_goal_color,
+void PlanningInteractiveMarkers::initialize(const se2_visualization_ros::Color &start_goal_color,
                                             const double scale)
 {
 
@@ -38,11 +38,11 @@ void PlanningInteractiveMarkers::initialize(m545_planner_interface::Color start_
 
 void PlanningInteractiveMarkers::initialize()
 {
-  createMarkers(m545_planner_interface::Color::Pink(), 1.0);
+  createMarkers(se2_visualization_ros::Color::Pink(), 1.0);
   initialized_ = true;
 }
 
-void PlanningInteractiveMarkers::createMarkers(m545_planner_interface::Color start_goal_color,
+void PlanningInteractiveMarkers::createMarkers(se2_visualization_ros::Color start_goal_color,
                                                const double scale)
 {
 
@@ -213,16 +213,9 @@ void PlanningInteractiveMarkers::enableMarker(const std::string& id,
    * otherwise it doesn't dipslay stuff correctly
    */
   for (auto &control : marker_map_[id].controls) {
-    if (is6DOF_) {
-      if (control.markers.size() > 3) {
-        control.markers[3].text = id;
-      }
-    } else {
       if (control.markers.size() > 1) {
         control.markers[1].text = id;
       }
-    }
-
   }
   marker_map_[id].pose = state;
   marker_server_.insert(marker_map_[id]);

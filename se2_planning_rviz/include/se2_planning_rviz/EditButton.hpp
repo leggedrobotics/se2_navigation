@@ -1,7 +1,6 @@
 #pragma once
 
 #ifndef Q_MOC_RUN
-#include <m545_planner_msgs/PathState.h>
 #include <QPushButton>
 #include <QWidget>
 #endif

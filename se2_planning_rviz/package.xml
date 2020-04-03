@@ -14,6 +14,7 @@
   <depend>tf2</depend>
   <depend>visualization_msgs</depend>
   <depend>rviz</depend>
+  <depend>se2_visualization_ros</depend>
 
   <export>
       <rviz plugin="${prefix}/plugin_description.xml"/>

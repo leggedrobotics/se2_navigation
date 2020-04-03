@@ -11,6 +11,7 @@ set(CATKIN_PACKAGE_DEPENDENCIES
   tf2
   visualization_msgs
   rviz
+  se2_visualization_ros
 )
 
 find_package(catkin REQUIRED
