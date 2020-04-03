@@ -36,6 +36,8 @@ class OmplPlanner : public Planner {
   ompl::geometric::SimpleSetupPtr simpleSetup_;
   ompl::base::ScopedStatePtr startState_, goalState_;
   std::unique_ptr<ompl::geometric::PathGeometric> path_;
+
+ private:
   double maxPlanningDuration_ = 1.0;
 };
 
