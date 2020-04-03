@@ -24,6 +24,7 @@ int sgn(T val) {
 
 void OmplReedsSheppPlanner::setParameters(const OmplReedsSheppPlannerParameters& parameters) {
   parameters_ = parameters;
+  maxPlanningDuration_ = parameters.maxPlanningTime_;
 }
 
 bool OmplReedsSheppPlanner::initialize() {

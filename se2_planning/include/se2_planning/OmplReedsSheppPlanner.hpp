@@ -38,6 +38,7 @@ struct OmplReedsSheppPlannerParameters {
   double yLowerBound_ = -1000.0;
   double yUpperBound_ = 1000.0;
   double pathSpatialResolution_ = 0.05;
+  double maxPlanningTime_ = 1.0;
 };
 
 class OmplReedsSheppPlanner : public OmplPlanner {

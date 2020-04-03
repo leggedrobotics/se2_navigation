@@ -2,8 +2,11 @@
 
 <launch>
 
+    <arg name="ompl_planner_ros_parameter_path" 
+		default="$(find se2_planning_ros)/config/reeds_shepp_planner_ros.yaml" />
+
     <param name="/ompl_planner_ros/parameter_path" type="string"
-		value="$(find se2_planning_ros)/config/reeds_shepp_planner_ros.yaml" />
+		value="$(arg ompl_planner_ros_parameter_path)" />
 
 	<node name="se2_planner_node" pkg="se2_planning_ros"
 		type="se2_planner_node" output="screen" launch-prefix="">
