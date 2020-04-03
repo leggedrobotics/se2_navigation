@@ -1,7 +1,6 @@
-#include "m545_planner_interface/planning_interactive_markers.h"
-#include "m545_planner_interface/markers/hexacopter_marker.h" //TODO  get rid of this
-#include "m545_planner_interface/markers/helpers.h"
-namespace m545_planner_interface {
+#include "se2_planning_rviz/PlanningInteractiveMarkers.hpp"
+
+namespace se2_planning_rviz {
 
 PlanningInteractiveMarkers::PlanningInteractiveMarkers(const ros::NodeHandle& nh,
                                                        const std::string &ns)
@@ -416,4 +415,4 @@ visualization_msgs::InteractiveMarker * PlanningInteractiveMarkers::GetMarkerPro
 
 }
 
-}  // end namespace mav_planning_rviz
+}  // namespace se2_planning_rviz

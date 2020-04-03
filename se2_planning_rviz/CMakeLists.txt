@@ -22,17 +22,16 @@ find_package(catkin REQUIRED
 
 set(CMAKE_AUTOMOC OFF)
 set(HEADER_FILES_QT
-  include/se2_planning_rviz/pose_widget.h
-  include/se2_planning_rviz/planning_panel.h
-  include/se2_planning_rviz/edit_button.h
-  include/se2_planning_rviz/map_manager_panel.h
+  include/se2_planning_rviz/PoseWidget.hpp
+  include/se2_planning_rviz/PlanningPanel.hpp
+  include/se2_planning_rviz/EditButton.hpp
 )
 
 set(SRC_FILES
-  src/planning_panel.cpp
-  src/pose_widget.cpp
-  src/edit_button.cpp
-  src/planning_interactive_markers.cpp
+  src/PlanningPanel.cpp
+  src/PoseWidget.cpp
+  src/EditButton.cpp
+  src/PlanningInteractiveMarkers.cpp
 )
 
 set(qt Qt5)

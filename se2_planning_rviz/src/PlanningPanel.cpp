@@ -13,17 +13,17 @@
 #include <geometry_msgs/Twist.h>
 #include <rviz/visualization_manager.h>
 
-#include "m545_planner_interface/planning_panel.h"
-#include "m545_planner_interface/pose_widget.h"
-#include "m545_planner_interface/edit_button.h"
+#include "se2_planning_rviz/PlanningPanel.hpp"
+#include "se2_planning_rviz/PoseWidget.hpp"
+#include "se2_planning_rviz/EditButton.hpp"
 
-#include "m545_planner_msgs/PathRequest.h"
-#include "m545_planner_msgs/PathFollowerCommand.hpp"
-#include <m545_planner_msgs/CurrentState.h>
+//#include "m545_planner_msgs/PathRequest.h"
+//#include "m545_planner_msgs/PathFollowerCommand.hpp"
+//#include <m545_planner_msgs/CurrentState.h>
 
 #include <thread>
 
-namespace m545_planner_interface {
+namespace se2_planning_rviz {
 
 PlanningPanel::PlanningPanel(QWidget* parent)
     : rviz::Panel(parent),
@@ -396,11 +396,8 @@ ROS_INFO_STREAM("GUI: Sending plan request on topic: " << topic);
 plan_request_pub_ = nh_.advertise<PathRequest>(topic, 1, isLatchPublishers);
 }
 
-}  // end namespace
+}  /* namespace se2_planning_rviz */
 
-// Tell pluginlib about this class.  Every class which should be
-// loadable by pluginlib::ClassLoader must have these two lines
-// compiled in its .cpp file, outside of any namespace scope.
+
 #include <pluginlib/class_list_macros.h>
-PLUGINLIB_EXPORT_CLASS(m545_planner_interface::PlanningPanel, rviz::Panel)
-// END_TUTORIAL
+PLUGINLIB_EXPORT_CLASS(se2_planning_rviz::PlanningPanel, rviz::Panel)

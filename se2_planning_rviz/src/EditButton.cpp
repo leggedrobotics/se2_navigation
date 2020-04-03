@@ -4,9 +4,9 @@
 #include <QTableView>
 #include <QTableWidget>
 
-#include "m545_planner_interface/edit_button.h"
+#include "se2_planning_rviz/EditButton.hpp"
 
-namespace m545_planner_interface {
+namespace se2_planning_rviz {
 
 EditButton::EditButton(const std::string& id, QWidget* parent)
     : EditButton(id,"Edit",parent) {
@@ -54,4 +54,4 @@ void EditButton::finishEditing() {
 
 }
 
-}  // namespace mav_planning_rviz
+}  // namespace se2_planning_rviz

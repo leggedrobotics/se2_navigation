@@ -4,13 +4,12 @@
 #include <QTableView>
 #include <QTableWidget>
 
-#include "m545_planner_interface/pose_widget.h"
-#include "m545_path_utils/Helpers.hpp"
+#include "se2_planning_rviz/PoseWidget.hpp"
 #include <tf2/LinearMath/Quaternion.h>
 #include <tf2/LinearMath/Matrix3x3.h>
 #include <tf2/convert.h>
 
-namespace m545_planner_interface {
+namespace se2_planning_rviz {
 
 //TODO make thes separate pose widgets
 
@@ -168,5 +167,5 @@ line_edit->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 return line_edit;
 }
 
-}  // namespace
+}  //* namespace se2_planning_rviz */
 
