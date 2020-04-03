@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-	<name>pure_pursuit_ros</name>
+	<name>se2_visualization_ros</name>
 	<version>0.1.0</version>
-	<description>Pure pursuit controller.</description>
+	<description>Visualization helpers for planner and controller</description>
 	<maintainer email="jelavice@ethz.ch">Edo Jelavic</maintainer>
 	<license>BSD</license>
 
@@ -10,8 +10,8 @@
 	
 	<depend>roscpp</depend>
 	<depend>eigen</depend>
-	<depend>pure_pursuit_core</depend>
-	<depend>yaml-cpp</depend>
-	<depend>se2_visualization_ros</depend>
+	<depend>visualization_msgs</depend>
+	<depend>geometry_msgs</depend>
+	<depend>tf2</depend>
 	
 </package>

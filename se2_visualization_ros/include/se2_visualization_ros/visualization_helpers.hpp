@@ -11,7 +11,7 @@
 #include <visualization_msgs/MarkerArray.h>
 #include <Eigen/Dense>
 
-namespace pure_pursuit {
+namespace se2_visualization_ros {
 
 class Color : public std_msgs::ColorRGBA {
  public:
@@ -57,4 +57,4 @@ void drawSphereList(const std::vector<geometry_msgs::Point>& points, const Color
 
 geometry_msgs::Quaternion toQuaternion(double roll, double pitch, double yaw);
 
-} /*namespace pure_pursuit */
+} /*namespace se2_visualization_ros */

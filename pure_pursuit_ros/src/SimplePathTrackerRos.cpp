@@ -7,7 +7,7 @@
 
 #include "pure_pursuit_ros/SimplePathTrackerRos.hpp"
 
-#include "pure_pursuit_ros/visualization_helpers.hpp"
+#include "se2_visualization_ros/visualization_helpers.hpp"
 
 #include <eigen_conversions/eigen_msg.h>
 #include <visualization_msgs/MarkerArray.h>
@@ -32,8 +32,8 @@ void SimplePathTrackerRos::publishRobotPose() const {
 
   const Eigen::Vector3d position(currentRobotState_.pose_.position_.x(), currentRobotState_.pose_.position_.y(), 0.15);
   Eigen::Quaterniond q;
-  tf::quaternionMsgToEigen(toQuaternion(0.0, 0.0, currentRobotState_.pose_.yaw_), q);
-  drawArrowFromPositionOrientation(position, q, Color::Yellow(), 0.5, 0.2, &robotPose);
+  tf::quaternionMsgToEigen(se2_visualization_ros::toQuaternion(0.0, 0.0, currentRobotState_.pose_.yaw_), q);
+  se2_visualization_ros::drawArrowFromPositionOrientation(position, q, se2_visualization_ros::Color::Yellow(), 0.5, 0.2, &robotPose);
 
   robotPosePub_.publish(robotPose);
 }
@@ -68,12 +68,12 @@ void SimplePathTrackerRos::publishPath(const Path& path) const {
     std::vector<geometry_msgs::Point> points;
     points.reserve(segment.point_.size());
     for (const auto& point : segment.point_) {
-      points.push_back(createPoint(point.position_.x(), point.position_.y(), z));
+      points.push_back(se2_visualization_ros::createPoint(point.position_.x(), point.position_.y(), z));
     }
     if (segment.drivingDirection_ == DrivingDirection::FWD) {
-      drawSphereList(points, 0.8 * Color::Green(), diameter, &marker);
+      se2_visualization_ros::drawSphereList(points, 0.8 * se2_visualization_ros::Color::Green(), diameter, &marker);
     } else {
-      drawSphereList(points, 0.8 * Color::Red(), diameter, &marker);
+      se2_visualization_ros::drawSphereList(points, 0.8 * se2_visualization_ros::Color::Red(), diameter, &marker);
     }
 
     msg.markers.push_back(marker);

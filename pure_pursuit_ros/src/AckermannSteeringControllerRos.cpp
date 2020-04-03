@@ -9,7 +9,7 @@
 #include <visualization_msgs/Marker.h>
 #include <thread>
 #include "pure_pursuit_core/math.hpp"
-#include "pure_pursuit_ros/visualization_helpers.hpp"
+#include "se2_visualization_ros/visualization_helpers.hpp"
 
 namespace pure_pursuit {
 
@@ -71,7 +71,7 @@ void AckermannSteeringControllerRos::publishAnchorPoint() const {
   anchorPoint.ns = "";
   anchorPoint.header.stamp = ros::Time::now();
   const Eigen::Vector3d position(currentAnchorPoint_.x(), currentAnchorPoint_.y(), 0.0);
-  drawSphere(position, Color::Yellow(), 0.3, &anchorPoint);
+  se2_visualization_ros::drawSphere(position, se2_visualization_ros::Color::Yellow(), 0.3, &anchorPoint);
   anchorPointPub_.publish(anchorPoint);
 }
 void AckermannSteeringControllerRos::publishPathSegment() const {
@@ -82,10 +82,10 @@ void AckermannSteeringControllerRos::publishPathSegment() const {
   std::vector<geometry_msgs::Point> points;
   points.reserve(currentPathSegment_.point_.size());
   for (const auto& point : currentPathSegment_.point_) {
-    points.push_back(createPoint(point.position_.x(), point.position_.y(), 0.0));
+    points.push_back(se2_visualization_ros::createPoint(point.position_.x(), point.position_.y(), 0.0));
   }
 
-  drawSphereList(points, Color::Magenta(), 0.2, &pathSegment);
+  se2_visualization_ros::drawSphereList(points, se2_visualization_ros::Color::Magenta(), 0.2, &pathSegment);
 
   pathSegmentPub_.publish(pathSegment);
 }
@@ -95,7 +95,7 @@ void AckermannSteeringControllerRos::publishLookaheadPoint() const {
   lookaheadPoint.ns = "";
   lookaheadPoint.header.stamp = ros::Time::now();
   const Eigen::Vector3d position(currentLookaheadPoint_.x(), currentLookaheadPoint_.y(), 0.0);
-  drawSphere(position, Color::Yellow(), 0.3, &lookaheadPoint);
+  se2_visualization_ros::drawSphere(position, se2_visualization_ros::Color::Yellow(), 0.3, &lookaheadPoint);
   lookaheadPointPub_.publish(lookaheadPoint);
 }
 
@@ -105,7 +105,7 @@ void AckermannSteeringControllerRos::publishP1() const {
   p1.ns = "";
   p1.header.stamp = ros::Time::now();
   const Eigen::Vector3d position(p1_.x(), p1_.y(), 0.0);
-  drawSphere(position, Color::Blue(), 0.3, &p1);
+  se2_visualization_ros::drawSphere(position, se2_visualization_ros::Color::Blue(), 0.3, &p1);
   p1Pub_.publish(p1);
 }
 void AckermannSteeringControllerRos::publishP2() const {
@@ -114,7 +114,7 @@ void AckermannSteeringControllerRos::publishP2() const {
   p2.ns = "";
   p2.header.stamp = ros::Time::now();
   const Eigen::Vector3d position(p2_.x(), p2_.y(), 0.0);
-  drawSphere(position, Color::Blue(), 0.3, &p2);
+  se2_visualization_ros::drawSphere(position, se2_visualization_ros::Color::Blue(), 0.3, &p2);
   p2Pub_.publish(p2);
 }
 

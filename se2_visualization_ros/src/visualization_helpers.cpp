@@ -24,12 +24,12 @@
  * limitations under the License.
  */
 
-#include "pure_pursuit_ros/visualization_helpers.hpp"
+#include "se2_visualization_ros/visualization_helpers.hpp"
 
 #include <eigen_conversions/eigen_msg.h>
 #include <tf2/LinearMath/Quaternion.h>
 
-namespace pure_pursuit {
+namespace se2_visualization_ros {
 
 template <typename T, typename Limits>
 void clamp(T* val, Limits lo, Limits hi) {
@@ -188,4 +188,4 @@ void drawAxesArrows(const Eigen::Vector3d& p, const Eigen::Quaterniond& q, doubl
   drawArrowFromPoints(origin + p, q * Eigen::Vector3d::UnitZ() * scale + p, Color::Blue(), diameter, &marker_array->markers[2]);
 }
 
-} /*namespace pure_pursuit */
+} /*namespace se2_visualization_ros */

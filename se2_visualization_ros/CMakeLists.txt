@@ -1,20 +1,19 @@
 cmake_minimum_required(VERSION 3.5.1)
-project(pure_pursuit_ros)
+project(se2_visualization_ros)
 
 set(CMAKE_CXX_STANDARD 14)
 add_compile_options(-Wall -Wextra -Wpedantic)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(SRC_FILES
-  src/loaders.cpp
-  src/SimplePathTrackerRos.cpp
-  src/AckermannSteeringControllerRos.cpp
+  src/visualization_helpers.cpp
 )
 
 set(CATKIN_PACKAGE_DEPENDENCIES
   roscpp
-  pure_pursuit_core
-  se2_visualization_ros
+  geometry_msgs
+  visualization_msgs
+  tf2
 )
 
 find_package(catkin REQUIRED
