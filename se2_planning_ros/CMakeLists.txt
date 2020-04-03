@@ -1,16 +1,19 @@
 cmake_minimum_required(VERSION 3.5.1)
-project(se2_planning)
+project(se2_planning_ros)
 
 set(CMAKE_CXX_STANDARD 14)
 add_compile_options(-Wall -Wextra -Wpedantic)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(SRC_FILES
-  src/OmplPlanner.cpp
-  src/OmplReedsSheppPlanner.cpp
+  src/OmplReedsSheppPlannerRos.cpp
 )
 
 set(CATKIN_PACKAGE_DEPENDENCIES 
+  se2_planning
+  roscpp
+  nav_msgs
+  tf2
 )
 
 find_package(catkin REQUIRED
@@ -65,10 +68,19 @@ target_link_libraries(${PROJECT_NAME}
   ${OMPL_LIBRARIES}
 )
 
+add_executable(se2_planner_node
+  src/se2_planner_node.cpp
+)
+
+target_link_libraries(se2_planner_node
+  ${PROJECT_NAME}
+  ${catkin_LIBRARIES}
+)
+
 #############
 ## Install ##
 #############
-install(TARGETS ${PROJECT_NAME}
+install(TARGETS ${PROJECT_NAME} se2_planner_node
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

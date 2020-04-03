@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-	<name>se2_planning</name>
+	<name>se2_planning_ros</name>
 	<version>0.1.0</version>
 	<description>Pure pursuit controller.</description>
 	<maintainer email="jelavice@ethz.ch">Edo Jelavic</maintainer>
@@ -9,7 +9,9 @@
 	<buildtool_depend>catkin</buildtool_depend>
 	
 	<depend>eigen</depend>
-	<depend>any_ompl</depend>
-	<depend>boost</depend>
+	<depend>se2_planning</depend>
+	<depend>roscpp</depend>
+	<depend>nav_msgs</depend>
+	<depend>tf2</depend>
 	
 </package>
