@@ -3,16 +3,16 @@
 #ifndef Q_MOC_RUN
 #include <ros/ros.h>
 #include <rviz/panel.h>
-#include "m545_planner_interface/pose_widget.h"
-#include "m545_planner_interface/planning_interactive_markers.h"
-#include "m545_planner_interface/edit_button.h"
+#include "se2_planning_rviz/PoseWidget.hpp"
+#include "se2_planning_rviz/PlanningInteractiveMarkers.hpp"
+#include "se2_planning_rviz/EditButton.hpp"
 #include <QCheckBox>
 #endif
 
 #include <string>
 
 class QLineEdit;
-namespace m545_planner_interface {
+namespace se2_planning_rviz {
 
 // class DriveWidget;
 
@@ -107,4 +107,4 @@ class PlanningPanel : public rviz::Panel {
 
 };
 
-}  // end namespace
+}  /*namespce se2_planning_rviz */

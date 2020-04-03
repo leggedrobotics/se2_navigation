@@ -1,5 +1,4 @@
-#ifndef MAV_PLANNING_RVIZ_EDIT_BUTTON_H_
-#define MAV_PLANNING_RVIZ_EDIT_BUTTON_H_
+#pragma once
 
 #ifndef Q_MOC_RUN
 #include <m545_planner_msgs/PathState.h>
@@ -8,7 +7,7 @@
 #endif
 #include <string>
 
-namespace m545_planner_interface {
+namespace se2_planning_rviz {
 
 // This is a little widget that allows pose input.
 class EditButton : public QWidget {
@@ -48,6 +47,5 @@ class EditButton : public QWidget {
   bool editing_;
 };
 
-}  // end namespace mav_planning_rviz
+}  /* namespace se2_planning_rviz*/
 
-#endif  // MAV_PLANNING_RVIZ_EDIT_BUTTON_H_

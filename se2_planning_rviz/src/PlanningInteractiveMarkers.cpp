@@ -16,6 +16,11 @@ PlanningInteractiveMarkers::PlanningInteractiveMarkers(const ros::NodeHandle& nh
 {
 }
 
+void PlanningInteractiveMarkers::setPoseUpdatedCallback(const PoseUpdatedFunctionType& function)
+{
+  pose_updated_function_ = function;
+}
+
 void PlanningInteractiveMarkers::setFrameId(const std::string& frame_id)
 {
   frame_id_ = frame_id;
@@ -26,12 +31,8 @@ void PlanningInteractiveMarkers::setFrameId(const std::string& frame_id)
 void PlanningInteractiveMarkers::initialize(m545_planner_interface::Color start_goal_color,
                                             const double scale)
 {
-  //todo move the call outside of the initialize function
-  if (is6DOF_) {
-    createMarkers6DOF(start_goal_color, scale);
-  } else {  //assume that is SE2
-    createMarkers(start_goal_color, scale);
-  }
+
+  createMarkers(start_goal_color, scale);
   initialized_ = true;
 }
 
@@ -133,150 +134,6 @@ void PlanningInteractiveMarkers::createMarkers(m545_planner_interface::Color sta
   default_marker.scale.y = 0.25;
   default_marker.scale.z = 0.25;
   control.markers.push_back(default_marker);
-  visualization_msgs::Marker text_marker;
-  text_marker.type = visualization_msgs::Marker::TEXT_VIEW_FACING;
-  text_marker.scale.z = 0.5;
-  text_marker.pose.position.z = 0.5;
-  text_marker.text = "placeholder";
-  text_marker.color = start_goal_color;
-  text_marker.id = 1;
-  control.markers.push_back(text_marker);
-
-  marker_prototype_.controls.push_back(control);
-
-}
-
-void PlanningInteractiveMarkers::createMarkers6DOF(m545_planner_interface::Color start_goal_color,
-                                                   const double scale)
-{
-
-  // First we set up the set point marker.
-  set_pose_marker_.header.frame_id = frame_id_;
-  set_pose_marker_.name = "set_pose";
-  set_pose_marker_.scale = scale;
-  set_pose_marker_.controls.clear();
-
-  constexpr double kSqrt2Over2 = sqrt(2.0) / 2.0;
-
-  // Set up controls: x, y, z, and yaw.
-  visualization_msgs::InteractiveMarkerControl control;
-  set_pose_marker_.controls.clear();
-  control.orientation.w = kSqrt2Over2;
-  control.orientation.x = 0;
-  control.orientation.y = -kSqrt2Over2;
-  control.orientation.z = 0;
-  control.name = "rotate_yaw";
-  control.interaction_mode = visualization_msgs::InteractiveMarkerControl::ROTATE_AXIS;
-  set_pose_marker_.controls.push_back(control);
-  control.interaction_mode = visualization_msgs::InteractiveMarkerControl::MOVE_AXIS;
-  control.name = "move z";
-  set_pose_marker_.controls.push_back(control);
-
-  control.orientation.w = 1.0;
-  control.orientation.x = 0;
-  control.orientation.y = 0;
-  control.orientation.z = 0;
-  control.name = "rotate_roll";
-  control.interaction_mode = visualization_msgs::InteractiveMarkerControl::ROTATE_AXIS;
-  set_pose_marker_.controls.push_back(control);
-  control.interaction_mode = visualization_msgs::InteractiveMarkerControl::MOVE_AXIS;
-  control.name = "move x";
-  set_pose_marker_.controls.push_back(control);
-
-  control.orientation.w = kSqrt2Over2;
-  control.orientation.x = 0;
-  control.orientation.y = 0;
-  control.orientation.z = kSqrt2Over2;
-  control.name = "rotate_pitch";
-  control.interaction_mode = visualization_msgs::InteractiveMarkerControl::ROTATE_AXIS;
-  set_pose_marker_.controls.push_back(control);
-  control.interaction_mode = visualization_msgs::InteractiveMarkerControl::MOVE_AXIS;
-  control.name = "move y";
-  set_pose_marker_.controls.push_back(control);
-
-  control.orientation.w = 0.9239;
-  control.orientation.x = 0;
-  control.orientation.y = 0;
-  control.orientation.z = 0.3827;
-  control.interaction_mode = visualization_msgs::InteractiveMarkerControl::MOVE_AXIS;
-  control.name = "move x_y";
-  set_pose_marker_.controls.push_back(control);
-
-  control.orientation.w = 0.3827;
-  control.orientation.x = 0;
-  control.orientation.y = 0;
-  control.orientation.z = 0.9239;
-  control.interaction_mode = visualization_msgs::InteractiveMarkerControl::MOVE_AXIS;
-  control.name = "move y_x";
-  set_pose_marker_.controls.push_back(control);
-
-  control.orientation.x = control.orientation.y = control.orientation.z = 0.0;
-  control.orientation.w = 1.0;
-  control.interaction_mode = visualization_msgs::InteractiveMarkerControl::NONE;
-
-  ////
-  auto getCordinateFrame = [&start_goal_color](const double scale, MarkerVector *markers) {
-
-    visualization_msgs::Marker default_marker;
-    default_marker.type = visualization_msgs::Marker::ARROW;
-    default_marker.color = m545_planner_interface::Color::Red();
-    default_marker.scale.x = 0.5 *scale;
-    default_marker.scale.y = 0.08*scale;
-    default_marker.scale.z = 0.08*scale;
-    default_marker.pose.orientation.w = kSqrt2Over2;
-    default_marker.pose.orientation.x = kSqrt2Over2;
-    default_marker.pose.orientation.y = 0;
-    default_marker.pose.orientation.z = 0;
-    markers->push_back(default_marker);
-
-    default_marker.type = visualization_msgs::Marker::ARROW;
-    default_marker.color = m545_planner_interface::Color::Green();
-    default_marker.scale.x = 0.5 *scale;
-    default_marker.scale.y = 0.08*scale;
-    default_marker.scale.z = 0.08*scale;
-    default_marker.pose.orientation.w = kSqrt2Over2;
-    default_marker.pose.orientation.x = 0;
-    default_marker.pose.orientation.y = 0;
-    default_marker.pose.orientation.z = kSqrt2Over2;
-    markers->push_back(default_marker);
-
-    default_marker.type = visualization_msgs::Marker::ARROW;
-    default_marker.color = m545_planner_interface::Color::Blue();
-    default_marker.scale.x = 0.5 *scale;
-    default_marker.scale.y = 0.08*scale;
-    default_marker.scale.z = 0.08*scale;
-    default_marker.pose.orientation.w = kSqrt2Over2;
-    default_marker.pose.orientation.x = 0;
-    default_marker.pose.orientation.y = -kSqrt2Over2;
-    default_marker.pose.orientation.z = 0;
-    markers->push_back(default_marker);
-
-  };
-
-  ////
-
-  getCordinateFrame(scale, &control.markers);
-  control.always_visible = true;
-  control.name = "excavator_pose";
-  set_pose_marker_.controls.push_back(control);
-
-  // Create a marker prototype, as the default style for all markers in the
-  // marker map:
-  marker_prototype_.header.frame_id = frame_id_;
-  marker_prototype_.scale = 1.0;
-  control.markers.clear();
-
-  getCordinateFrame(0.8 * scale, &control.markers);
-
-  control.name = "axes";
-  control.interaction_mode = visualization_msgs::InteractiveMarkerControl::NONE;
-//  visualization_msgs::Marker default_marker;
-//  default_marker.type = visualization_msgs::Marker::ARROW;
-//  default_marker.color = start_goal_color;
-//  default_marker.scale.x = 1.0;
-//  default_marker.scale.y = 0.25;
-//  default_marker.scale.z = 0.25;
-//  control.markers.push_back(default_marker);
   visualization_msgs::Marker text_marker;
   text_marker.type = visualization_msgs::Marker::TEXT_VIEW_FACING;
   text_marker.scale.z = 0.5;

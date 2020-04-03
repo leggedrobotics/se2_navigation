@@ -1,7 +1,7 @@
 #pragma once
 
 #ifndef Q_MOC_RUN
-#include <m545_planner_msgs/PathState.h>
+//#include <m545_planner_msgs/PathState.h>
 #include <geometry_msgs/Pose.h>
 #include <QItemDelegate>
 #include <QLineEdit>
@@ -10,7 +10,7 @@
 #endif
 
 class QLineEdit;
-namespace m545_planner_interface {
+namespace se2_planning_rviz {
 
 // This is a little widget that allows pose input.
 class PoseWidget : public QWidget
@@ -72,4 +72,4 @@ class DoubleTableDelegate : public QItemDelegate
                         const QModelIndex& index) const;
 };
 
-}  // end namespace mav_planning_rviz
+}  /* namespace se2_planning_rviz*/

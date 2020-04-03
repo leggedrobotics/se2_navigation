@@ -4,9 +4,9 @@
 #include <ros/ros.h>
 #include <m545_planner_msgs/PathState.h>
 #include <geometry_msgs/Pose.h>
-#include "m545_planner_interface/markers/helpers.h"
+//#include "m545_planner_interface/markers/helpers.h"
 
-namespace m545_planner_interface {
+namespace se2_planning_rviz {
 
 class PlanningInteractiveMarkers
 {
@@ -16,17 +16,12 @@ class PlanningInteractiveMarkers
   PlanningInteractiveMarkers(const ros::NodeHandle& nh);
   PlanningInteractiveMarkers(const ros::NodeHandle& nh, const std::string &ns);
 
-  ~PlanningInteractiveMarkers()
-  {
-  }
+  ~PlanningInteractiveMarkers() = default;
 
   void setFrameId(const std::string& frame_id);
 
   // Bind callback for whenever pose updates.
-  void setPoseUpdatedCallback(const PoseUpdatedFunctionType& function)
-  {
-    pose_updated_function_ = function;
-  }
+  void setPoseUpdatedCallback(const PoseUpdatedFunctionType& function);
 
   void initialize(m545_planner_interface::Color start_goal_color, const double scale);
   void initialize();
@@ -46,16 +41,6 @@ class PlanningInteractiveMarkers
   visualization_msgs::InteractiveMarker *GetMarker(const std::string &id);
   visualization_msgs::InteractiveMarker *GetMarkerPrototype();
 
-  inline void setIs6DOF(bool is6DOF)
-  {
-    is6DOF_ = is6DOF;
-  }
-
-  inline bool getIs6DOF() const
-  {
-    return is6DOF_;
-  }
-
   inline const std::string &getFrameId()
   {
     return frame_id_;
@@ -64,7 +49,6 @@ class PlanningInteractiveMarkers
  private:
   // Creates markers without adding them to the marker server.
   void createMarkers(m545_planner_interface::Color start_goal_color, const double scale);
-  void createMarkers6DOF(m545_planner_interface::Color start_goal_color, const double scale);
 
   // ROS stuff.
   ros::NodeHandle nh_;
@@ -86,7 +70,6 @@ class PlanningInteractiveMarkers
   // State:
   PoseUpdatedFunctionType pose_updated_function_;
 
-  bool is6DOF_ = false;
 };
 
 }  // end namespace
