@@ -60,8 +60,10 @@ class OmplReedsSheppPlanner : public OmplPlanner {
   int getDistanceSignAt(const ompl::geometric::PathGeometric& path, unsigned int id) const;
 
   std::unique_ptr<ompl::base::RealVectorBounds> bounds_;
-  OmplReedsSheppPlannerParameters parameters_;
   const int reedsSheppStateSpaceDim_ = 2;
+
+ private:
+  OmplReedsSheppPlannerParameters parameters_;
 };
 
 std::string toString(ReedsSheppPathSegment::Direction direction);

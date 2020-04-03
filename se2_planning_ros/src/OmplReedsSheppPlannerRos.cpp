@@ -5,7 +5,7 @@
  *      Author: jelavice
  */
 
-#include "se2_planning/OmplReedsSheppPlannerRos.hpp"
+#include "se2_planning_ros/OmplReedsSheppPlannerRos.hpp"
 
 #include <thread>
 
@@ -16,6 +16,11 @@ namespace se2_planning {
 
 OmplReedsSheppPlannerRos::OmplReedsSheppPlannerRos(ros::NodeHandle* nh) : BASE(), nh_(nh) {
   initRos();
+}
+
+void OmplReedsSheppPlannerRos::setParameters(const OmplReedsSheppPlannerRosParameters& parameters) {
+  parameters_ = parameters;
+  BASE::setParameters(parameters);
 }
 
 bool OmplReedsSheppPlannerRos::initialize() {
@@ -30,13 +35,15 @@ bool OmplReedsSheppPlannerRos::plan() {
 }
 
 void OmplReedsSheppPlannerRos::initRos() {
-  pathNavMsgsPublisher_ = nh_->advertise<nav_msgs::Path>("ompl_rs_planner_ros/nav_msgs_path", 1, true);
+  pathNavMsgsPublisher_ = nh_->advertise<nav_msgs::Path>(parameters_.pathNavMsgTopic_, 1, true);
 }
 
 void OmplReedsSheppPlannerRos::publishPathNavMsgs() const {
   ReedsSheppPath rsPath;
   getPath(&rsPath);
-  nav_msgs::Path msg = se2_planning::convert(rsPath);
+  nav_msgs::Path msg = se2_planning::copyAllPoints(rsPath);
+  msg.header.frame_id = parameters_.pathFrame_;
+  msg.header.stamp = ros::Time::now();
   pathNavMsgsPublisher_.publish(msg);
 }
 
@@ -50,11 +57,8 @@ geometry_msgs::Pose convert(const ReedsSheppState& state, double z) {
   return pose;
 }
 
-nav_msgs::Path convert(const ReedsSheppPath& path) {
+nav_msgs::Path copyAllPoints(const ReedsSheppPath& path) {
   nav_msgs::Path pathOut;
-  // todo get from somewhere
-  pathOut.header.frame_id = "map";
-  pathOut.header.stamp = ros::Time::now();
   pathOut.poses.reserve(2000);  // just a guess
   for (const auto& segment : path.segment_) {
     for (const auto& point : segment.point_) {

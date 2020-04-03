@@ -7,7 +7,7 @@
 
 #include <ros/ros.h>
 
-#include "se2_planning/OmplReedsSheppPlannerRos.hpp"
+#include "../include/se2_planning_ros/OmplReedsSheppPlannerRos.hpp"
 
 int main(int argc, char** argv) {
   ros::init(argc, argv, "se2_planner_node");
