@@ -1,0 +1,9 @@
+<library path="libse2_planning_rviz">
+  <class name="se2_planning_rviz/PlanningPanel"
+         type="se2_planning_rviz::PlanningPanel"
+         base_class_type="rviz::Panel">
+    <description>
+      A panel that allows goal point setting.
+    </description>
+  </class>
+</library>

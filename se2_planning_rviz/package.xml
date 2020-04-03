@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package format="2">
+  <name>se2_planning_rviz</name>
+  <version>0.0.0</version>
+  <description>Planning gui for the SE(2) space</description>
+  <maintainer email="jelavice@mavt.ethz.ch">EJ</maintainer>
+  <license>BSD</license>
+  <author email="jelavice@mavt.ethz.ch">EJ</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <depend>roscpp</depend>
+  <depend>geometry_msgs</depend>
+  <depend>tf2</depend>
+  <depend>visualization_msgs</depend>
+  <depend>rviz</depend>
+
+  <export>
+      <rviz plugin="${prefix}/plugin_description.xml"/>
+  </export>
+
+
+
+</package>
