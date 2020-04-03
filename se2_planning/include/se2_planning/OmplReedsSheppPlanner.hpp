@@ -30,6 +30,16 @@ struct ReedsSheppPath : public Path {
   friend std::ostream& operator<<(std::ostream& out, const ReedsSheppPath& path);
 };
 
+struct OmplReedsSheppPlannerParameters {
+  double plannerRange_ = 15.0;
+  double turningRadius_ = 10.0;
+  double xLowerBound_ = -1000.0;
+  double xUpperBound_ = 1000.0;
+  double yLowerBound_ = -1000.0;
+  double yUpperBound_ = 1000.0;
+  double pathSpatialResolution_ = 0.05;
+};
+
 class OmplReedsSheppPlanner : public OmplPlanner {
   using BASE = OmplPlanner;
 
@@ -39,6 +49,7 @@ class OmplReedsSheppPlanner : public OmplPlanner {
 
   bool initialize() override;
   bool plan() override;
+  void setParameters(const OmplReedsSheppPlannerParameters& parameters);
 
  protected:
   void initializeStateSpace() final;
@@ -49,6 +60,8 @@ class OmplReedsSheppPlanner : public OmplPlanner {
   int getDistanceSignAt(const ompl::geometric::PathGeometric& path, unsigned int id) const;
 
   std::unique_ptr<ompl::base::RealVectorBounds> bounds_;
+  OmplReedsSheppPlannerParameters parameters_;
+  const int reedsSheppStateSpaceDim_ = 2;
 };
 
 std::string toString(ReedsSheppPathSegment::Direction direction);

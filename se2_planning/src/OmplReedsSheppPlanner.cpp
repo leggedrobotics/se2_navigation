@@ -22,13 +22,16 @@ int sgn(T val) {
   return (T(0) < val) - (val < T(0));
 }
 
+void OmplReedsSheppPlanner::setParameters(const OmplReedsSheppPlannerParameters& parameters) {
+  parameters_ = parameters;
+}
+
 bool OmplReedsSheppPlanner::initialize() {
   BASE::initialize();
   auto si = simpleSetup_->getSpaceInformation();
+  // todo separate planner creation
   auto planner = std::make_shared<ompl::geometric::RRTstar>(si);
-  const double range = 15.0;
-  // todo read this from somewhere
-  planner->setRange(range);
+  planner->setRange(parameters_.plannerRange_);
   simpleSetup_->setPlanner(planner);
   ompl::base::OptimizationObjectivePtr optimizationObjective(std::make_shared<ompl::base::PathLengthOptimizationObjective>(si));
   simpleSetup_->setOptimizationObjective(optimizationObjective);
@@ -37,24 +40,18 @@ bool OmplReedsSheppPlanner::initialize() {
 }
 
 void OmplReedsSheppPlanner::initializeStateSpace() {
-  // todo load from somewhere
-  const double turningRadius = 10.0;
-  stateSpace_.reset(new ompl::base::ReedsSheppStateSpace(turningRadius));
-  const int statSpaceDim = 2;
-  bounds_ = std::make_unique<ompl::base::RealVectorBounds>(statSpaceDim);
+  stateSpace_.reset(new ompl::base::ReedsSheppStateSpace(parameters_.turningRadius_));
+  bounds_ = std::make_unique<ompl::base::RealVectorBounds>(reedsSheppStateSpaceDim_);
   setStateSpaceBoundaries();
 }
 bool OmplReedsSheppPlanner::plan() {
   return BASE::plan();
 }
 void OmplReedsSheppPlanner::setStateSpaceBoundaries() {
-  // todo load from somewhere
-  const double bx = 1000.0;
-  const double by = 1000.0;
-  bounds_->low[0] = -by / 2 - 0.1;
-  bounds_->low[1] = -bx / 2 - 0.1;
-  bounds_->high[0] = by / 2 + 0.1;
-  bounds_->high[1] = bx / 2 + 0.1;
+  bounds_->low[0] = parameters_.xLowerBound_;
+  bounds_->low[1] = parameters_.yLowerBound_;
+  bounds_->high[0] = parameters_.xUpperBound_;
+  bounds_->high[1] = parameters_.yUpperBound_;
   stateSpace_->as<ompl::base::SE2StateSpace>()->setBounds(*bounds_);
 }
 bool OmplReedsSheppPlanner::isStateValid(const ompl::base::SpaceInformation* si, const ompl::base::State* state) {
@@ -73,13 +70,16 @@ ompl::base::ScopedStatePtr OmplReedsSheppPlanner::convert(const State& state) co
 
 void OmplReedsSheppPlanner::convert(const ompl::geometric::PathGeometric& pathOmpl, Path* path) const {
   using Direction = ReedsSheppPathSegment::Direction;
-  auto interpolatedPath = interpolatePath(pathOmpl, 0.05);
+  auto interpolatedPath = interpolatePath(pathOmpl, parameters_.pathSpatialResolution_);
   const int nPoints = interpolatedPath.getStateCount();
-  // todo get from params
+
   // prepare the return value
   auto returnPath = path->as<ReedsSheppPath>();
   returnPath->segment_.clear();
   returnPath->segment_.reserve(nPoints);
+  if (nPoints == 0) {
+    return;
+  }
 
   /*
    * find first point that is not of type NOP, see
@@ -177,9 +177,7 @@ ReedsSheppState convert(const ompl::base::State* s) {
 
 ompl::geometric::PathGeometric interpolatePath(const ompl::geometric::PathGeometric& inputPath, double deisredResolution) {
   auto interpolatedPath = inputPath;
-  // todo get from params
-  const double resolution = 0.2;
-  const unsigned int numPoints = static_cast<unsigned int>(std::ceil(std::fabs(inputPath.length()) / resolution));
+  const unsigned int numPoints = static_cast<unsigned int>(std::ceil(std::fabs(inputPath.length()) / deisredResolution));
   interpolatedPath.interpolate(numPoints);
   return interpolatedPath;
 }
