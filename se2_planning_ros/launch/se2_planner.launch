@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <launch>
-	<node name="se2_planner_node" pkg="se2_planning"
+	<node name="se2_planner_node" pkg="se2_planning_ros"
 		type="se2_planner_node" output="screen" launch-prefix="">
 	</node>
 </launch>
