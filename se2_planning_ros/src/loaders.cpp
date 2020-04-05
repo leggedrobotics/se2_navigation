@@ -36,6 +36,7 @@ OmplReedsSheppPlannerRosParameters loadParameters(const std::string& filename) {
     parameters.pathSpatialResolution_ = node["path_spatial_resolution"].as<double>();
     parameters.plannerRange_ = node["planner_range"].as<double>();
     parameters.maxPlanningTime_ = node["max_planning_time"].as<double>();
+    parameters.planningSerivceName_ = node["planning_service_name"].as<std::string>();
   }
 
   return parameters;
