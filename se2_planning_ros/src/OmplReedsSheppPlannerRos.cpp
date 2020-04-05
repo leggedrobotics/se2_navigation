@@ -34,8 +34,21 @@ bool OmplReedsSheppPlannerRos::plan() {
   return result;
 }
 
+bool OmplReedsSheppPlannerRos::planningService(PlanningService::Request& req, PlanningService::Response& res) {
+  const auto start = se2_planning::convert(req.pathRequest.startingPose);
+  const auto goal = se2_planning::convert(req.pathRequest.goalPose);
+  setStartingState(start);
+  setGoalState(goal);
+  bool result = plan();
+
+  res.status = result;
+
+  return true;
+}
+
 void OmplReedsSheppPlannerRos::initRos() {
   pathNavMsgsPublisher_ = nh_->advertise<nav_msgs::Path>(parameters_.pathNavMsgTopic_, 1, true);
+  planningService_ = nh_->advertiseService(parameters_.planningSerivceName_, &OmplReedsSheppPlannerRos::planningService, this);
 }
 
 void OmplReedsSheppPlannerRos::publishPathNavMsgs() const {
@@ -55,6 +68,14 @@ geometry_msgs::Pose convert(const ReedsSheppState& state, double z) {
   pose.orientation = tf::createQuaternionMsgFromYaw(state.yaw_);
 
   return pose;
+}
+
+ReedsSheppState convert(const geometry_msgs::Pose& state) {
+  ReedsSheppState rsState;
+  rsState.x_ = state.position.x;
+  rsState.y_ = state.position.y;
+  rsState.yaw_ = tf::getYaw(state.orientation);
+  return rsState;
 }
 
 nav_msgs::Path copyAllPoints(const ReedsSheppPath& path) {
