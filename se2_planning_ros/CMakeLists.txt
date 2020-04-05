@@ -8,6 +8,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(SRC_FILES
   src/OmplReedsSheppPlannerRos.cpp
   src/loaders.cpp
+  src/PlannerRos.cpp
 )
 
 set(CATKIN_PACKAGE_DEPENDENCIES 
