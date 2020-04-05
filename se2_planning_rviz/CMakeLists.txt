@@ -12,6 +12,7 @@ set(CATKIN_PACKAGE_DEPENDENCIES
   visualization_msgs
   rviz
   se2_visualization_ros
+  se2_navigation_msgs
 )
 
 find_package(catkin REQUIRED

@@ -15,6 +15,7 @@
   <depend>visualization_msgs</depend>
   <depend>rviz</depend>
   <depend>se2_visualization_ros</depend>
+  <depend>se2_navigation_msgs</depend>
 
   <export>
       <rviz plugin="${prefix}/plugin_description.xml"/>

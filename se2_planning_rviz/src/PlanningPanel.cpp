@@ -17,7 +17,8 @@
 #include "se2_planning_rviz/PoseWidget.hpp"
 #include "se2_planning_rviz/EditButton.hpp"
 
-//#include "m545_planner_msgs/PathRequest.h"
+#include "se2_navigation_msgs/PathRequestMsg.h"
+#include "se2_navigation_msgs/PathRequestSrv.h"
 //#include "m545_planner_msgs/PathFollowerCommand.hpp"
 //#include <m545_planner_msgs/CurrentState.h>
 
@@ -28,7 +29,7 @@ namespace se2_planning_rviz {
 PlanningPanel::PlanningPanel(QWidget* parent)
     : rviz::Panel(parent),
       nh_(ros::NodeHandle()),
-      interactive_markers_(nh_, "chasis_markers")
+      interactive_markers_(nh_, "se2_planning_markers")
 {
 
   createLayout();
@@ -56,11 +57,11 @@ void PlanningPanel::createLayout()
 {
   QGroupBox *formGroupBox = new QGroupBox(tr("Topics and Services"));
   QFormLayout *topic_layout = new QFormLayout;
-  planRequestTopicEditor_ = new QLineEdit;
+  planningServiceNameEditor_ = new QLineEdit;
   controllerCommandTopicEditor_ = new QLineEdit;
   currStateServiceEditor_ = new QLineEdit;
   topic_layout->addRow(new QLabel(tr("Ctrl command topic:")), controllerCommandTopicEditor_);
-  topic_layout->addRow(new QLabel(tr("Path request topic:")), planRequestTopicEditor_);
+  topic_layout->addRow(new QLabel(tr("Planning service:")), planningServiceNameEditor_);
   topic_layout->addRow(new QLabel(tr("Curr State Service:")), currStateServiceEditor_);
   formGroupBox->setLayout(topic_layout);
 
@@ -114,15 +115,15 @@ void PlanningPanel::createLayout()
   setLayout(layout);
 
   //set the default parameters
-  currentStateAsStartCheckBox_->setChecked(true);
+  currentStateAsStartCheckBox_->setChecked(false);
 
   // Hook up connections.
   connect(controllerCommandTopicEditor_, SIGNAL(editingFinished()), this,
           SLOT(updateControllerCommandTopic()));
-  connect(planRequestTopicEditor_, SIGNAL(editingFinished()), this, SLOT(updatePathRequestTopic()));
+  connect(planningServiceNameEditor_, SIGNAL(editingFinished()), this, SLOT(updatePathRequestTopic()));
   connect(currStateServiceEditor_, SIGNAL(editingFinished()), this,
           SLOT(updateGetCurrentStateService()));
-  connect(plan_request_button_, SIGNAL(released()), this, SLOT(callPublishPlanRequest()));
+  connect(plan_request_button_, SIGNAL(released()), this, SLOT(callPlanningService()));
   connect(tracking_command_button_, SIGNAL(released()), this, SLOT(callPublishTrackingCommand()));
   connect(stop_command_button_, SIGNAL(released()), this, SLOT(callPublishStopTrackingCommand()));
 }
@@ -158,14 +159,13 @@ void PlanningPanel::setGetCurrentStateService(const QString& newCurrentStateServ
 /////////////////////
 void PlanningPanel::updatePathRequestTopic()
 {
-  setPathRequestTopic(planRequestTopicEditor_->text());
+  setPathRequestTopic(planningServiceNameEditor_->text());
 }
 
 void PlanningPanel::setPathRequestTopic(const QString& newPathRequestTopicName)
 {
-  if (newPathRequestTopicName != pathRequestTopicName_) {
-    pathRequestTopicName_ = newPathRequestTopicName;
-    advertisePathRequest();
+  if (newPathRequestTopicName != planningServiceName_) {
+    planningServiceName_ = newPathRequestTopicName;
     Q_EMIT configChanged();
   }
 }
@@ -243,7 +243,7 @@ connect(button, SIGNAL(finishedEditing(const std::string&)), this,
 void PlanningPanel::save(rviz::Config config) const
 {
 rviz::Panel::save(config);
-config.mapSetValue("path_request_topic", pathRequestTopicName_);
+config.mapSetValue("path_request_topic", planningServiceName_);
 config.mapSetValue("get_current_state_service", currentStateServiceName_);
 config.mapSetValue("controller_command_topic", controllerCommandTopicName_);
 }
@@ -253,8 +253,8 @@ void PlanningPanel::load(const rviz::Config& config)
 {
 rviz::Panel::load(config);
 QString topic;
-if (config.mapGetString("path_request_topic", &pathRequestTopicName_)) {
-planRequestTopicEditor_->setText(pathRequestTopicName_);
+if (config.mapGetString("path_request_topic", &planningServiceName_)) {
+planningServiceNameEditor_->setText(planningServiceName_);
 }
 
 if (config.mapGetString("get_current_state_service", &currentStateServiceName_)) {
@@ -292,36 +292,45 @@ interactive_markers_.setPose(pose);
 interactive_markers_.updateMarkerPose(id, pose);
 }
 
-void PlanningPanel::callPublishPlanRequest()
+void PlanningPanel::callPlanningService()
 {
 
-//std::thread t([this] {
-//
-//m545_planner_msgs::PathRequest msg;
-//m545_planner_msgs::PathState startPoint;
-//m545_planner_msgs::PathState goalPoint;
-//
-//const bool useCurrentStateAsStartingPose = currentStateAsStartCheckBox_->isChecked();
-//
-//if (useCurrentStateAsStartingPose) {
-//  getStartPoseFromService(&(startPoint.pose));
-//  lastPose_ = startPoint.pose;  //update last state
-//  finishEditing("start");
-//} else {
-//  getStartPoseFromWidget(&(startPoint.pose));
-//}
-//
-//goal_pose_widget_->getPose(&(goalPoint.pose));
-//
-//msg.start = startPoint;
-//msg.goal = goalPoint;
-//msg.action = msg.PLAN;
-//
-//plan_request_pub_.publish(msg);
-//
-//});
-//
-//t.detach();
+std::thread t([this] {
+
+se2_navigation_msgs::PathRequestMsg pathRequest;
+
+
+const bool useCurrentStateAsStartingPose = currentStateAsStartCheckBox_->isChecked();
+
+if (useCurrentStateAsStartingPose) {
+  getStartPoseFromService(&(pathRequest.startingPose));
+  lastPose_ = pathRequest.startingPose;  //update last state
+  finishEditing("start");
+} else {
+  getStartPoseFromWidget(&(pathRequest.startingPose));
+}
+
+goal_pose_widget_->getPose(&(pathRequest.goalPose));
+
+std::string service_name = planningServiceName_.toStdString();
+se2_navigation_msgs::PathRequestSrv::Request req;
+req.pathRequest = pathRequest;
+se2_navigation_msgs::PathRequestSrv::Response res;
+
+try {
+ROS_DEBUG_STREAM("Service name: " << service_name);
+if (false == ros::service::call(service_name, req, res)) {
+  ROS_WARN_STREAM("Couldn't call service: " << service_name);
+}
+} catch (const std::exception& e) {
+ROS_ERROR_STREAM("Service Exception: " << e.what());
+}
+
+
+
+});
+
+t.detach();
 
 }
 
@@ -387,7 +396,7 @@ void PlanningPanel::advertiseControllerCommand()
 }
 void PlanningPanel::advertisePathRequest()
 {
-//std::string topic = pathRequestTopicName_.toStdString();
+//std::string topic = planningServiceName_.toStdString();
 //if (topic.empty())
 //return;
 //using namespace m545_planner_msgs;

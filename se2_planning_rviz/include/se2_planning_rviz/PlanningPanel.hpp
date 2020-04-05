@@ -55,7 +55,7 @@ class PlanningPanel : public rviz::Panel {
   void widgetPoseUpdated(const std::string& id,
                          geometry_msgs::Pose& state);
 
-  void callPublishPlanRequest();
+  void callPlanningService();
   void callPublishTrackingCommand();
   void callPublishStopTrackingCommand();
   void advertiseControllerCommand();
@@ -76,7 +76,7 @@ class PlanningPanel : public rviz::Panel {
 
   // QT stuff:
   QLineEdit* controllerCommandTopicEditor_;
-  QLineEdit* planRequestTopicEditor_;
+  QLineEdit* planningServiceNameEditor_;
   QLineEdit* currStateServiceEditor_;
   PoseWidget* start_pose_widget_;
   PoseWidget* goal_pose_widget_;
@@ -94,7 +94,7 @@ class PlanningPanel : public rviz::Panel {
 
   // QT state:
   QString controllerCommandTopicName_;
-  QString pathRequestTopicName_;
+  QString planningServiceName_;
   QString currentStateServiceName_;
 
   // Other state:
