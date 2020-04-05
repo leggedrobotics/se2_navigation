@@ -16,6 +16,7 @@ set(CATKIN_PACKAGE_DEPENDENCIES
   roscpp
   nav_msgs
   tf2
+  se2_navigation_msgs
 )
 
 find_package(catkin REQUIRED

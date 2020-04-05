@@ -14,5 +14,6 @@
 	<depend>nav_msgs</depend>
 	<depend>tf2</depend>
 	<depend>yaml-cpp</depend>
+	<depend>se2_navigation_msgs</depend>
 	
 </package>

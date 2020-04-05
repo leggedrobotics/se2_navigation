@@ -7,15 +7,13 @@
 
 #pragma once
 
-#include "se2_planning/Planner.hpp"
 #include <ros/ros.h>
 #include "se2_navigation_msgs/PathRequestSrv.h"
+#include "se2_planning/Planner.hpp"
 
 namespace se2_planning {
 
-class PlannerRos : public Planner
-{
-
+class PlannerRos : public Planner {
  public:
   void setStartingState(const State& startingState) override;
   void setGoalState(const State& goalState) override;
@@ -27,18 +25,16 @@ class PlannerRos : public Planner
   void getGoalState(State* goalState) override;
 
   void setPlanner(std::unique_ptr<Planner> planner);
- protected:
 
+ protected:
   using PlanningService = se2_navigation_msgs::PathRequestSrv;
 
   explicit PlannerRos(ros::NodeHandlePtr nh);
   ~PlannerRos() override = default;
-  virtual void initializeRos() = 0;
-  virtual bool planningService(PlanningService::Request &req, PlanningService::Response &res) = 0;
+  virtual bool planningService(PlanningService::Request& req, PlanningService::Response& res) = 0;
 
   ros::NodeHandlePtr nh_;
   std::unique_ptr<Planner> planner_;
-
 };
 
 } /* namespace se2_planning*/
