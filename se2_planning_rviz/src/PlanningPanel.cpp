@@ -19,12 +19,28 @@
 
 #include "se2_navigation_msgs/PathRequestMsg.h"
 #include "se2_navigation_msgs/PathRequestSrv.h"
-//#include "m545_planner_msgs/PathFollowerCommand.hpp"
-//#include <m545_planner_msgs/CurrentState.h>
+#include "se2_navigation_msgs/CurrentStateRequestSrv.h"
 
 #include <thread>
 
 namespace se2_planning_rviz {
+
+
+template <typename Req, typename Res>
+bool callService(Req& req, Res& res, const std::string& serviceName) {
+  try {
+    // ROS_DEBUG_STREAM("Service name: " << service_name);
+    if (!ros::service::call(serviceName, req, res)) {
+      ROS_WARN_STREAM("Couldn't call service: " << serviceName);
+      return false;
+    }
+  } catch (const std::exception& e) {
+    ROS_ERROR_STREAM("Service Exception: " << e.what());
+  }
+
+  return true;
+}
+
 
 PlanningPanel::PlanningPanel(QWidget* parent)
     : rviz::Panel(parent),
@@ -205,16 +221,10 @@ void PlanningPanel::finishEditing(const std::string& id)
   if (search == pose_widget_map_.end()) {
     return;
   }
-  ros::spinOnce();
+//  ros::spinOnce();
   geometry_msgs::Pose pose;
 
-  const bool useCurrentStateAsStartingPose = currentStateAsStartCheckBox_->isChecked();
-  const bool isIgnoreStartPoseWidget = ("start" == id) && useCurrentStateAsStartingPose;
-  if (isIgnoreStartPoseWidget) {
-    pose = lastPose_;
-  } else {
-    search->second->getPose(&pose);
-  }
+  search->second->getPose(&pose);
 
   interactive_markers_.enableMarker(id, pose);
 }
@@ -305,6 +315,8 @@ const bool useCurrentStateAsStartingPose = currentStateAsStartCheckBox_->isCheck
 if (useCurrentStateAsStartingPose) {
   getStartPoseFromService(&(pathRequest.startingPose));
   lastPose_ = pathRequest.startingPose;  //update last state
+  pose_widget_map_["start"]->setPose(lastPose_);
+  this->widgetPoseUpdated("start", lastPose_);
   finishEditing("start");
 } else {
   getStartPoseFromWidget(&(pathRequest.startingPose));
@@ -317,15 +329,7 @@ se2_navigation_msgs::PathRequestSrv::Request req;
 req.pathRequest = pathRequest;
 se2_navigation_msgs::PathRequestSrv::Response res;
 
-try {
-ROS_DEBUG_STREAM("Service name: " << service_name);
-if (false == ros::service::call(service_name, req, res)) {
-  ROS_WARN_STREAM("Couldn't call service: " << service_name);
-}
-} catch (const std::exception& e) {
-ROS_ERROR_STREAM("Service Exception: " << e.what());
-}
-
+callService(req,res,service_name);
 
 
 });
@@ -340,22 +344,22 @@ start_pose_widget_->getPose(startPoint);
 }
 void PlanningPanel::getStartPoseFromService(geometry_msgs::Pose *startPoint)
 {
-//m545_planner_msgs::CurrentState::Request req;
-//req.query = "dummy";
-//req.frame = "map";
-//m545_planner_msgs::CurrentState::Response res;
-//
-//std::string service_name = currentStateServiceName_.toStdString();
-//
-//try {
-//ROS_DEBUG_STREAM("Service name: " << service_name);
-//if (false == ros::service::call(service_name, req, res)) {
-//  ROS_WARN_STREAM("Couldn't call service: " << service_name);
-//}
-//} catch (const std::exception& e) {
-//ROS_ERROR_STREAM("Service Exception: " << e.what());
-//}
-//*startPoint = res.currentState.pose;
+
+se2_navigation_msgs::CurrentStateRequestSrv::Request req;
+se2_navigation_msgs::CurrentStateRequestSrv::Response res;
+
+std::string service_name = currentStateServiceName_.toStdString();
+
+try {
+ROS_DEBUG_STREAM("Service name: " << service_name);
+if (false == ros::service::call(service_name, req, res)) {
+  ROS_WARN_STREAM("Couldn't call service: " << service_name);
+}
+} catch (const std::exception& e) {
+ROS_ERROR_STREAM("Service Exception: " << e.what());
+}
+callService(req,res,service_name);
+*startPoint = res.pose;
 
 }
 
