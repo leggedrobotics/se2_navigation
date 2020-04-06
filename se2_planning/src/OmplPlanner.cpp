@@ -25,6 +25,7 @@ void OmplPlanner::getPath(Path* path) const {
 }
 
 bool OmplPlanner::plan() {
+  simpleSetup_->clear();
   simpleSetup_->setStartAndGoalStates(*startState_, *goalState_);
   if (!simpleSetup_->solve(maxPlanningDuration_)) {
     std::cout << "OmplPlanner: Solve failed" << std::endl;

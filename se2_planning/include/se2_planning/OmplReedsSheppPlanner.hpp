@@ -28,6 +28,7 @@ struct ReedsSheppPathSegment {
 struct ReedsSheppPath : public Path {
   std::vector<ReedsSheppPathSegment> segment_;
   friend std::ostream& operator<<(std::ostream& out, const ReedsSheppPath& path);
+  unsigned int numPoints() const;
 };
 
 struct OmplReedsSheppPlannerParameters {
