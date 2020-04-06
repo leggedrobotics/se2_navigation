@@ -10,6 +10,7 @@
 
   <depend>gazebo_ros</depend>
   <depend>prius_msgs</depend>
+  <depend>roscpp</depend>
 
   <exec_depend>fake_localization</exec_depend>
   <exec_depend>joy</exec_depend>
