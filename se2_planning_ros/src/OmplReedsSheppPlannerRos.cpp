@@ -52,12 +52,14 @@ void OmplReedsSheppPlannerRos::initRos() {
 }
 
 void OmplReedsSheppPlannerRos::publishPathNavMsgs() const {
+  const auto interpolatedPath = interpolatePath(*pathRaw_, parameters_.pathNavMsgResolution_);
   ReedsSheppPath rsPath;
-  getPath(&rsPath);
+  convert(interpolatedPath, &rsPath);
   nav_msgs::Path msg = se2_planning::copyAllPoints(rsPath);
   msg.header.frame_id = parameters_.pathFrame_;
   msg.header.stamp = ros::Time::now();
   pathNavMsgsPublisher_.publish(msg);
+  ROS_INFO_STREAM("Publishing ReedsShepp path nav msg, num states: " << msg.poses.size());
 }
 
 geometry_msgs::Pose convert(const ReedsSheppState& state, double z) {

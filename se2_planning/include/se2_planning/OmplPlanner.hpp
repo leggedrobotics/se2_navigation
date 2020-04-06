@@ -35,10 +35,12 @@ class OmplPlanner : public Planner {
   ompl::base::StateSpacePtr stateSpace_;
   ompl::geometric::SimpleSetupPtr simpleSetup_;
   ompl::base::ScopedStatePtr startState_, goalState_;
-  std::unique_ptr<ompl::geometric::PathGeometric> path_;
+  std::unique_ptr<ompl::geometric::PathGeometric> path_, pathRaw_;
 
  private:
   double maxPlanningDuration_ = 1.0;
 };
+
+ompl::geometric::PathGeometric interpolatePath(const ompl::geometric::PathGeometric& inputPath, double deisredResolution);
 
 }  // namespace se2_planning

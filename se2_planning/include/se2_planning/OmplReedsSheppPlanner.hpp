@@ -70,6 +70,5 @@ class OmplReedsSheppPlanner : public OmplPlanner {
 
 std::string toString(ReedsSheppPathSegment::Direction direction);
 ReedsSheppState convert(const ompl::base::State* s);
-ompl::geometric::PathGeometric interpolatePath(const ompl::geometric::PathGeometric& inputPath, double deisredResolution);
 
 } /* namespace se2_planning */

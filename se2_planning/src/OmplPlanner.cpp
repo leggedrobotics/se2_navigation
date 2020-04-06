@@ -32,7 +32,11 @@ bool OmplPlanner::plan() {
     return false;
   }
 
-  *path_ = simpleSetup_->getSolutionPath();
+  const ompl::geometric::PathGeometric solution = simpleSetup_->getSolutionPath();
+  *path_ = solution;
+  *pathRaw_ = solution;
+
+  std::cout << "Solution plan has: " << solution.getStateCount() << " states." << std::endl;
 
   return true;
 }
@@ -50,11 +54,21 @@ bool OmplPlanner::initialize() {
   ompl::base::SpaceInformationPtr si = simpleSetup_->getSpaceInformation();
   simpleSetup_->setStateValidityChecker(std::bind(&OmplPlanner::isStateValid, this, si.get(), std::placeholders::_1));
   path_ = std::make_unique<ompl::geometric::PathGeometric>(si);
+  pathRaw_ = std::make_unique<ompl::geometric::PathGeometric>(si);
   return true;
 }
 
 void OmplPlanner::setMaxPlanningDuration(double T) {
   maxPlanningDuration_ = T;
+}
+
+ompl::geometric::PathGeometric interpolatePath(const ompl::geometric::PathGeometric& inputPath, double desiredResolution) {
+  ompl::geometric::PathGeometric interpolatedPath = inputPath;
+  const unsigned int currentNumPoints = inputPath.getStateCount();
+  const unsigned int desiredNumPoints = static_cast<unsigned int>(std::ceil(std::fabs(inputPath.length()) / desiredResolution));
+  const unsigned int numPoints = std::max(currentNumPoints, desiredNumPoints);
+  interpolatedPath.interpolate(numPoints);
+  return interpolatedPath;
 }
 
 } /*namespace se2_planning */
