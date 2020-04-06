@@ -7,7 +7,7 @@
 
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="verbose" value="true"/>
-    <arg name="world_name" value="$(find car_demo)/worlds/mcity.world"/>
+    <arg name="world_name" value="$(find car_demo)/worlds/empty.world"/>
   </include>
 
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" >

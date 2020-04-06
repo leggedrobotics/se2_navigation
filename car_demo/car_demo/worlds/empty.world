@@ -1,0 +1,82 @@
+<?xml version='1.0'?>
+<sdf version='1.6'>
+    <world name='empty'>
+    
+    <gui fullscreen='0'>
+      <plugin name='keyboard' filename='libKeyboardGUIPlugin.so'/>
+      <camera name="user_camera">
+        <pose>3.35107 -45.1046 18.435 0 0.392 1.574</pose>
+      </camera>
+    </gui>
+
+    <light name='sun' type='directional'>
+      <cast_shadows>1</cast_shadows>
+      <pose frame=''>0 0 10 0 -0 0</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <attenuation>
+        <range>1000</range>
+        <constant>0.9</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light>
+    
+     <model name='ground_plane'>
+        <static>1</static>
+        <link name='link'>
+            <collision name='collision'>
+                <geometry>
+                    <plane>
+                        <normal>0 0 1</normal>
+                        <size>500 500</size>
+                    </plane>
+                </geometry>
+                <surface>
+                    <friction>
+                        <ode>
+                            <mu>0.5</mu>
+                            <mu2>0.5</mu2>
+                        </ode>
+                        <bullet>
+                            <rolling_friction>0.02</rolling_friction>
+                        </bullet>
+                    </friction>
+                    <contact>
+                        <ode>
+                            <kp>5000000.0</kp>
+                            <kd>200000.0</kd>
+                        </ode>
+                    </contact>
+                    <bounce/>
+                </surface>
+                <max_contacts>10</max_contacts>
+            </collision>
+            <visual name='visual'>
+                <cast_shadows>0</cast_shadows>
+                <geometry>
+                    <plane>
+                        <normal>0 0 1</normal>
+                        <size>500 500</size>
+                    </plane>
+                </geometry>
+                <material>
+                    <script>
+                        <uri>file://media/materials/scripts/gazebo.material</uri>
+                        <name>Gazebo/Grey</name>
+                    </script>
+                </material>
+            </visual>
+            <velocity_decay>
+                <linear>0</linear>
+                <angular>0</angular>
+            </velocity_decay>
+            <self_collide>0</self_collide>
+            <kinematic>0</kinematic>
+            <gravity>1</gravity>
+        </link>
+    </model>
+    
+    </world>
+</sdf>
