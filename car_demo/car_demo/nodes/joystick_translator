@@ -27,7 +27,7 @@ THROTTLE_AXIS = 4
 class Translator:
     def __init__(self):
         self.sub = rospy.Subscriber("joy", Joy, self.callback)
-        self.pub = rospy.Publisher('prius', Control, queue_size=1)
+        self.pub = rospy.Publisher('prius_controls', Control, queue_size=1)
         self.last_published_time = rospy.get_rostime()
         self.last_published = None
         self.timer = rospy.Timer(rospy.Duration(1./20.), self.timer_callback)

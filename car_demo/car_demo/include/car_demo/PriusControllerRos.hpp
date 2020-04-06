@@ -5,11 +5,28 @@
  *      Author: jelavice
  */
 
-#ifndef SRC_PATH_FOLLOWING_CAR_DEMO_CAR_DEMO_INCLUDE_CAR_DEMO_PRIUSCONTROLLERROS_HPP_
-#define SRC_PATH_FOLLOWING_CAR_DEMO_CAR_DEMO_INCLUDE_CAR_DEMO_PRIUSCONTROLLERROS_HPP_
+#pragma once
+#include <ros/ros.h>
+
+namespace car_demo {
+
+class PriusControllerRos {
+
+ public:
+  PriusControllerRos(ros::NodeHandlePtr nh);
+  virtual ~PriusControllerRos() = default;
+  void initialize(double dt);
+  void advance();
+
+ private:
+
+  void publishControl() const;
+  void initRos();
+
+  ros::NodeHandlePtr nh_;
+  double dt_ = 0.01;
+  ros::Publisher priusControlPub_;
+};
 
 
-
-
-
-#endif /* SRC_PATH_FOLLOWING_CAR_DEMO_CAR_DEMO_INCLUDE_CAR_DEMO_PRIUSCONTROLLERROS_HPP_ */
+} /* namespace car_demo*/

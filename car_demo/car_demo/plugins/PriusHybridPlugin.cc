@@ -371,7 +371,7 @@ void PriusHybridPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
   if (_sdf->HasElement("robotNamespace"))
     this->robot_namespace_ = _sdf->GetElement("robotNamespace")->Get<std::string>() + "/";
   ros::NodeHandle nh(this->robot_namespace_);
-  this->dataPtr->controlSub = nh.subscribe("prius", 10, &PriusHybridPlugin::OnPriusCommand, this);
+  this->dataPtr->controlSub = nh.subscribe("prius_controls", 10, &PriusHybridPlugin::OnPriusCommand, this);
 
   this->dataPtr->node.Subscribe("/prius/reset",
       &PriusHybridPlugin::OnReset, this);

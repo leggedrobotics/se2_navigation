@@ -27,7 +27,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: Front Left Laser
+    SyncSource: ""
 Preferences:
   PromptSaveOnExit: true
 Toolbars:
@@ -533,7 +533,7 @@ Visualization Manager:
   Global Options:
     Background Color: 186; 189; 182
     Default Light: true
-    Fixed Frame: chassis
+    Fixed Frame: map
     Frame Rate: 30
   Name: root
   Tools:
@@ -557,7 +557,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 23.899547576904297
+      Distance: 130.8157501220703
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
