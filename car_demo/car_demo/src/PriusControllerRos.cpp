@@ -28,8 +28,8 @@ void PriusControllerRos::publishControl() const
 {
   prius_msgs::Control controlMsg;
 
-  controlMsg.steer = 0.5;
-  controlMsg.throttle = 0.05;
+  controlMsg.steer = 0.8;
+  controlMsg.throttle = 0.02;
   controlMsg.shift_gears = prius_msgs::Control::FORWARD;
 
   priusControlPub_.publish(controlMsg);
