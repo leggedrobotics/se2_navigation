@@ -8,7 +8,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CATKIN_PACKAGE_DEPENDENCIES
   roscpp
   gazebo_ros
-  prius_msgs 
+  prius_msgs
+  nav_msgs
+  se2_navigation_msgs 
 )
 
 set (PRIUSCUP_MAJOR_VERSION 0)

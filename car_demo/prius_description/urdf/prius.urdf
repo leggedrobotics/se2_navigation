@@ -535,7 +535,7 @@
     <plugin name="p3d" filename="libgazebo_ros_p3d.so">
       <!-- <robotNamespace>/prius</robotNamespace> -->
       <bodyName>base_link</bodyName>
-      <topicName>base_pose_ground_truth</topicName>
+      <topicName>/prius/base_pose_ground_truth</topicName>
       <frameName>map</frameName>
       <updateRate>100.0</updateRate>
     </plugin>

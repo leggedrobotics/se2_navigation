@@ -15,7 +15,7 @@
     <!-- <remap from="joint_states" to="/prius/joint_states" /> -->
   </node>
   <node pkg="fake_localization" type="fake_localization" name="fake_localization">
-    <!-- <remap from="base_pose_ground_truth" to="/prius/base_pose_ground_truth"/> -->
+    <remap from="base_pose_ground_truth" to="/prius/base_pose_ground_truth"/> 
   </node>
   <node pkg="tf2_ros" type="static_transform_publisher" name="very_inaccurate_odom" args="0 0 0 0 0 0 odom base_link"/>
   <node pkg="car_demo" type="prius_controller_node" name="prius_controller_node" output="screen" launch-prefix=""/>
