@@ -2,13 +2,25 @@
 
 <launch>
 
-    <arg name="ompl_planner_ros_parameter_path" 
+	<arg name="launch_rviz" default="true" />
+	<arg name="rviz_config_file"
+		default="$(find se2_planning_rviz)/rviz/default.rviz" />
+	
+	<arg name="ompl_planner_ros_parameter_path"
 		default="$(find se2_planning_ros)/config/reeds_shepp_planner_ros.yaml" />
 
-    <param name="/ompl_planner_ros/parameter_path" type="string"
+	<param name="/ompl_planner_ros/parameter_path" type="string"
 		value="$(arg ompl_planner_ros_parameter_path)" />
 
+
+	<!-- Nodes -->
 	<node name="se2_planner_node" pkg="se2_planning_ros"
 		type="se2_planner_node" output="screen" launch-prefix="">
 	</node>
+
+	<node name="rviz" pkg="rviz" type="rviz"
+		args="-d $(arg rviz_config_file)" required="true"
+		if="$(arg launch_rviz)" />
+
+
 </launch>

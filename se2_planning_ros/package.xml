@@ -15,5 +15,6 @@
 	<depend>tf2</depend>
 	<depend>yaml-cpp</depend>
 	<depend>se2_navigation_msgs</depend>
+	<exec_depend>se2_planning_rviz</exec_depend>
 	
 </package>
