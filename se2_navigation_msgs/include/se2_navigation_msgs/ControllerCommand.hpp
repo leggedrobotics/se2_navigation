@@ -25,38 +25,8 @@ struct ControllerCommand
   Command command_;
 };
 
-ControllerCommandMsg convert(const ControllerCommand& msg)
-{
-  ControllerCommandMsg rosMsg;
+ControllerCommandMsg convert(const ControllerCommand& msg);
 
-  rosMsg.command = static_cast<int>(msg.command_);
-
-  return rosMsg;
-}
-
-ControllerCommand convert(const ControllerCommandMsg& rosMsg)
-{
-  ControllerCommand msg;
-
-  switch (rosMsg.command) {
-    case static_cast<int>(ControllerCommand::Command::StartTracking): {
-      msg.command_ = ControllerCommand::Command::StartTracking;
-      break;
-    }
-    case static_cast<int>(ControllerCommand::Command::StopTracking): {
-      msg.command_ = ControllerCommand::Command::StopTracking;
-      break;
-    }
-
-    default: {
-      ROS_ERROR_STREAM("se2 Controller: unknown controller command: " << rosMsg.command);
-      throw std::runtime_error("se2 Controller: unknown controller command");
-
-    }
-
-  }
-
-  return msg;
-}
+ControllerCommand convert(const ControllerCommandMsg& rosMsg);
 
 } /* namespace se2_navigation_msgs */

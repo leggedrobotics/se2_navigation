@@ -12,6 +12,7 @@
 #include <nav_msgs/Path.h>
 #include <ros/ros.h>
 #include <string>
+#include "se2_navigation_msgs/Path.hpp"
 #include "se2_navigation_msgs/RequestPathSrv.h"
 
 namespace se2_planning {
@@ -39,7 +40,7 @@ class OmplReedsSheppPlannerRos : public OmplReedsSheppPlanner {
   void initRos();
   void publishPathNavMsgs() const;
   using PlanningService = se2_navigation_msgs::RequestPathSrv;
-
+  void publishPath() const;
   bool planningService(PlanningService::Request& req, PlanningService::Response& res);
 
   ros::NodeHandle* nh_;
@@ -52,5 +53,6 @@ class OmplReedsSheppPlannerRos : public OmplReedsSheppPlanner {
 nav_msgs::Path copyAllPoints(const ReedsSheppPath& path);
 geometry_msgs::Pose convert(const ReedsSheppState& state, double z = 0.0);
 ReedsSheppState convert(const geometry_msgs::Pose& state);
+se2_navigation_msgs::Path convert(const ReedsSheppPath& path);
 
 } /* namespace se2_planning */

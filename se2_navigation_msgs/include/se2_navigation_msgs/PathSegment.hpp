@@ -9,7 +9,6 @@
 #pragma once
 
 #include "se2_navigation_msgs/PathSegmentMsg.h"
-#include <ros/console.h>
 #include <vector>
 #include <geometry_msgs/Pose.h>
 
@@ -29,40 +28,8 @@ struct PathSegment
    std::vector<geometry_msgs::Pose> points_;
 };
 
-PathSegmentMsg convert(const PathSegment& msg)
-{
-  PathSegmentMsg rosMsg;
+PathSegmentMsg convert(const PathSegment& msg);
 
-  rosMsg.drivingDirection = static_cast<int>(msg.direction_);
-  rosMsg.points = msg.points_;
-
-  return rosMsg;
-}
-
-PathSegment convert(const PathSegmentMsg& rosMsg)
-{
-  PathSegment msg;
-  using DrivingDirection = PathSegment::DrivingDirection;
-
-  switch (rosMsg.drivingDirection) {
-    case static_cast<int>(DrivingDirection::Forward): {
-      msg.direction_ = DrivingDirection::Forward;
-      break;
-    }
-    case static_cast<int>(DrivingDirection::Backwards): {
-      msg.direction_ = DrivingDirection::Backwards;
-      break;
-    }
-
-    default: {
-      ROS_ERROR_STREAM("se2 PathSegment: unknown driving direction: " << rosMsg.drivingDirection);
-      throw std::runtime_error("se2 PathSegment: unknown driving direction");
-    }
-  }
-
-  msg.points_ = rosMsg.points;
-
-  return msg;
-}
+PathSegment convert(const PathSegmentMsg& rosMsg);
 
 } /* namespace se2_navigation_msgs */

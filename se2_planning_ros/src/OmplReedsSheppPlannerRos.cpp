@@ -11,7 +11,6 @@
 
 #include <nav_msgs/Path.h>
 #include <tf/transform_datatypes.h>
-#include "se2_navigation_msgs/Path.hpp"
 
 namespace se2_planning {
 
@@ -64,6 +63,17 @@ void OmplReedsSheppPlannerRos::publishPathNavMsgs() const {
   ROS_INFO_STREAM("Publishing ReedsShepp path nav msg, num states: " << msg.poses.size());
 }
 
+void OmplReedsSheppPlannerRos::publishPath() const {
+  const auto interpolatedPath = interpolatePath(*pathRaw_, parameters_.pathSpatialResolution_);
+  ReedsSheppPath rsPath;
+  convert(interpolatedPath, &rsPath);
+  nav_msgs::Path msg = se2_planning::copyAllPoints(rsPath);
+  msg.header.frame_id = parameters_.pathFrame_;
+  msg.header.stamp = ros::Time::now();
+  pathNavMsgsPublisher_.publish(msg);
+  ROS_INFO_STREAM("Publishing ReedsShepp path nav msg, num states: " << msg.poses.size());
+}
+
 geometry_msgs::Pose convert(const ReedsSheppState& state, double z) {
   geometry_msgs::Pose pose;
   pose.position.x = state.x_;
@@ -84,7 +94,7 @@ ReedsSheppState convert(const geometry_msgs::Pose& state) {
 
 nav_msgs::Path copyAllPoints(const ReedsSheppPath& path) {
   nav_msgs::Path pathOut;
-  pathOut.poses.reserve(2000);  // just a guess
+  pathOut.poses.reserve(path.numPoints());
   for (const auto& segment : path.segment_) {
     for (const auto& point : segment.point_) {
       geometry_msgs::PoseStamped poseStamped;
@@ -92,6 +102,33 @@ nav_msgs::Path copyAllPoints(const ReedsSheppPath& path) {
       pathOut.poses.push_back(poseStamped);
     }
   }
+  return pathOut;
+}
+
+se2_navigation_msgs::Path convert(const ReedsSheppPath& path) {
+  using DrivingDirection = se2_navigation_msgs::PathSegment::DrivingDirection;
+  auto convertDirections = [](ReedsSheppPathSegment::Direction d) -> DrivingDirection {
+    switch (d) {
+      case ReedsSheppPathSegment::Direction::FWD:
+        return DrivingDirection::Forward;
+      case ReedsSheppPathSegment::Direction::BCK:
+        return DrivingDirection::Backwards;
+      default: { throw std::runtime_error("Unknown conversion"); }
+    }
+  };
+
+  se2_navigation_msgs::Path pathOut;
+  pathOut.segment_.reserve(path.segment_.size());
+  for (const auto& segment : path.segment_) {
+    se2_navigation_msgs::PathSegment segmentOut;
+    segmentOut.points_.reserve(segment.point_.size());
+    segmentOut.direction_ = convertDirections(segment.direction_);
+    for (const auto& point : segment.point_) {
+      segmentOut.points_.push_back(convert(point));
+    }
+    pathOut.segment_.push_back(segmentOut);
+  }
+
   return pathOut;
 }
 
