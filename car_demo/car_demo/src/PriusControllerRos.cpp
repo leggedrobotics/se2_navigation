@@ -23,18 +23,27 @@ void PriusControllerRos::initialize(double dt)
 }
 void PriusControllerRos::advance()
 {
-  publishControl();
+  prius_msgs::PriusControl control;
+
+  const bool readyToTrack = planReceived_ && receivedStartTrackingCommand_;
+
+  if (!readyToTrack) {
+    prius_msgs::PriusControl failproofCtrl;
+    failproofCtrl.brake_ = 0.5;
+    publishControl(failproofCtrl);
+    return;
+  }
+
+  control.gear_ = prius_msgs::PriusControl::Gear::FORWARD;
+  control.steer_ = 0.8;
+  control.throttle_ = 0.02;
+
+  publishControl(control);
 }
 
-void PriusControllerRos::publishControl() const
+void PriusControllerRos::publishControl(const prius_msgs::PriusControl &ctrl) const
 {
-  prius_msgs::Control controlMsg;
-
-  controlMsg.steer = 0.8;
-  controlMsg.throttle = 0.02;
-  controlMsg.shift_gears = prius_msgs::Control::FORWARD;
-
-  priusControlPub_.publish(controlMsg);
+  priusControlPub_.publish(prius_msgs::convert(ctrl));
 }
 void PriusControllerRos::initRos()
 {
@@ -48,25 +57,27 @@ void PriusControllerRos::initRos()
   controllerCommandService_ = nh_->advertiseService("/prius/controller_command_service",
                                                     &PriusControllerRos::controllerCommandService,
                                                     this);
-  pathSub_ = nh_->subscribe("se2_planner_node/ompl_rs_planner_ros/nav_msgs_path", 1, &PriusControllerRos::pathCallback ,this);
+  pathSub_ = nh_->subscribe("se2_planner_node/ompl_rs_planner_ros/nav_msgs_path", 1,
+                            &PriusControllerRos::pathCallback, this);
 }
 
 void PriusControllerRos::pathCallback(const se2_navigation_msgs::PathMsg &pathMsg)
 {
+  const se2_navigation_msgs::Path path = se2_navigation_msgs::convert(pathMsg);
 
-    if (currentlyExecutingPlan_) {
-      ROS_WARN_STREAM( "PathFollowerRos:: Robot is tracking the previous plan. Rejecting this one.");
-      return;
-    }
+  if (currentlyExecutingPlan_) {
+    ROS_WARN_STREAM("PathFollowerRos:: Robot is tracking the previous plan. Rejecting this one.");
+    return;
+  }
 
-    if (pathMsg.path.empty()) {
-      ROS_WARN_STREAM("Path follower received an empty plan!");
-      return;
-    }
+  if (path.segment_.empty()) {
+    ROS_WARN_STREAM("Path follower received an empty plan!");
+    return;
+  }
 
-    ROS_INFO_STREAM("PathFollowerRos subscriber received a plan, msg size: " << pathMsg.path.size());
+  ROS_INFO_STREAM("PathFollowerRos subscriber received a plan, num segments: " << path.segment_.size());
 
-    planReceived_ = true;
+  planReceived_ = true;
 }
 
 void PriusControllerRos::priusStateCallback(const nav_msgs::Odometry &odometry)

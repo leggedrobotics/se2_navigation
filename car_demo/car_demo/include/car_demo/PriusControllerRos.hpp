@@ -11,6 +11,7 @@
 #include "se2_navigation_msgs/RequestCurrentStateSrv.h"
 #include "se2_navigation_msgs/SendControllerCommandSrv.h"
 #include "se2_navigation_msgs/Path.hpp"
+#include "prius_msgs/PriusControl.hpp"
 
 namespace car_demo {
 
@@ -27,7 +28,7 @@ class PriusControllerRos {
 
  private:
 
-  void publishControl() const;
+  void publishControl(const prius_msgs::PriusControl &ctrl) const;
   void initRos();
   void priusStateCallback(const nav_msgs::Odometry &odometry);
   void pathCallback(const se2_navigation_msgs::PathMsg &pathMsg);
@@ -53,6 +54,8 @@ class PriusControllerRos {
   bool receivedStartTrackingCommand_ = false;
   bool doneFollowingPrev_ = false;
   bool publishTrackingStatus_ = false;
+
+  prius_msgs::PriusControl priusControl_;
 
 };
 
