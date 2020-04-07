@@ -8,13 +8,13 @@
 #pragma once
 #include <ros/ros.h>
 #include <nav_msgs/Odometry.h>
-#include "se2_navigation_msgs/CurrentStateRequestSrv.h"
+#include "se2_navigation_msgs/RequestCurrentStateSrv.h"
 
 namespace car_demo {
 
 class PriusControllerRos {
 
-  using CurrentStateService = se2_navigation_msgs::CurrentStateRequestSrv;
+  using CurrentStateService = se2_navigation_msgs::RequestCurrentStateSrv;
  public:
   PriusControllerRos(ros::NodeHandlePtr nh);
   virtual ~PriusControllerRos() = default;

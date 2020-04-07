@@ -8,7 +8,7 @@
 #pragma once
 
 #include <ros/ros.h>
-#include "se2_navigation_msgs/PathRequestSrv.h"
+#include "se2_navigation_msgs/RequestPathSrv.h"
 #include "se2_planning/Planner.hpp"
 
 namespace se2_planning {
@@ -27,7 +27,7 @@ class PlannerRos : public Planner {
   void setPlanner(std::unique_ptr<Planner> planner);
 
  protected:
-  using PlanningService = se2_navigation_msgs::PathRequestSrv;
+  using PlanningService = se2_navigation_msgs::RequestPathSrv;
 
   explicit PlannerRos(ros::NodeHandlePtr nh);
   ~PlannerRos() override = default;

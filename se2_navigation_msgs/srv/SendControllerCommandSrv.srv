@@ -1,0 +1,5 @@
+# Request
+ControllerCommandMsg command                          # Query, maybe useful for the future
+---
+# Response
+bool success

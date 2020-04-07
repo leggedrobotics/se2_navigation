@@ -12,7 +12,7 @@
 #include <nav_msgs/Path.h>
 #include <ros/ros.h>
 #include <string>
-#include "se2_navigation_msgs/PathRequestSrv.h"
+#include "se2_navigation_msgs/RequestPathSrv.h"
 
 namespace se2_planning {
 
@@ -37,7 +37,7 @@ class OmplReedsSheppPlannerRos : public OmplReedsSheppPlanner {
  private:
   void initRos();
   void publishPathNavMsgs() const;
-  using PlanningService = se2_navigation_msgs::PathRequestSrv;
+  using PlanningService = se2_navigation_msgs::RequestPathSrv;
 
   bool planningService(PlanningService::Request& req, PlanningService::Response& res);
 

@@ -32,8 +32,22 @@ generate_messages(
 
 
 catkin_package(
-   CATKIN_DEPENDS
-      ${CATKIN_PACKAGE_DEPENDENCIES}
-      message_runtime
+  INCLUDE_DIRS
+    include
+  CATKIN_DEPENDS
+    ${CATKIN_PACKAGE_DEPENDENCIES}
+    message_runtime
+)
+
+include_directories(
+  include
+  ${catkin_INCLUDE_DIRS}
+)
+
+
+install(
+  DIRECTORY include/${PROJECT_NAME}/
+  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+  FILES_MATCHING PATTERN "*.hpp"
 )
 

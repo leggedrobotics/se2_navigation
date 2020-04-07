@@ -18,8 +18,8 @@
 #include "se2_planning_rviz/EditButton.hpp"
 
 #include "se2_navigation_msgs/PathRequestMsg.h"
-#include "se2_navigation_msgs/PathRequestSrv.h"
-#include "se2_navigation_msgs/CurrentStateRequestSrv.h"
+#include "se2_navigation_msgs/RequestPathSrv.h"
+#include "se2_navigation_msgs/RequestCurrentStateSrv.h"
 
 #include <thread>
 
@@ -325,9 +325,9 @@ if (useCurrentStateAsStartingPose) {
 goal_pose_widget_->getPose(&(pathRequest.goalPose));
 
 std::string service_name = planningServiceName_.toStdString();
-se2_navigation_msgs::PathRequestSrv::Request req;
+se2_navigation_msgs::RequestPathSrv::Request req;
 req.pathRequest = pathRequest;
-se2_navigation_msgs::PathRequestSrv::Response res;
+se2_navigation_msgs::RequestPathSrv::Response res;
 
 callService(req,res,service_name);
 
@@ -345,8 +345,8 @@ start_pose_widget_->getPose(startPoint);
 void PlanningPanel::getStartPoseFromService(geometry_msgs::Pose *startPoint)
 {
 
-se2_navigation_msgs::CurrentStateRequestSrv::Request req;
-se2_navigation_msgs::CurrentStateRequestSrv::Response res;
+se2_navigation_msgs::RequestCurrentStateSrv::Request req;
+se2_navigation_msgs::RequestCurrentStateSrv::Response res;
 
 std::string service_name = currentStateServiceName_.toStdString();
 
