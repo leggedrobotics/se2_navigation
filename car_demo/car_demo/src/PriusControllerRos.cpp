@@ -7,6 +7,7 @@
 
 #include "car_demo/PriusControllerRos.hpp"
 #include "prius_msgs/Control.h"
+#include "se2_navigation_msgs/ControllerCommand.hpp"
 
 namespace car_demo {
 
@@ -37,9 +38,14 @@ void PriusControllerRos::publishControl() const
 void PriusControllerRos::initRos()
 {
   priusControlPub_ = nh_->advertise<prius_msgs::Control>("/prius_controls", 1, false);
-  priusStateSub_ = nh_->subscribe("/prius/base_pose_ground_truth", 1, &PriusControllerRos::priusStateCallback,
-                                  this);
-  priusCurrentStateService_ = nh_->advertiseService("/prius/get_current_state_service",&PriusControllerRos::currentStateRequestService,this);
+  priusStateSub_ = nh_->subscribe("/prius/base_pose_ground_truth", 1,
+                                  &PriusControllerRos::priusStateCallback, this);
+  priusCurrentStateService_ = nh_->advertiseService("/prius/get_current_state_service",
+                                                    &PriusControllerRos::currentStateRequestService,
+                                                    this);
+  controllerCommandService_ = nh_->advertiseService("/prius/controller_command_service",
+                                                    &PriusControllerRos::controllerCommandService,
+                                                    this);
 }
 
 void PriusControllerRos::priusStateCallback(const nav_msgs::Odometry &odometry)
@@ -54,6 +60,60 @@ bool PriusControllerRos::currentStateRequestService(CurrentStateService::Request
   res.twist = priusState_.twist.twist;
 
   return true;
+}
+bool PriusControllerRos::controllerCommandService(ControllerCommandService::Request &req,
+                                                  ControllerCommandService::Response &res)
+{
+  const auto command = se2_navigation_msgs::convert(req.command);
+  using Command = se2_navigation_msgs::ControllerCommand::Command;
+  switch (command.command_) {
+    case Command::StartTracking: {
+      processStartTrackingCommand();
+      break;
+    }
+    case Command::StopTracking: {
+      processAbortTrackingCommand();
+      break;
+    }
+    default: {
+      ROS_WARN_STREAM("PATH FOLLOWER ROS: Unknown command");
+    }
+  }
+
+  return true;
+}
+
+void PriusControllerRos::processStartTrackingCommand()
+{
+  if (!planReceived_) {
+    ROS_WARN_STREAM(
+        "PriusControllerRos:: Rejecting  the start command since the robot hasn't received a plan yet");
+    return;
+  }
+
+  if (currentlyExecutingPlan_) {
+    ROS_WARN_STREAM(
+        "PriusControllerRos:: Rejecting  the start command since the robot is already executing another plan");;
+    return;
+  }
+
+  ROS_WARN_STREAM("PriusControllerRos:: Start tracking requested");
+
+  currentlyExecutingPlan_ = true;
+  receivedStartTrackingCommand_ = true;
+}
+void PriusControllerRos::processAbortTrackingCommand()
+{
+  if (!currentlyExecutingPlan_) {
+    ROS_WARN_STREAM("PriusControllerRos:: Not tracking any plans at the moment, cannot stop");
+    return;
+  } else {
+    ROS_INFO_STREAM("PriusControllerRos stopped tracking");
+    currentlyExecutingPlan_ = false;
+    receivedStartTrackingCommand_ = false;
+    planReceived_ = false;
+    // todo pathTracker_->stopTracking();
+  }
 }
 
 } /* namespace car_demo*/
