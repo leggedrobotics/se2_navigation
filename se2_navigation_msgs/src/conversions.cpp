@@ -62,6 +62,7 @@ PathMsg convert(const Path& msg)
   for (const auto &segment : msg.segment_) {
     rosMsg.segment.push_back(convert(segment));
   }
+  rosMsg.header = msg.header_;
   return rosMsg;
 }
 
@@ -72,6 +73,7 @@ Path convert(const PathMsg& rosMsg)
   for (const auto &segment : rosMsg.segment) {
     msg.segment_.push_back(convert(segment));
   }
+  msg.header_ = rosMsg.header;
   return msg;
 }
 

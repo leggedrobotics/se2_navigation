@@ -48,6 +48,7 @@ class OmplReedsSheppPlannerRos : public OmplReedsSheppPlanner {
   ros::Publisher pathPublisher_;
   OmplReedsSheppPlannerRosParameters parameters_;
   ros::ServiceServer planningService_;
+  int planSeqNumber_ = -1;
 };
 
 nav_msgs::Path copyAllPoints(const ReedsSheppPath& path);

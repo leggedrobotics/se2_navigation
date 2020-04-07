@@ -29,6 +29,9 @@ bool OmplReedsSheppPlannerRos::initialize() {
 }
 bool OmplReedsSheppPlannerRos::plan() {
   bool result = BASE::plan();
+  if (result) {
+    planSeqNumber_++;
+  }
   std::thread t([this]() { publishPathNavMsgs(); });
   t.detach();
   return result;
@@ -59,6 +62,7 @@ void OmplReedsSheppPlannerRos::publishPathNavMsgs() const {
   nav_msgs::Path msg = se2_planning::copyAllPoints(rsPath);
   msg.header.frame_id = parameters_.pathFrame_;
   msg.header.stamp = ros::Time::now();
+  msg.header.seq = planSeqNumber_;
   pathNavMsgsPublisher_.publish(msg);
   ROS_INFO_STREAM("Publishing ReedsShepp path nav msg, num states: " << msg.poses.size());
 }
@@ -67,11 +71,12 @@ void OmplReedsSheppPlannerRos::publishPath() const {
   const auto interpolatedPath = interpolatePath(*pathRaw_, parameters_.pathSpatialResolution_);
   ReedsSheppPath rsPath;
   convert(interpolatedPath, &rsPath);
-  nav_msgs::Path msg = se2_planning::copyAllPoints(rsPath);
-  msg.header.frame_id = parameters_.pathFrame_;
-  msg.header.stamp = ros::Time::now();
-  pathNavMsgsPublisher_.publish(msg);
-  ROS_INFO_STREAM("Publishing ReedsShepp path nav msg, num states: " << msg.poses.size());
+  se2_navigation_msgs::Path msg = se2_planning::convert(rsPath);
+  msg.header_.frame_id = parameters_.pathFrame_;
+  msg.header_.stamp = ros::Time::now();
+  msg.header_.seq = planSeqNumber_;
+  pathNavMsgsPublisher_.publish(se2_navigation_msgs::convert(msg));
+  ROS_INFO_STREAM("Publishing ReedsShepp path, num states: " << rsPath.numPoints());
 }
 
 geometry_msgs::Pose convert(const ReedsSheppState& state, double z) {
