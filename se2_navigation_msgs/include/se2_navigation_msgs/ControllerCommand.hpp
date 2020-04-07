@@ -5,7 +5,7 @@
  *      Author: jelavice
  */
 
-#pragma
+#pragma once
 
 #include "se2_navigation_msgs/ControllerCommandMsg.h"
 #include <ros/console.h>
@@ -49,7 +49,9 @@ ControllerCommand convert(const ControllerCommandMsg& rosMsg)
     }
 
     default: {
-      ROS_ERROR_STREAM("Arm controller: unknown arm controller command: " << rosMsg.command);
+      ROS_ERROR_STREAM("se2 Controller: unknown controller command: " << rosMsg.command);
+      throw std::runtime_error("se2 Controller: unknown controller command");
+
     }
 
   }
@@ -57,4 +59,4 @@ ControllerCommand convert(const ControllerCommandMsg& rosMsg)
   return msg;
 }
 
-} /* se2_navigation_msgs */
+} /* namespace se2_navigation_msgs */
