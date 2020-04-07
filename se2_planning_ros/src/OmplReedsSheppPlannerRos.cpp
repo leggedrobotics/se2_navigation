@@ -32,7 +32,10 @@ bool OmplReedsSheppPlannerRos::plan() {
   if (result) {
     planSeqNumber_++;
   }
-  std::thread t([this]() { publishPathNavMsgs(); });
+  std::thread t([this]() {
+    publishPath();
+    publishPathNavMsgs();
+  });
   t.detach();
   return result;
 }
@@ -75,7 +78,7 @@ void OmplReedsSheppPlannerRos::publishPath() const {
   msg.header_.frame_id = parameters_.pathFrame_;
   msg.header_.stamp = ros::Time::now();
   msg.header_.seq = planSeqNumber_;
-  pathNavMsgsPublisher_.publish(se2_navigation_msgs::convert(msg));
+  pathPublisher_.publish(se2_navigation_msgs::convert(msg));
   ROS_INFO_STREAM("Publishing ReedsShepp path, num states: " << rsPath.numPoints());
 }
 
