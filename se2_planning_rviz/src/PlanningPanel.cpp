@@ -20,14 +20,16 @@
 #include "se2_navigation_msgs/PathRequestMsg.h"
 #include "se2_navigation_msgs/RequestPathSrv.h"
 #include "se2_navigation_msgs/RequestCurrentStateSrv.h"
+#include "se2_navigation_msgs/ControllerCommand.hpp"
+#include "se2_navigation_msgs/SendControllerCommandSrv.h"
 
 #include <thread>
 
 namespace se2_planning_rviz {
 
-
-template <typename Req, typename Res>
-bool callService(Req& req, Res& res, const std::string& serviceName) {
+template<typename Req, typename Res>
+bool callService(Req& req, Res& res, const std::string& serviceName)
+{
   try {
     // ROS_DEBUG_STREAM("Service name: " << service_name);
     if (!ros::service::call(serviceName, req, res)) {
@@ -40,7 +42,6 @@ bool callService(Req& req, Res& res, const std::string& serviceName) {
 
   return true;
 }
-
 
 PlanningPanel::PlanningPanel(QWidget* parent)
     : rviz::Panel(parent),
@@ -136,7 +137,8 @@ void PlanningPanel::createLayout()
   // Hook up connections.
   connect(controllerCommandTopicEditor_, SIGNAL(editingFinished()), this,
           SLOT(updateControllerCommandTopic()));
-  connect(planningServiceNameEditor_, SIGNAL(editingFinished()), this, SLOT(updatePathRequestTopic()));
+  connect(planningServiceNameEditor_, SIGNAL(editingFinished()), this,
+          SLOT(updatePathRequestTopic()));
   connect(currStateServiceEditor_, SIGNAL(editingFinished()), this,
           SLOT(updateGetCurrentStateService()));
   connect(plan_request_button_, SIGNAL(released()), this, SLOT(callPlanningService()));
@@ -155,7 +157,6 @@ void PlanningPanel::setControllerCommandTopic(const QString& newControllerComman
   // Only take action if the name has changed.
   if (newControllerCommandTopic != controllerCommandTopicName_) {
     controllerCommandTopicName_ = newControllerCommandTopic;
-    advertiseControllerCommand();
     Q_EMIT configChanged();
   }
 }
@@ -275,10 +276,6 @@ if (config.mapGetString("controller_command_topic", &controllerCommandTopicName_
 controllerCommandTopicEditor_->setText(controllerCommandTopicName_);
 }
 
-//get initial pose
-advertisePathRequest();
-advertiseControllerCommand();
-
 }
 
 void PlanningPanel::updateInteractiveMarkerPose(const geometry_msgs::Pose& pose)
@@ -309,7 +306,6 @@ std::thread t([this] {
 
 se2_navigation_msgs::PathRequestMsg pathRequest;
 
-
 const bool useCurrentStateAsStartingPose = currentStateAsStartCheckBox_->isChecked();
 
 if (useCurrentStateAsStartingPose) {
@@ -331,7 +327,6 @@ se2_navigation_msgs::RequestPathSrv::Response res;
 
 callService(req,res,service_name);
 
-
 });
 
 t.detach();
@@ -349,68 +344,39 @@ se2_navigation_msgs::RequestCurrentStateSrv::Request req;
 se2_navigation_msgs::RequestCurrentStateSrv::Response res;
 
 std::string service_name = currentStateServiceName_.toStdString();
-
-try {
-ROS_DEBUG_STREAM("Service name: " << service_name);
-if (false == ros::service::call(service_name, req, res)) {
-  ROS_WARN_STREAM("Couldn't call service: " << service_name);
-}
-} catch (const std::exception& e) {
-ROS_ERROR_STREAM("Service Exception: " << e.what());
-}
-callService(req,res,service_name);
+callService(req, res, service_name);
 *startPoint = res.pose;
 
 }
 
 void PlanningPanel::callPublishTrackingCommand()
 {
-//
-//using namespace m545_planner_msgs;
-//PathFollowerCommand msg;
-//PathFollowerCommandRos msgRos;
-//
-//msg.command_ = PathFollowerCommand::Command::StartTracking;
-//path_follower_command_pub_.publish(PathFollowerCommandConversion::convert(msg));
-
+se2_navigation_msgs::ControllerCommand command;
+command.command_ = se2_navigation_msgs::ControllerCommand::Command::StartTracking;
+callSendControllerCommandService(command);
 }
 
 void PlanningPanel::callPublishStopTrackingCommand()
 {
-
-//using namespace m545_planner_msgs;
-//PathFollowerCommand msg;
-//PathFollowerCommandRos msgRos;
-//
-//msg.command_ = PathFollowerCommand::Command::StopTracking;
-//path_follower_command_pub_.publish(PathFollowerCommandConversion::convert(msg));
-
+se2_navigation_msgs::ControllerCommand command;
+command.command_ = se2_navigation_msgs::ControllerCommand::Command::StopTracking;
+callSendControllerCommandService(command);
 }
 
-void PlanningPanel::advertiseControllerCommand()
+void PlanningPanel::callSendControllerCommandService(
+se2_navigation_msgs::ControllerCommand &command) const
 {
-//std::string topic = controllerCommandTopicName_.toStdString();
-//if (topic.empty())
-//return;
-//using namespace m545_planner_msgs;
-//const bool isLatchPublishers = false;
-//ROS_INFO_STREAM("GUI: Sending the controller command on topic: " << topic);
-//path_follower_command_pub_ = nh_.advertise<PathFollowerCommandRos>(topic, 1, isLatchPublishers);
+
+se2_navigation_msgs::SendControllerCommandSrv::Request req;
+se2_navigation_msgs::SendControllerCommandSrv::Response res;
+
+req.command = se2_navigation_msgs::convert(command);
+std::string service_name = controllerCommandTopicName_.toStdString();
+callService(req, res, service_name);
 
 }
-void PlanningPanel::advertisePathRequest()
-{
-//std::string topic = planningServiceName_.toStdString();
-//if (topic.empty())
-//return;
-//using namespace m545_planner_msgs;
-//const bool isLatchPublishers = false;
-//ROS_INFO_STREAM("GUI: Sending plan request on topic: " << topic);
-//plan_request_pub_ = nh_.advertise<PathRequest>(topic, 1, isLatchPublishers);
-}
 
-}  /* namespace se2_planning_rviz */
-
+} /* namespace se2_planning_rviz */
 
 #include <pluginlib/class_list_macros.h>
 PLUGINLIB_EXPORT_CLASS(se2_planning_rviz::PlanningPanel, rviz::Panel)

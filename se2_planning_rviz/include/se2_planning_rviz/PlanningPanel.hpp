@@ -11,6 +11,10 @@
 
 #include <string>
 
+namespace se2_navigation_msgs {
+  struct ControllerCommand;
+}
+
 class QLineEdit;
 namespace se2_planning_rviz {
 
@@ -58,8 +62,6 @@ class PlanningPanel : public rviz::Panel {
   void callPlanningService();
   void callPublishTrackingCommand();
   void callPublishStopTrackingCommand();
-  void advertiseControllerCommand();
-  void advertisePathRequest();
 
  protected:
   // Set up the layout, only called by the constructor.
@@ -70,6 +72,7 @@ class PlanningPanel : public rviz::Panel {
 
   void getStartPoseFromWidget(geometry_msgs::Pose *startPoint);
   void getStartPoseFromService(geometry_msgs::Pose *startPoint);
+  void callSendControllerCommandService(se2_navigation_msgs::ControllerCommand &command) const;
 
   // ROS Stuff:
   ros::NodeHandle nh_;
@@ -99,9 +102,6 @@ class PlanningPanel : public rviz::Panel {
 
   // Other state:
   std::string currently_editing_;
-
-  ros::Publisher plan_request_pub_;
-  ros::Publisher path_follower_command_pub_;
 
   geometry_msgs::Pose lastPose_;
 
