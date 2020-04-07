@@ -10,8 +10,10 @@
 #include <nav_msgs/Odometry.h>
 #include "se2_navigation_msgs/RequestCurrentStateSrv.h"
 #include "se2_navigation_msgs/SendControllerCommandSrv.h"
+#include "se2_navigation_msgs/Path.hpp"
 
 namespace car_demo {
+
 
 class PriusControllerRos {
 
@@ -28,6 +30,7 @@ class PriusControllerRos {
   void publishControl() const;
   void initRos();
   void priusStateCallback(const nav_msgs::Odometry &odometry);
+  void pathCallback(const se2_navigation_msgs::PathMsg &pathMsg);
 
   bool currentStateRequestService(CurrentStateService::Request &req, CurrentStateService::Response &res );
   bool controllerCommandService(ControllerCommandService::Request &req, ControllerCommandService::Response &res );
@@ -39,6 +42,7 @@ class PriusControllerRos {
   double dt_ = 0.01;
   ros::Publisher priusControlPub_;
   ros::Subscriber priusStateSub_;
+  ros::Subscriber pathSub_;
   ros::ServiceServer priusCurrentStateService_;
   ros::ServiceServer controllerCommandService_;
   nav_msgs::Odometry priusState_;

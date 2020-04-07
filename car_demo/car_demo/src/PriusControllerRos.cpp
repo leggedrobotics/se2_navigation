@@ -19,6 +19,7 @@ PriusControllerRos::PriusControllerRos(ros::NodeHandlePtr nh)
 
 void PriusControllerRos::initialize(double dt)
 {
+  ROS_INFO_STREAM("PriusControllerRos: Initialization done");
 }
 void PriusControllerRos::advance()
 {
@@ -37,6 +38,7 @@ void PriusControllerRos::publishControl() const
 }
 void PriusControllerRos::initRos()
 {
+  //todo remove hardcoded paths
   priusControlPub_ = nh_->advertise<prius_msgs::Control>("/prius_controls", 1, false);
   priusStateSub_ = nh_->subscribe("/prius/base_pose_ground_truth", 1,
                                   &PriusControllerRos::priusStateCallback, this);
@@ -46,6 +48,25 @@ void PriusControllerRos::initRos()
   controllerCommandService_ = nh_->advertiseService("/prius/controller_command_service",
                                                     &PriusControllerRos::controllerCommandService,
                                                     this);
+  pathSub_ = nh_->subscribe("se2_planner_node/ompl_rs_planner_ros/nav_msgs_path", 1, &PriusControllerRos::pathCallback ,this);
+}
+
+void PriusControllerRos::pathCallback(const se2_navigation_msgs::PathMsg &pathMsg)
+{
+
+    if (currentlyExecutingPlan_) {
+      ROS_WARN_STREAM( "PathFollowerRos:: Robot is tracking the previous plan. Rejecting this one.");
+      return;
+    }
+
+    if (pathMsg.path.empty()) {
+      ROS_WARN_STREAM("Path follower received an empty plan!");
+      return;
+    }
+
+    ROS_INFO_STREAM("PathFollowerRos subscriber received a plan, msg size: " << pathMsg.path.size());
+
+    planReceived_ = true;
 }
 
 void PriusControllerRos::priusStateCallback(const nav_msgs::Odometry &odometry)
