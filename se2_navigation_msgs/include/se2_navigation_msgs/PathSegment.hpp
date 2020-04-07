@@ -49,7 +49,7 @@ PathSegment convert(const PathSegmentMsg& rosMsg)
       msg.direction_ = DrivingDirection::Forward;
       break;
     }
-    case static_cast<int>(DrivingDirection::StopTracking): {
+    case static_cast<int>(DrivingDirection::Backwards): {
       msg.direction_ = DrivingDirection::Backwards;
       break;
     }

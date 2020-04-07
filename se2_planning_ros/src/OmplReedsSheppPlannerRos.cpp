@@ -11,6 +11,7 @@
 
 #include <nav_msgs/Path.h>
 #include <tf/transform_datatypes.h>
+#include "se2_navigation_msgs/Path.hpp"
 
 namespace se2_planning {
 
@@ -49,6 +50,7 @@ bool OmplReedsSheppPlannerRos::planningService(PlanningService::Request& req, Pl
 void OmplReedsSheppPlannerRos::initRos() {
   pathNavMsgsPublisher_ = nh_->advertise<nav_msgs::Path>(parameters_.pathNavMsgTopic_, 1, true);
   planningService_ = nh_->advertiseService(parameters_.planningSerivceName_, &OmplReedsSheppPlannerRos::planningService, this);
+  pathPublisher_ = nh_->advertise<se2_navigation_msgs::PathMsg>(parameters_.pathMsgTopic_, 1);
 }
 
 void OmplReedsSheppPlannerRos::publishPathNavMsgs() const {

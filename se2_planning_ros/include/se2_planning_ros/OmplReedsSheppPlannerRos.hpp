@@ -20,6 +20,7 @@ struct OmplReedsSheppPlannerRosParameters : public OmplReedsSheppPlannerParamete
   std::string pathFrame_ = "map";
   std::string pathNavMsgTopic_ = "ompl_rs_planner_ros/nav_msgs_path";
   std::string planningSerivceName_ = "ompl_rs_planner_ros/planning_service";
+  std::string pathMsgTopic_ = "ompl_rs_planner_ros/path";
   double pathNavMsgResolution_ = 1.0;
 };
 
@@ -43,6 +44,7 @@ class OmplReedsSheppPlannerRos : public OmplReedsSheppPlanner {
 
   ros::NodeHandle* nh_;
   ros::Publisher pathNavMsgsPublisher_;
+  ros::Publisher pathPublisher_;
   OmplReedsSheppPlannerRosParameters parameters_;
   ros::ServiceServer planningService_;
 };
