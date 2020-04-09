@@ -46,13 +46,13 @@ class RateLimiter {
   void setRisingRate(double maxRisingRate);
   void setFallingRate(double minFallingRate);
   void setTimestep(double dt);
+  void reset(double startingValue = 0.0);
 
  private:
   double dt_ = 0.01;
   double maxRisingRate_ = 1.0;
   double minFallingRate_ = -1.0;
   double valuePrev_ = 0.0;
-  bool firstTime_ = true;
 };
 
 class AverageFilter {

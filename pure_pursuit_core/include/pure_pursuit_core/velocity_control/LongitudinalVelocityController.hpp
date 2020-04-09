@@ -22,7 +22,6 @@ class LongitudinalVelocityController {
   void updateDrivingDirection(DrivingDirection drivingDirection);
 
   virtual void updateCurrentState(const RobotState& robState);
-  virtual void setIsStartingNewPathSegment(bool startinNewSegment);
   virtual bool initialize();
   virtual void updateCurrentPathSegment(const PathSegment& pathSegment);
 
@@ -32,7 +31,6 @@ class LongitudinalVelocityController {
  protected:
   double desiredLongitudinalVelocity_ = 0.0;
   RobotState currentRobotState_;
-  bool isStartingNewPathSegmenet_ = false;
   DrivingDirection drivingDirection_;
   PathSegment currentPathSegment_;
 };

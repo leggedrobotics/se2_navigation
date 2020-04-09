@@ -20,10 +20,6 @@ Circle::Circle(const Point& c, double r) : center_(c), r_(r) {}
 Circle::Circle(double x, double y, double r) : center_(x, y), r_(r) {}
 
 double RateLimiter::limitRateOfChange(double value) {
-  if (firstTime_) {
-    valuePrev_ = value;
-    return value;
-  }
   double retValue = value;
   if (value > valuePrev_ + dt_ * maxRisingRate_) {
     retValue = valuePrev_ + dt_ * maxRisingRate_;
@@ -54,6 +50,10 @@ void RateLimiter::setTimestep(double dt) {
     throw std::runtime_error("Time step cannot be negative");
   }
   dt_ = dt;
+}
+
+void RateLimiter::reset(double startingValue) {
+  valuePrev_ = startingValue;
 }
 
 double bindToRange(double value, double lo, double hi) {

@@ -30,8 +30,5 @@ void LongitudinalVelocityController::updateDrivingDirection(DrivingDirection dri
 void LongitudinalVelocityController::updateCurrentState(const RobotState& robState) {
   currentRobotState_ = robState;
 }
-void LongitudinalVelocityController::setIsStartingNewPathSegment(bool startinNewSegment) {
-  isStartingNewPathSegmenet_ = startinNewSegment;
-}
 
 } /* namespace pure_pursuit */

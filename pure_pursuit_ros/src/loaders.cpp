@@ -55,6 +55,22 @@ ConstantVelocityControllerParameters loadConstantVelocityControllerParameters(co
   return parameters;
 }
 
+AdaptiveVelocityControllerParameters loadAdaptiveVelocityControllerParameters(const std::string& filename) {
+  YAML::Node basenode = YAML::LoadFile(filename);
+
+  if (basenode.IsNull()) {
+    throw std::runtime_error("AdaptiveVelocityControllerLoader::loadParameters loading failed");
+  }
+
+  auto node = basenode["velocity_control"]["adaptive_velocity_control"];
+  AdaptiveVelocityControllerParameters parameters;
+  parameters.desiredVelocity_ = node["nominal_velocity"].as<double>();
+  parameters.maxVelocityRateOfChange_ = node["max_rate_of_change"].as<double>();
+  parameters.distanceToGoalWhenBrakingStarts_ = node["distance_when_braking_starts"].as<double>();
+
+  return parameters;
+}
+
 SimplePathTrackerParameters loadSimplePathTrackerParameters(const std::string& filename) {
   YAML::Node basenode = YAML::LoadFile(filename);
 
