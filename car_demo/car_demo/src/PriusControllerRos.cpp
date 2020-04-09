@@ -135,7 +135,7 @@ void PriusControllerRos::translateCommands(double longitudinalSpeed, double stee
   const double maxSteeringAnglePrius = 0.7;
   ctrl->steer_ = steeringAngle / maxSteeringAnglePrius;
 
-  translateVelocity(longitudinalSpeed, ctrl);
+  translateVelocity(std::fabs(longitudinalSpeed), ctrl);
 }
 void PriusControllerRos::translateGear(double longitudinalSpeed,
                                        prius_msgs::PriusControl *ctrl) const
@@ -156,11 +156,15 @@ void PriusControllerRos::translateGear(double longitudinalSpeed,
     }
   }
 }
-void PriusControllerRos::translateVelocity(double desiredVelocity, prius_msgs::PriusControl *ctrl)
+
+void PriusControllerRos::translateVelocity(double desiredVelocityMagnitude, prius_msgs::PriusControl *ctrl)
 {
   //translate velocity
-  const double measuredVelocity = longitudinalVelocity(priusState_);
-  const double cmd = pidController_.update(dt_, desiredVelocity, measuredVelocity);
+  const double measuredVelocityMagnitude = std::fabs(longitudinalVelocity(priusState_));
+  const double cmd = pidController_.update(dt_, desiredVelocityMagnitude, measuredVelocityMagnitude);
+  ROS_INFO_STREAM_THROTTLE(1.0, "Cmd fomr the controller: " << cmd);
+  ROS_INFO_STREAM_THROTTLE(1.0, "Desired Vel: " << desiredVelocityMagnitude);
+  ROS_INFO_STREAM_THROTTLE(1.0, "Measured vel: " << measuredVelocityMagnitude);
   switch (pure_pursuit::sgn(cmd)) {
     case 1: {
       ctrl->brake_ = 0.0;
@@ -191,7 +195,13 @@ void PriusControllerRos::stopTracking()
 
 void PriusControllerRos::publishControl(const prius_msgs::PriusControl &ctrl) const
 {
-  priusControlPub_.publish(prius_msgs::convert(ctrl));
+  const auto rosMsg = prius_msgs::convert(ctrl);
+
+//  ROS_INFO_STREAM_THROTTLE(0.5, "Ros brake: " << rosMsg.brake);
+//  ROS_INFO_STREAM_THROTTLE(0.5, "Ros steer: " << rosMsg.steer);
+//  ROS_INFO_STREAM_THROTTLE(0.5, "Ros throttle: " << rosMsg.throttle);
+//  ROS_INFO_STREAM_THROTTLE(0.5, "Ros gear: " << (int) rosMsg.shift_gears);
+  priusControlPub_.publish(rosMsg);
 }
 void PriusControllerRos::initRos()
 {
