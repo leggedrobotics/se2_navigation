@@ -7,6 +7,8 @@
 
 #include "car_demo/PriusControllerRos.hpp"
 
+#include <tf/transform_datatypes.h>
+
 #include "prius_msgs/Control.h"
 #include "pure_pursuit_ros/AckermannSteeringControllerRos.hpp"
 #include "pure_pursuit_ros/loaders.hpp"
@@ -63,10 +65,8 @@ void PriusControllerRos::createControllerAndLoadParameters()
 }
 void PriusControllerRos::advance()
 {
-  prius_msgs::PriusControl control;
-
+  update();
   const bool readyToTrack = planReceived_ && receivedStartTrackingCommand_;
-
   if (!readyToTrack) {
     publishControl(prius_msgs::PriusControl::getFailProofControlCommand());
     return;
@@ -81,15 +81,37 @@ void PriusControllerRos::advance()
     } else {
       const double steering = pathTracker_->getSteeringAngle();
       const double velocity = pathTracker_->getLongitudinalVelocity();
-      //todo convert all of this crep to PriusControl
+      translateCommands(velocity, steering, &controlCommand);
     }
 
-  control.gear_ = prius_msgs::PriusControl::Gear::FORWARD;
-  control.steer_ = 0.8;
-  control.throttle_ = 0.02;
-
-  publishControl(control);
+  publishControl(controlCommand);
 }
+void PriusControllerRos::update(){
+
+    const double x = priusState_.pose.pose.position.x;
+    const double y = priusState_.pose.pose.position.y;
+    const double yaw = tf::getYaw(priusState_.pose.pose.orientation);
+    pure_pursuit::RobotState currentState;
+    currentState.pose_.position_ = pure_pursuit::Point(x, y);
+    currentState.pose_.yaw_ = yaw;
+    pathTracker_->updateRobotState(currentState);
+
+    // update FSM state variables
+    const bool doneFollowing = pathTracker_->isTrackingFinished();
+    const bool isRisingEdge = doneFollowing && !doneFollowingPrev_;
+    if (isRisingEdge) {
+      currentlyExecutingPlan_ = false;
+      receivedStartTrackingCommand_ = false;
+      planReceived_ = false;
+      publishTrackingStatus_ = true;
+    }
+    doneFollowingPrev_ = doneFollowing;
+}
+
+void PriusControllerRos::translateCommands(double longitudinalSpeed, double steeringAngle, prius_msgs::PriusControl *ctrl){
+
+}
+
 
 void PriusControllerRos::stopTracking(){
   ROS_INFO_STREAM("PriusControllerRos stopped tracking");

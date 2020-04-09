@@ -12,6 +12,7 @@ set(CATKIN_PACKAGE_DEPENDENCIES
   nav_msgs
   se2_navigation_msgs
   pure_pursuit_ros
+  tf
 )
 
 set (PRIUSCUP_MAJOR_VERSION 0)

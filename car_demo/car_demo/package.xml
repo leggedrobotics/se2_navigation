@@ -14,6 +14,7 @@
   <depend>nav_msgs</depend>
   <depend>se2_navigation_msgs</depend>
   <depend>pure_pursuit_ros</depend>
+  <depend>tf</depend>
   
 
   <exec_depend>fake_localization</exec_depend>

@@ -31,6 +31,8 @@ class PriusControllerRos {
   void advance();
 
  private:
+  void update();
+  void translateCommands(double longitudinalSpeed, double steeringAngle, prius_msgs::PriusControl *ctrl);
   void createControllerAndLoadParameters();
   void publishControl(const prius_msgs::PriusControl &ctrl) const;
   void initRos();
