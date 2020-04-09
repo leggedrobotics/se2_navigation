@@ -12,17 +12,16 @@
 namespace car_demo {
 
 PIDController::PIDController()
-    : PIDController(10.0, 1.0, 0.0, 0.0, 0.0)
+    : PIDController(10.0, 1.0, 0.0, 0.0)
 {
 }
 
 PIDController::PIDController(const double maxEffort, const double kp, const double ki,
-                             const double kd, const double kf, const double maxIntegratorInput,
+                             const double kd, const double maxIntegratorInput,
                              const double integratorSaturation)
     : kp_(kp),
       ki_(ki),
       kd_(kd),
-      kf_(kf),
       maxEffort_(maxEffort),
       maxIntegratorInput_(maxIntegratorInput),
       integratorSaturation_(integratorSaturation)
@@ -32,12 +31,11 @@ PIDController::PIDController(const double maxEffort, const double kp, const doub
   }
 }
 
-void PIDController::setGains(const double kp, const double ki, const double kd, const double kf)
+void PIDController::setGains(const double kp, const double ki, const double kd)
 {
   setKp(kp);
   setKi(ki);
   setKd(kd);
-  setKf(kf);
 }
 
 void PIDController::reset()
@@ -75,7 +73,7 @@ double PIDController::update(const double dt, const double desired, const double
       integral_ = newIntegral;
     }
   }
-  out = kp_ * error + ki_ * integral_ + kd_ * derivative + kf_ * desired;
+  out = kp_ * error + ki_ * integral_ + kd_ * derivative;
   out = std::max(std::min(out, maxEffort_), -maxEffort_);
   previousMeasured_ = measured;
   return out;

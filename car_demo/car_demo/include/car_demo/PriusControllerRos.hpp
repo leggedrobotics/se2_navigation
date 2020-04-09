@@ -12,6 +12,7 @@
 #include "se2_navigation_msgs/SendControllerCommandSrv.h"
 #include "se2_navigation_msgs/Path.hpp"
 #include "prius_msgs/PriusControl.hpp"
+#include "car_demo/PIDController.hpp"
 
 namespace pure_pursuit {
   class PathTracker;
@@ -33,6 +34,8 @@ class PriusControllerRos {
  private:
   void update();
   void translateCommands(double longitudinalSpeed, double steeringAngle, prius_msgs::PriusControl *ctrl);
+  void translateGear(double longitudinalSpeed, prius_msgs::PriusControl *ctrl) const;
+  void translateVelocity(double desiredVelocity, prius_msgs::PriusControl *ctrl);
   void createControllerAndLoadParameters();
   void publishControl(const prius_msgs::PriusControl &ctrl) const;
   void initRos();
@@ -63,8 +66,9 @@ class PriusControllerRos {
 
   prius_msgs::PriusControl priusControl_;
   std::unique_ptr<pure_pursuit::PathTracker> pathTracker_;
+  PIDController pidController_;
 
 };
 
-
+double longitudinalVelocity(const nav_msgs::Odometry &odom);
 } /* namespace car_demo*/

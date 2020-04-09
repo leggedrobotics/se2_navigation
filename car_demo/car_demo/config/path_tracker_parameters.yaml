@@ -1,21 +1,21 @@
 velocity_control:
   constant_velocity_control: 
-    desired_velocity: 1.0
+    desired_velocity: 2.0
     max_rate_of_change: 0.3
  
 heading_control:
-  lookahead_fwd: 4.5
+  lookahead_fwd: 4.0
   lookahead_bck: 4.0
-  anchor_dist_fwd: 1.0
+  anchor_dist_fwd: 0.5
   anchor_dist_bck: 0.5
   dead_zone_width: 0.0
-  avg_filter_current_sample_weight: 0.1
+  avg_filter_current_sample_weight: 0.9
   
   
   heading_control_ackermann:
-    wheel_base: 5.0 # was 3.0
+    wheel_base: 5.0 
     max_steering_rate_of_change_in_deg_per_sec: 10
-    max_steering_angle_magnitude_in_deg: 5 
+    max_steering_angle_magnitude_in_deg: 30 
  
 path_tracking:
   simple_path_tracker:

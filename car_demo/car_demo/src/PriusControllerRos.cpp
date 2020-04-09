@@ -10,6 +10,7 @@
 #include <tf/transform_datatypes.h>
 
 #include "prius_msgs/Control.h"
+#include "pure_pursuit_core/math.hpp"
 #include "pure_pursuit_ros/AckermannSteeringControllerRos.hpp"
 #include "pure_pursuit_ros/loaders.hpp"
 #include "pure_pursuit_ros/SimplePathTrackerRos.hpp"
@@ -29,6 +30,8 @@ void PriusControllerRos::initialize(double dt)
 {
   dt_ = dt;
   createControllerAndLoadParameters();
+  pidController_.setMaxEffort(1.0);
+  pidController_.setMaxIntegratorInput(1.0);
   ROS_INFO_STREAM("PriusControllerRos: Initialization done");
 }
 
@@ -74,46 +77,97 @@ void PriusControllerRos::advance()
 
   prius_msgs::PriusControl controlCommand;
   if (!pathTracker_->advance()) {
-      ROS_ERROR_STREAM("Failed to advance path tracker.");
-      controlCommand = prius_msgs::PriusControl::getFailProofControlCommand();
-      stopTracking();
-      publishTrackingStatus_ = true;
-    } else {
-      const double steering = pathTracker_->getSteeringAngle();
-      const double velocity = pathTracker_->getLongitudinalVelocity();
-      translateCommands(velocity, steering, &controlCommand);
-    }
+    ROS_ERROR_STREAM("Failed to advance path tracker.");
+    controlCommand = prius_msgs::PriusControl::getFailProofControlCommand();
+    stopTracking();
+    publishTrackingStatus_ = true;
+  } else {
+    const double steering = pathTracker_->getSteeringAngle();
+    const double velocity = pathTracker_->getLongitudinalVelocity();
+    translateCommands(velocity, steering, &controlCommand);
+  }
 
   publishControl(controlCommand);
 }
-void PriusControllerRos::update(){
+void PriusControllerRos::update()
+{
 
-    const double x = priusState_.pose.pose.position.x;
-    const double y = priusState_.pose.pose.position.y;
-    const double yaw = tf::getYaw(priusState_.pose.pose.orientation);
-    pure_pursuit::RobotState currentState;
-    currentState.pose_.position_ = pure_pursuit::Point(x, y);
-    currentState.pose_.yaw_ = yaw;
-    pathTracker_->updateRobotState(currentState);
+  const double x = priusState_.pose.pose.position.x;
+  const double y = priusState_.pose.pose.position.y;
+  const double yaw = tf::getYaw(priusState_.pose.pose.orientation);
+  pure_pursuit::RobotState currentState;
+  currentState.pose_.position_ = pure_pursuit::Point(x, y);
+  currentState.pose_.yaw_ = yaw;
+  pathTracker_->updateRobotState(currentState);
 
-    // update FSM state variables
-    const bool doneFollowing = pathTracker_->isTrackingFinished();
-    const bool isRisingEdge = doneFollowing && !doneFollowingPrev_;
-    if (isRisingEdge) {
-      currentlyExecutingPlan_ = false;
-      receivedStartTrackingCommand_ = false;
-      planReceived_ = false;
-      publishTrackingStatus_ = true;
+  // update FSM state variables
+  const bool doneFollowing = pathTracker_->isTrackingFinished();
+  const bool isRisingEdge = doneFollowing && !doneFollowingPrev_;
+  if (isRisingEdge) {
+    currentlyExecutingPlan_ = false;
+    receivedStartTrackingCommand_ = false;
+    planReceived_ = false;
+    publishTrackingStatus_ = true;
+  }
+  doneFollowingPrev_ = doneFollowing;
+}
+
+void PriusControllerRos::translateCommands(double longitudinalSpeed, double steeringAngle,
+                                           prius_msgs::PriusControl *ctrl)
+{
+  translateGear(longitudinalSpeed, ctrl);
+
+  // translate steering
+  const double maxSteeringAnglePrius = 0.7;
+  ctrl->steer_ = steeringAngle / maxSteeringAnglePrius;
+
+  translateVelocity(longitudinalSpeed, ctrl);
+}
+void PriusControllerRos::translateGear(double longitudinalSpeed,
+                                       prius_msgs::PriusControl *ctrl) const
+{
+  using Gear = prius_msgs::PriusControl::Gear;
+  switch (pure_pursuit::sgn(longitudinalSpeed)) {
+    case 1: {
+      ctrl->gear_ = Gear::FORWARD;
+      break;
     }
-    doneFollowingPrev_ = doneFollowing;
+    case 0: {
+      ctrl->gear_ = Gear::NEUTRAL;
+      break;
+    }
+    case -1: {
+      ctrl->gear_ = Gear::REVERSE;
+      break;
+    }
+  }
+}
+void PriusControllerRos::translateVelocity(double desiredVelocity, prius_msgs::PriusControl *ctrl)
+{
+  //translate velocity
+    const double measuredVelocity = longitudinalVelocity(priusState_);
+    const double cmd = pidController_.update(dt_, desiredVelocity, measuredVelocity);
+    switch (pure_pursuit::sgn(cmd)) {
+      case 1: {
+        ctrl->brake_ = 0.0;
+        ctrl->throttle_ = cmd;
+        break;
+      }
+      case 0: {
+        ctrl->brake_ = 0.0;
+        ctrl->throttle_ = 0.0;
+        break;
+      }
+      case -1: {
+        ctrl->brake_ = std::fabs(cmd);
+        ctrl->throttle_ = 0.0;
+        break;
+      }
+    }
 }
 
-void PriusControllerRos::translateCommands(double longitudinalSpeed, double steeringAngle, prius_msgs::PriusControl *ctrl){
-
-}
-
-
-void PriusControllerRos::stopTracking(){
+void PriusControllerRos::stopTracking()
+{
   ROS_INFO_STREAM("PriusControllerRos stopped tracking");
   currentlyExecutingPlan_ = false;
   receivedStartTrackingCommand_ = false;
@@ -223,6 +277,15 @@ void PriusControllerRos::processAbortTrackingCommand()
   } else {
     stopTracking();
   }
+}
+
+double longitudinalVelocity(const nav_msgs::Odometry &odom)
+{
+  const double yaw = tf::getYaw(odom.pose.pose.orientation);
+  const Eigen::Vector2d heading(std::cos(yaw), std::sin(yaw));
+  const auto &linearTwist = odom.twist.twist.linear;
+  const Eigen::Vector2d velocityInertialFrame(linearTwist.x, linearTwist.y);
+  return heading.transpose() * velocityInertialFrame;
 }
 
 } /* namespace car_demo*/
