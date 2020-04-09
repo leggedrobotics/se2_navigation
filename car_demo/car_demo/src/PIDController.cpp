@@ -4,10 +4,10 @@
  *  Created on: Apr 9, 2020
  *      Author: jelavice
  */
+#include "car_demo/PIDController.hpp"
 
 #include <algorithm>
-
-#include "car_demo/PIDController.hpp"
+#include <yaml-cpp/yaml.h>
 
 namespace car_demo {
 
@@ -77,6 +77,24 @@ double PIDController::update(const double dt, const double desired, const double
   out = std::max(std::min(out, maxEffort_), -maxEffort_);
   previousMeasured_ = measured;
   return out;
+}
+
+PIDControllerParameters loadParameters(const std::string &filename)
+{
+  YAML::Node basenode = YAML::LoadFile(filename);
+
+  if (basenode.IsNull()) {
+    throw std::runtime_error("PID controller::loadParameters loading failed");
+  }
+
+  auto node = basenode["PIDparameters"]["constant_velocity_control"];
+  PIDControllerParameters parameters;
+  parameters.kp_ = node["kp"].as<double>();
+  parameters.kd_ = node["kd"].as<double>();
+  parameters.ki_ = node["ki"].as<double>();
+
+  return parameters;
+
 }
 
 }  // namespace basic_controllers

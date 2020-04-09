@@ -36,7 +36,8 @@ class PriusControllerRos {
   void translateCommands(double longitudinalSpeed, double steeringAngle, prius_msgs::PriusControl *ctrl);
   void translateGear(double longitudinalSpeed, prius_msgs::PriusControl *ctrl) const;
   void translateVelocity(double desiredVelocity, prius_msgs::PriusControl *ctrl);
-  void createControllerAndLoadParameters();
+  void createPathTrackerAndLoadParameters();
+  void loadPIDParameters();
   void publishControl(const prius_msgs::PriusControl &ctrl) const;
   void initRos();
   void priusStateCallback(const nav_msgs::Odometry &odometry);

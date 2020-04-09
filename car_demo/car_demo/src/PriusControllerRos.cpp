@@ -29,16 +29,29 @@ PriusControllerRos::~PriusControllerRos() = default;
 void PriusControllerRos::initialize(double dt)
 {
   dt_ = dt;
-  createControllerAndLoadParameters();
-  pidController_.setMaxEffort(1.0);
-  pidController_.setMaxIntegratorInput(1.0);
+  createPathTrackerAndLoadParameters();
+  loadPIDParameters();
   ROS_INFO_STREAM("PriusControllerRos: Initialization done");
 }
 
-void PriusControllerRos::createControllerAndLoadParameters()
+void PriusControllerRos::loadPIDParameters(){
+  const std::string controllerParametersFilename = nh_->param<std::string>(
+      "/prius_pid_parameters_filename", "");
+  const auto params = loadParameters(controllerParametersFilename);
+
+  pidController_.setGains(params.kp_, params.ki_, params.kd_);
+
+  // command is in [-1.0, 1.0], hence the magic numbers
+  pidController_.setMaxEffort(1.0);
+  pidController_.setMaxIntegratorInput(1.0);
+  pidController_.setIntegratorSaturation(1.0);
+
+}
+
+void PriusControllerRos::createPathTrackerAndLoadParameters()
 {
   const std::string controllerParametersFilename = nh_->param<std::string>(
-      "/prius_controller_ros_parameters_filename", "");
+      "/prius_path_tracker_ros_parameters_filename", "");
 
   namespace pp = pure_pursuit;
   auto velocityParams = pp::loadConstantVelocityControllerParameters(controllerParametersFilename);

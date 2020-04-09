@@ -32,6 +32,7 @@ catkin_package(
    include
  LIBRARIES 
    ${PROJECT_NAME}
+   yaml-cpp
  CATKIN_DEPENDS 
    ${CATKIN_PACKAGE_DEPENDENCIES}
 #  DEPENDS system_lib
@@ -40,7 +41,8 @@ catkin_package(
 include_directories(
   include 
   ${catkin_INCLUDE_DIRS} 
-  ${GAZEBO_INCLUDE_DIRS} 
+  ${GAZEBO_INCLUDE_DIRS}
+  ${YAML_CPP_INCLUDE_DIR} 
   ${SDFormat_INCLUDE_DIRS})
 
 add_library(PriusHybridPlugin SHARED plugins/PriusHybridPlugin.cc)
@@ -54,6 +56,7 @@ add_library(${PROJECT_NAME}
   )
 target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
+  yaml-cpp
 )
 
 add_executable(prius_controller_node

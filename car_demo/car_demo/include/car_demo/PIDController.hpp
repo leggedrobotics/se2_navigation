@@ -8,8 +8,18 @@
 #pragma once
 
 #include <limits>
+#include <string>
 
 namespace car_demo {
+
+struct PIDControllerParameters {
+  double kp_;
+  double ki_;
+  double kd_;
+  double maxEffort_;
+  double maxIntegratorInput_;
+  double integratorSaturation_;
+};
 
 class PIDController {
  public:
@@ -52,5 +62,7 @@ class PIDController {
   double maxIntegratorInput_;
   double integratorSaturation_;
 };
+
+PIDControllerParameters loadParameters(const std::string &filename);
 
 }  // namespace car_demo
