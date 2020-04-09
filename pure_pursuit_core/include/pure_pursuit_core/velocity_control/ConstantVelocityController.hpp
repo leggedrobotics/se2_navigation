@@ -34,6 +34,6 @@ class ConstantVelocityController : public LongitudinalVelocityController {
   RateLimiter rateLimiter_;
 };
 
-std::unique_ptr<LongitudinalVelocityController> createAdaptiveVelocityController(const ConstantVelocityControllerParameters& parameters);
+std::unique_ptr<LongitudinalVelocityController> createConstantVelocityController(const ConstantVelocityControllerParameters& parameters);
 
 } /* namespace pure_pursuit */

@@ -9,6 +9,7 @@ set(SRC_FILES
   src/common.cpp
   src/math.cpp 
   src/AckermannSteeringController.cpp
+  src/AdaptiveVelocityController.cpp
   src/ConstantVelocityController.cpp
   src/HeadingController.cpp
   src/LongitudinalVelocityController.cpp

@@ -2,6 +2,10 @@ velocity_control:
   constant_velocity_control: 
     desired_velocity: 1.0
     max_rate_of_change: 0.3
+  adaptive_velocity_control: 
+    nominal_velocity: 1.0
+    max_rate_of_change: 0.5
+    distance_when_braking_starts: 5.0
  
 heading_control:
   lookahead_fwd: 4.0

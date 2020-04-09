@@ -55,10 +55,10 @@ void PriusControllerRos::createPathTrackerAndLoadParameters()
       "/prius_path_tracker_ros_parameters_filename", "");
 
   namespace pp = pure_pursuit;
-  auto velocityParams = pp::loadConstantVelocityControllerParameters(controllerParametersFilename);
+  auto velocityParams = pp::loadAdaptiveVelocityControllerParameters(controllerParametersFilename);
   velocityParams.timestep_ = dt_;
   std::shared_ptr<pp::LongitudinalVelocityController> velocityController =
-      pp::createConstantVelocityController(velocityParams);
+      pp::createAdaptiveVelocityController(velocityParams);
 
   auto ackermannParams = pp::loadAckermannSteeringControllerParameters(
       controllerParametersFilename);

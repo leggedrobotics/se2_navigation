@@ -9,9 +9,7 @@
 
 namespace pure_pursuit {
 
-bool AdaptiveVelocityController::computeVelocity()
-{
-
+bool AdaptiveVelocityController::computeVelocity() {
   double referenceVelocity = 0.0;
   switch (drivingDirection_) {
     case DrivingDirection::FWD: {
@@ -24,9 +22,8 @@ bool AdaptiveVelocityController::computeVelocity()
     }
   }
 
-  //should be path integral strictly speaking
-  const double distanceToGoal = (currentRobotState_.pose_.position_
-      - currentPathSegment_.point_.back().position_).norm();
+  // should be path integral strictly speaking
+  const double distanceToGoal = (currentRobotState_.pose_.position_ - currentPathSegment_.point_.back().position_).norm();
   const double dWhenBrakingStarts = parameters_.distanceToGoalWhenBrakingStarts_;
   if (distanceToGoal <= dWhenBrakingStarts) {
     const double slope = parameters_.desiredVelocity_ / dWhenBrakingStarts;
@@ -40,9 +37,7 @@ bool AdaptiveVelocityController::computeVelocity()
   return true;
 }
 
-void AdaptiveVelocityController::setParameters(
-    const AdaptiveVelocityControllerParameters& parameters)
-{
+void AdaptiveVelocityController::setParameters(const AdaptiveVelocityControllerParameters& parameters) {
   if (parameters.maxVelocityRateOfChange_ < 0) {
     throw std::runtime_error("maxVelocityRateOfChange_ is less than 0.");
   }
@@ -66,15 +61,10 @@ void AdaptiveVelocityController::updateCurrentPathSegment(const PathSegment& pat
   rateLimiter_.reset(0.0);
 }
 
-std::unique_ptr<LongitudinalVelocityController> createAdaptiveVelocityController(
-    const AdaptiveVelocityControllerParameters& parameters)
-{
-  std::unique_ptr<AdaptiveVelocityController> controller = std::make_unique<
-      AdaptiveVelocityController>();
+std::unique_ptr<LongitudinalVelocityController> createAdaptiveVelocityController(const AdaptiveVelocityControllerParameters& parameters) {
+  std::unique_ptr<AdaptiveVelocityController> controller = std::make_unique<AdaptiveVelocityController>();
   controller->setParameters(parameters);
   return std::move(controller);
 }
-
-
 
 } /* namespace pure_pursuit */

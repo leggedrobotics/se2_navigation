@@ -49,6 +49,7 @@ void SimplePathTracker::advanceStateMachine() {
     currentPathSegmentId_ = bindIndexToRange(currentPathSegmentId_ + 1, 0, nSegments - 1);
     headingController_->updateCurrentPathSegment(currentPath_.segment_.at(currentPathSegmentId_));
     headingController_->initialize();
+    velocityController_->updateCurrentPathSegment(currentPathSegment);
     std::cout << "Going to waiting state " << std::endl;
   }
 
@@ -64,6 +65,7 @@ void SimplePathTracker::advanceStateMachine() {
     currentFSMState_ = States::Driving;
     headingController_->updateCurrentPathSegment(currentPathSegment);
     headingController_->initialize();
+    velocityController_->updateCurrentPathSegment(currentPathSegment);
     std::cout << "Going to driving state (received plan)" << std::endl;
   }
 

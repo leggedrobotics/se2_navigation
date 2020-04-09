@@ -1,4 +1,4 @@
 PIDparameters:
-  kp: 0.1
+  kp: 0.5
   kd: 0.01
-  ki: 0.0
+  ki: 0.01

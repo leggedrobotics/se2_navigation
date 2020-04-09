@@ -18,16 +18,18 @@ struct AdaptiveVelocityControllerParameters {
   double desiredVelocity_ = 0.0;
   double timestep_ = 0.01;
   double maxVelocityRateOfChange_ = 0.3;
-  double distanceToGoalWhenBrakingStarts_ = 4.0; // meters
+  double distanceToGoalWhenBrakingStarts_ = 4.0;  // meters
 };
 
 class AdaptiveVelocityController : public LongitudinalVelocityController {
   using BASE = LongitudinalVelocityController;
+
  public:
   AdaptiveVelocityController() = default;
   ~AdaptiveVelocityController() override = default;
   void setParameters(const AdaptiveVelocityControllerParameters& parameters);
   void updateCurrentPathSegment(const PathSegment& pathSegment) override;
+
  private:
   bool computeVelocity() override;
 
@@ -36,6 +38,6 @@ class AdaptiveVelocityController : public LongitudinalVelocityController {
   RateLimiter rateLimiter_;
 };
 
-std::unique_ptr<LongitudinalVelocityController> createConstantVelocityController(const AdaptiveVelocityControllerParameters& parameters);
+std::unique_ptr<LongitudinalVelocityController> createAdaptiveVelocityController(const AdaptiveVelocityControllerParameters& parameters);
 
 } /* namespace pure_pursuit */
