@@ -24,6 +24,13 @@ struct PriusControl
   double throttle_ = 0.0;
   double steer_ = 0.0;
   Gear gear_ = Gear::NEUTRAL;
+
+  inline static PriusControl getFailProofControlCommand()
+  {
+    prius_msgs::PriusControl failproofCtrl;
+    failproofCtrl.brake_ = 0.5;
+    return failproofCtrl;
+  }
 };
 
 inline PriusControl convert(const Control &rosMsg)
@@ -51,7 +58,7 @@ inline PriusControl convert(const Control &rosMsg)
       ctrlMsg.gear_ = PriusControl::Gear::REVERSE;
       break;
     }
-    default:{
+    default: {
       throw std::runtime_error("Unknown gear");
     }
   }
@@ -84,7 +91,7 @@ inline Control convert(const PriusControl &msg)
       rosMsg.shift_gears = Control::REVERSE;
       break;
     }
-    default:{
+    default: {
       throw std::runtime_error("Unknown gear");
     }
   }

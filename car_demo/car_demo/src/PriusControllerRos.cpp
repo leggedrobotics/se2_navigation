@@ -68,17 +68,35 @@ void PriusControllerRos::advance()
   const bool readyToTrack = planReceived_ && receivedStartTrackingCommand_;
 
   if (!readyToTrack) {
-    prius_msgs::PriusControl failproofCtrl;
-    failproofCtrl.brake_ = 0.5;
-    publishControl(failproofCtrl);
+    publishControl(prius_msgs::PriusControl::getFailProofControlCommand());
     return;
   }
+
+  prius_msgs::PriusControl controlCommand;
+  if (!pathTracker_->advance()) {
+      ROS_ERROR_STREAM("Failed to advance path tracker.");
+      controlCommand = prius_msgs::PriusControl::getFailProofControlCommand();
+      stopTracking();
+      publishTrackingStatus_ = true;
+    } else {
+      const double steering = pathTracker_->getSteeringAngle();
+      const double velocity = pathTracker_->getLongitudinalVelocity();
+      //todo convert all of this crep to PriusControl
+    }
 
   control.gear_ = prius_msgs::PriusControl::Gear::FORWARD;
   control.steer_ = 0.8;
   control.throttle_ = 0.02;
 
   publishControl(control);
+}
+
+void PriusControllerRos::stopTracking(){
+  ROS_INFO_STREAM("PriusControllerRos stopped tracking");
+  currentlyExecutingPlan_ = false;
+  receivedStartTrackingCommand_ = false;
+  planReceived_ = false;
+  pathTracker_->stopTracking();
 }
 
 void PriusControllerRos::publishControl(const prius_msgs::PriusControl &ctrl) const
@@ -181,11 +199,7 @@ void PriusControllerRos::processAbortTrackingCommand()
     ROS_WARN_STREAM("PriusControllerRos:: Not tracking any plans at the moment, cannot stop");
     return;
   } else {
-    ROS_INFO_STREAM("PriusControllerRos stopped tracking");
-    currentlyExecutingPlan_ = false;
-    receivedStartTrackingCommand_ = false;
-    planReceived_ = false;
-    pathTracker_->stopTracking();
+    stopTracking();
   }
 }
 

@@ -36,7 +36,7 @@ class PriusControllerRos {
   void initRos();
   void priusStateCallback(const nav_msgs::Odometry &odometry);
   void pathCallback(const se2_navigation_msgs::PathMsg &pathMsg);
-
+  void stopTracking();
   bool currentStateRequestService(CurrentStateService::Request &req, CurrentStateService::Response &res );
   bool controllerCommandService(ControllerCommandService::Request &req, ControllerCommandService::Response &res );
 

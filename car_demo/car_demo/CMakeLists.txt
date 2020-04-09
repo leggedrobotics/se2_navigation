@@ -48,7 +48,9 @@ add_dependencies(PriusHybridPlugin ${catkin_EXPORTED_TARGETS})
 
 
 add_library(${PROJECT_NAME}
-  src/PriusControllerRos.cpp)
+  src/PriusControllerRos.cpp
+  src/PIDController.cpp
+  )
 target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
 )
