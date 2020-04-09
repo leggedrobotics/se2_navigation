@@ -34,7 +34,8 @@ void PriusControllerRos::initialize(double dt)
   ROS_INFO_STREAM("PriusControllerRos: Initialization done");
 }
 
-void PriusControllerRos::loadPIDParameters(){
+void PriusControllerRos::loadPIDParameters()
+{
   const std::string controllerParametersFilename = nh_->param<std::string>(
       "/prius_pid_parameters_filename", "");
   const auto params = loadParameters(controllerParametersFilename);
@@ -158,25 +159,25 @@ void PriusControllerRos::translateGear(double longitudinalSpeed,
 void PriusControllerRos::translateVelocity(double desiredVelocity, prius_msgs::PriusControl *ctrl)
 {
   //translate velocity
-    const double measuredVelocity = longitudinalVelocity(priusState_);
-    const double cmd = pidController_.update(dt_, desiredVelocity, measuredVelocity);
-    switch (pure_pursuit::sgn(cmd)) {
-      case 1: {
-        ctrl->brake_ = 0.0;
-        ctrl->throttle_ = cmd;
-        break;
-      }
-      case 0: {
-        ctrl->brake_ = 0.0;
-        ctrl->throttle_ = 0.0;
-        break;
-      }
-      case -1: {
-        ctrl->brake_ = std::fabs(cmd);
-        ctrl->throttle_ = 0.0;
-        break;
-      }
+  const double measuredVelocity = longitudinalVelocity(priusState_);
+  const double cmd = pidController_.update(dt_, desiredVelocity, measuredVelocity);
+  switch (pure_pursuit::sgn(cmd)) {
+    case 1: {
+      ctrl->brake_ = 0.0;
+      ctrl->throttle_ = cmd;
+      break;
     }
+    case 0: {
+      ctrl->brake_ = 0.0;
+      ctrl->throttle_ = 0.0;
+      break;
+    }
+    case -1: {
+      ctrl->brake_ = std::fabs(cmd);
+      ctrl->throttle_ = 0.0;
+      break;
+    }
+  }
 }
 
 void PriusControllerRos::stopTracking()
@@ -208,19 +209,52 @@ void PriusControllerRos::initRos()
                             &PriusControllerRos::pathCallback, this);
 }
 
+void convert(se2_navigation_msgs::Path &path, pure_pursuit::Path *out)
+{
+
+  out->segment_.clear();
+  out->segment_.reserve(path.segment_.size());
+  for (const auto &segment : path.segment_) {
+    pure_pursuit::PathSegment s;
+    s.point_.reserve(segment.points_.size());
+    switch (segment.direction_) {
+      case se2_navigation_msgs::PathSegment::DrivingDirection::Forward: {
+        s.drivingDirection_ = pure_pursuit::DrivingDirection::FWD;
+        break;
+      }
+      case se2_navigation_msgs::PathSegment::DrivingDirection::Backwards: {
+        s.drivingDirection_ = pure_pursuit::DrivingDirection::BCK;
+        break;
+      }
+    }
+    for (const auto &point : segment.points_) {
+      pure_pursuit::PathPoint p;
+      p.position_.x() = point.position.x;
+      p.position_.y() = point.position.y;
+      s.point_.push_back(p);
+    }
+    out->segment_.push_back(s);
+  }
+
+}
+
 void PriusControllerRos::pathCallback(const se2_navigation_msgs::PathMsg &pathMsg)
 {
-  const se2_navigation_msgs::Path path = se2_navigation_msgs::convert(pathMsg);
+  currentPath_ = se2_navigation_msgs::convert(pathMsg);
 
   if (currentlyExecutingPlan_) {
     ROS_WARN_STREAM("PathFollowerRos:: Robot is tracking the previous plan. Rejecting this one.");
     return;
   }
 
-  if (path.segment_.empty()) {
+  if (currentPath_.segment_.empty()) {
     ROS_WARN_STREAM("Path follower received an empty plan!");
     return;
   }
+
+  pure_pursuit::Path path;
+  convert(currentPath_, &path);
+  pathTracker_->importCurrentPath(path);
 
   ROS_INFO_STREAM(
       "PathFollowerRos subscriber received a plan, num segments: " << path.segment_.size());

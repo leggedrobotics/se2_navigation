@@ -56,6 +56,10 @@ bool PathTracker::initialize() {
   return true;
 }
 bool PathTracker::advance() {
+  if (currentPath_.segment_.empty()) {
+    std::cerr << "PathTracker:: trying to track empty path" << std::endl;
+    return false;
+  }
   advanceStateMachine();
   //  std::cout << "Advanced state machine" << std::endl;
   bool result = advanceControllers();

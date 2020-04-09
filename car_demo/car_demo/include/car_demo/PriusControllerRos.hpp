@@ -16,6 +16,7 @@
 
 namespace pure_pursuit {
   class PathTracker;
+  class Path;
 }
 
 namespace car_demo {
@@ -68,8 +69,10 @@ class PriusControllerRos {
   prius_msgs::PriusControl priusControl_;
   std::unique_ptr<pure_pursuit::PathTracker> pathTracker_;
   PIDController pidController_;
+  se2_navigation_msgs::Path currentPath_;
 
 };
 
 double longitudinalVelocity(const nav_msgs::Odometry &odom);
+void convert(se2_navigation_msgs::Path &path, pure_pursuit::Path *out);
 } /* namespace car_demo*/
