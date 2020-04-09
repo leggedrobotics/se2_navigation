@@ -20,16 +20,6 @@ int main(int argc, char** argv) {
   se2_planning::OmplReedsSheppPlannerRos planner(&nh);
   planner.setParameters(parameters);
   planner.initialize();
-  //  ReedsSheppState start, goal;
-  //  goal.x_ = 0.0;
-  //  goal.y_ = 10.0;
-  //  planner.setStartingState(start);
-  //  planner.setGoalState(goal);
-  //  planner.plan();
-  //  ReedsSheppPath path;
-  //  planner.getPath(&path);
-  //  std::cout << "Planned path: " << std::endl;
-  //  std::cout << path << std::endl;
 
   ros::spin();
 

@@ -18,7 +18,7 @@ int main(int argc, char** argv) {
   const double frequency = 50.0;
   controller.initialize(1 / frequency);
 
-  sleep(5.0);
+  sleep(2.0);
   ros::Rate r(frequency);
   while (ros::ok()){
     controller.advance();

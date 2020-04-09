@@ -87,7 +87,7 @@ PIDControllerParameters loadParameters(const std::string &filename)
     throw std::runtime_error("PID controller::loadParameters loading failed");
   }
 
-  auto node = basenode["PIDparameters"]["constant_velocity_control"];
+  auto node = basenode["PIDparameters"];
   PIDControllerParameters parameters;
   parameters.kp_ = node["kp"].as<double>();
   parameters.kd_ = node["kd"].as<double>();
