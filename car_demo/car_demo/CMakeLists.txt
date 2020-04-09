@@ -10,7 +10,8 @@ set(CATKIN_PACKAGE_DEPENDENCIES
   gazebo_ros
   prius_msgs
   nav_msgs
-  se2_navigation_msgs 
+  se2_navigation_msgs
+  pure_pursuit_ros
 )
 
 set (PRIUSCUP_MAJOR_VERSION 0)

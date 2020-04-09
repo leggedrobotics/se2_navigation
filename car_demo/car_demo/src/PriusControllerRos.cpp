@@ -6,7 +6,11 @@
  */
 
 #include "car_demo/PriusControllerRos.hpp"
+
 #include "prius_msgs/Control.h"
+#include "pure_pursuit_ros/AckermannSteeringControllerRos.hpp"
+#include "pure_pursuit_ros/loaders.hpp"
+#include "pure_pursuit_ros/SimplePathTrackerRos.hpp"
 #include "se2_navigation_msgs/ControllerCommand.hpp"
 
 namespace car_demo {
@@ -17,9 +21,45 @@ PriusControllerRos::PriusControllerRos(ros::NodeHandlePtr nh)
   initRos();
 }
 
+PriusControllerRos::~PriusControllerRos() = default;
+
 void PriusControllerRos::initialize(double dt)
 {
+  dt_ = dt;
+  createControllerAndLoadParameters();
   ROS_INFO_STREAM("PriusControllerRos: Initialization done");
+}
+
+void PriusControllerRos::createControllerAndLoadParameters()
+{
+  const std::string controllerParametersFilename = nh_->param<std::string>(
+      "/prius_controller_ros_parameters_filename", "");
+
+  namespace pp = pure_pursuit;
+  auto velocityParams = pp::loadConstantVelocityControllerParameters(controllerParametersFilename);
+  velocityParams.timestep_ = dt_;
+  std::shared_ptr<pp::LongitudinalVelocityController> velocityController =
+      pp::createConstantVelocityController(velocityParams);
+
+  auto ackermannParams = pp::loadAckermannSteeringControllerParameters(
+      controllerParametersFilename);
+  ackermannParams.dt_ = dt_;
+  std::shared_ptr<pp::HeadingController> headingController =
+      pp::createAckermannSteeringControllerRos(ackermannParams, nh_.get());
+
+  std::shared_ptr<pp::ProgressValidator> progressValidator = pp::createProgressValidator(
+      pp::loadProgressValidatorParameters(controllerParametersFilename));
+
+  std::shared_ptr<pp::PathPreprocessor> pathPreprocessor = pp::createPathPreprocessor(
+      pp::loadPathPreprocessorParameters(controllerParametersFilename));
+
+  auto pathTrackerParameters = pp::loadSimplePathTrackerParameters(controllerParametersFilename);
+  pathTracker_ = pp::createSimplePathTrackerRos(pathTrackerParameters, velocityController,
+                                                headingController, progressValidator,
+                                                pathPreprocessor, nh_.get());
+  if (pathTracker_ == nullptr) {
+    throw std::runtime_error("PriusControllerRos:: pathTracker_ is nullptr");
+  }
 }
 void PriusControllerRos::advance()
 {
@@ -75,7 +115,8 @@ void PriusControllerRos::pathCallback(const se2_navigation_msgs::PathMsg &pathMs
     return;
   }
 
-  ROS_INFO_STREAM("PathFollowerRos subscriber received a plan, num segments: " << path.segment_.size());
+  ROS_INFO_STREAM(
+      "PathFollowerRos subscriber received a plan, num segments: " << path.segment_.size());
 
   planReceived_ = true;
 }
@@ -144,7 +185,7 @@ void PriusControllerRos::processAbortTrackingCommand()
     currentlyExecutingPlan_ = false;
     receivedStartTrackingCommand_ = false;
     planReceived_ = false;
-    // todo pathTracker_->stopTracking();
+    pathTracker_->stopTracking();
   }
 }
 

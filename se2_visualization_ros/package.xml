@@ -13,5 +13,6 @@
 	<depend>visualization_msgs</depend>
 	<depend>geometry_msgs</depend>
 	<depend>tf2</depend>
+	<depend>eigen_conversions</depend>
 	
 </package>

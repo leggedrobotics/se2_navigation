@@ -4,15 +4,16 @@
 		default="$(find prius_description)/urdf/prius.urdf" />
 	<arg name="rvizconfig"
 		default="$(find car_demo)/rviz/demo_autonomous.rviz" />
-
-	<param name="robot_description" textfile="$(arg model)" />
-
-
-
 	<arg name="launch_rviz" default="true" />
 	<arg name="ompl_planner_ros_parameter_path"
 		default="$(find car_demo)/config/reeds_shepp_planner_ros.yaml" />
+	<arg name="prius_controller_ros_parameters_filename"
+		default="$(find car_demo)/config/reeds_shepp_planner_ros.yaml" />
 
+	<param name="/prius_controller_ros_parameters_filename"
+		type="string" value="$(arg prius_controller_ros_parameters_filename)" />
+	<param name="robot_description" textfile="$(arg model)" />
+	
 	<include
 		file="$(find se2_planning_ros)/launch/se2_planner.launch">
 		<arg name="launch_rviz" value="false" />

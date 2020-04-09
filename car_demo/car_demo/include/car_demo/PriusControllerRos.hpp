@@ -13,6 +13,10 @@
 #include "se2_navigation_msgs/Path.hpp"
 #include "prius_msgs/PriusControl.hpp"
 
+namespace pure_pursuit {
+  class PathTracker;
+}
+
 namespace car_demo {
 
 
@@ -22,12 +26,12 @@ class PriusControllerRos {
   using ControllerCommandService = se2_navigation_msgs::SendControllerCommandSrv;
  public:
   PriusControllerRos(ros::NodeHandlePtr nh);
-  virtual ~PriusControllerRos() = default;
+  virtual ~PriusControllerRos(); /* = default(), defined in cpp file*/
   void initialize(double dt);
   void advance();
 
  private:
-
+  void createControllerAndLoadParameters();
   void publishControl(const prius_msgs::PriusControl &ctrl) const;
   void initRos();
   void priusStateCallback(const nav_msgs::Odometry &odometry);
@@ -56,6 +60,7 @@ class PriusControllerRos {
   bool publishTrackingStatus_ = false;
 
   prius_msgs::PriusControl priusControl_;
+  std::unique_ptr<pure_pursuit::PathTracker> pathTracker_;
 
 };
 

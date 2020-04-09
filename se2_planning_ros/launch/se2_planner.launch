@@ -7,7 +7,7 @@
 		default="$(find se2_planning_rviz)/rviz/default.rviz" />
 	
 	<arg name="ompl_planner_ros_parameter_path"
-		default="$(find se2_planning_ros)/config/reeds_shepp_planner_ros.yaml" />
+		default="$(find se2_planning_ros)/config/reeds_shepp_planner_ros_example.yaml" />
 
 	<param name="/ompl_planner_ros/parameter_path" type="string"
 		value="$(arg ompl_planner_ros_parameter_path)" />

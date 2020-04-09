@@ -14,6 +14,7 @@ set(CATKIN_PACKAGE_DEPENDENCIES
   geometry_msgs
   visualization_msgs
   tf2
+  eigen_conversions
 )
 
 find_package(catkin REQUIRED
@@ -35,7 +36,6 @@ catkin_package(
     ${EIGEN3_INCLUDE_DIR}
   LIBRARIES
     ${PROJECT_NAME}
-    yaml-cpp
   CATKIN_DEPENDS
    ${CATKIN_PACKAGE_DEPENDENCIES}
   DEPENDS
@@ -45,7 +45,6 @@ catkin_package(
 include_directories(
   include
     ${EIGEN3_INCLUDE_DIR}
-    ${YAML_CPP_INCLUDE_DIR}
   SYSTEM
     ${catkin_INCLUDE_DIRS}
 )
@@ -60,7 +59,6 @@ add_dependencies(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
-  yaml-cpp
 )
 
 #############
