@@ -7,6 +7,8 @@
 
 #include "pure_pursuit_core/velocity_control/AdaptiveVelocityController.hpp"
 
+#include <iostream>
+
 namespace pure_pursuit {
 
 bool AdaptiveVelocityController::computeVelocity() {

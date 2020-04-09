@@ -17,11 +17,13 @@
 
 namespace pure_pursuit {
 
-void SimplePathTracker::setParameters(const SimplePathTrackerParameters& parameters) {
+void SimplePathTracker::setParameters(const SimplePathTrackerParameters& parameters)
+{
   parameters_ = parameters;
 }
 
-void SimplePathTracker::importCurrentPath(const Path& path) {
+void SimplePathTracker::importCurrentPath(const Path& path)
+{
   if (path.segment_.empty()) {
     throw std::runtime_error("empty path");
   }
@@ -31,10 +33,12 @@ void SimplePathTracker::importCurrentPath(const Path& path) {
   currentFSMState_ = States::NoOperation;
 }
 
-void SimplePathTracker::advanceStateMachine() {
-  const auto& currentPathSegment = currentPath_.segment_.at(currentPathSegmentId_);
-  const bool isSegmentTrackingFinished = progressValidator_->isPathSegmentTrackingFinished(currentPathSegment, currentRobotState_);
-  const bool isPathTrackingFinished = progressValidator_->isPathTrackingFinished(currentPath_, currentRobotState_, currentPathSegmentId_);
+void SimplePathTracker::advanceStateMachine()
+{
+  const bool isSegmentTrackingFinished = progressValidator_->isPathSegmentTrackingFinished(
+      currentPath_.segment_.at(currentPathSegmentId_), currentRobotState_);
+  const bool isPathTrackingFinished = progressValidator_->isPathTrackingFinished(
+      currentPath_, currentRobotState_, currentPathSegmentId_);
 
   if (isPathTrackingFinished) {
     currentFSMState_ = States::NoOperation;
@@ -49,12 +53,13 @@ void SimplePathTracker::advanceStateMachine() {
     currentPathSegmentId_ = bindIndexToRange(currentPathSegmentId_ + 1, 0, nSegments - 1);
     headingController_->updateCurrentPathSegment(currentPath_.segment_.at(currentPathSegmentId_));
     headingController_->initialize();
-    velocityController_->updateCurrentPathSegment(currentPathSegment);
+    velocityController_->updateCurrentPathSegment(currentPath_.segment_.at(currentPathSegmentId_));
     std::cout << "Going to waiting state " << std::endl;
   }
 
   if (currentFSMState_ == States::Waiting) {
-    const bool isWaitedLongEnough = stopwatch_.getElapsedTimeSinceStartSeconds() > parameters_.waitingTimeBetweenDirectionSwitches_;
+    const bool isWaitedLongEnough = stopwatch_.getElapsedTimeSinceStartSeconds()
+        > parameters_.waitingTimeBetweenDirectionSwitches_;
     if (isWaitedLongEnough) {
       currentFSMState_ = States::Driving;
       std::cout << "Going to driving state (done waiting)" << std::endl;
@@ -63,9 +68,9 @@ void SimplePathTracker::advanceStateMachine() {
 
   if (currentFSMState_ == States::NoOperation && isPathReceived_) {
     currentFSMState_ = States::Driving;
-    headingController_->updateCurrentPathSegment(currentPathSegment);
+    headingController_->updateCurrentPathSegment(currentPath_.segment_.at(currentPathSegmentId_));
     headingController_->initialize();
-    velocityController_->updateCurrentPathSegment(currentPathSegment);
+    velocityController_->updateCurrentPathSegment(currentPath_.segment_.at(currentPathSegmentId_));
     std::cout << "Going to driving state (received plan)" << std::endl;
   }
 
@@ -76,7 +81,8 @@ void SimplePathTracker::advanceStateMachine() {
   isPathReceived_ = false;
 }
 
-bool SimplePathTracker::advanceControllers() {
+bool SimplePathTracker::advanceControllers()
+{
   bool result = true;
   velocityController_->updateCurrentState(currentRobotState_);
   velocityController_->updateDrivingDirection(currentDrivingDirection_);
@@ -124,15 +130,18 @@ bool SimplePathTracker::advanceControllers() {
   return result;
 }
 
-void SimplePathTracker::stopTracking() {
+void SimplePathTracker::stopTracking()
+{
   currentFSMState_ = States::NoOperation;
 }
 
-std::unique_ptr<PathTracker> createSimplePathTracker(const SimplePathTrackerParameters& parameters,
-                                                     std::shared_ptr<LongitudinalVelocityController> velocityController,
-                                                     std::shared_ptr<HeadingController> headingController,
-                                                     std::shared_ptr<ProgressValidator> validator,
-                                                     std::shared_ptr<PathPreprocessor> pathPreprocessor) {
+std::unique_ptr<PathTracker> createSimplePathTracker(
+    const SimplePathTrackerParameters& parameters,
+    std::shared_ptr<LongitudinalVelocityController> velocityController,
+    std::shared_ptr<HeadingController> headingController,
+    std::shared_ptr<ProgressValidator> validator,
+    std::shared_ptr<PathPreprocessor> pathPreprocessor)
+{
   std::unique_ptr<SimplePathTracker> tracker = std::make_unique<SimplePathTracker>();
   tracker->setParameters(parameters);
   tracker->setHeadingController(headingController);
