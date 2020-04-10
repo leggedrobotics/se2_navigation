@@ -7,20 +7,18 @@
 
 #include "se2_planning_ros/OmplReedsSheppPlannerRos.hpp"
 
-#include <thread>
-
 #include <nav_msgs/Path.h>
 #include <tf/transform_datatypes.h>
+#include <thread>
 
 namespace se2_planning {
 
-OmplReedsSheppPlannerRos::OmplReedsSheppPlannerRos(ros::NodeHandle* nh) : BASE(), nh_(nh) {
+OmplReedsSheppPlannerRos::OmplReedsSheppPlannerRos(ros::NodeHandlePtr nh) : BASE(nh) {
   initRos();
 }
 
 void OmplReedsSheppPlannerRos::setParameters(const OmplReedsSheppPlannerRosParameters& parameters) {
   parameters_ = parameters;
-  BASE::setParameters(parameters);
 }
 
 bool OmplReedsSheppPlannerRos::initialize() {
@@ -59,9 +57,8 @@ void OmplReedsSheppPlannerRos::initRos() {
 }
 
 void OmplReedsSheppPlannerRos::publishPathNavMsgs() const {
-  const auto interpolatedPath = interpolatePath(*pathRaw_, parameters_.pathNavMsgResolution_);
   ReedsSheppPath rsPath;
-  convert(interpolatedPath, &rsPath);
+  planner_->as<OmplPlanner>()->getInterpolatedPath(&rsPath, parameters_.pathNavMsgResolution_);
   nav_msgs::Path msg = se2_planning::copyAllPoints(rsPath);
   msg.header.frame_id = parameters_.pathFrame_;
   msg.header.stamp = ros::Time::now();
@@ -71,9 +68,8 @@ void OmplReedsSheppPlannerRos::publishPathNavMsgs() const {
 }
 
 void OmplReedsSheppPlannerRos::publishPath() const {
-  const auto interpolatedPath = interpolatePath(*pathRaw_, parameters_.pathSpatialResolution_);
   ReedsSheppPath rsPath;
-  convert(interpolatedPath, &rsPath);
+  planner_->getPath(&rsPath);
   se2_navigation_msgs::Path msg = se2_planning::convert(rsPath);
   msg.header_.frame_id = parameters_.pathFrame_;
   msg.header_.stamp = ros::Time::now();

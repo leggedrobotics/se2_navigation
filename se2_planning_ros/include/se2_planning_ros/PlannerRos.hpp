@@ -24,7 +24,8 @@ class PlannerRos : public Planner {
   void getStartingState(State* startingState) override;
   void getGoalState(State* goalState) override;
 
-  void setPlanner(std::unique_ptr<Planner> planner);
+  void setPlanningStrategy(std::unique_ptr<Planner> planner);
+  virtual void publishPath() const;
 
  protected:
   using PlanningService = se2_navigation_msgs::RequestPathSrv;

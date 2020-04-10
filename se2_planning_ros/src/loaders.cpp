@@ -12,14 +12,14 @@
 
 namespace se2_planning {
 
-OmplReedsSheppPlannerRosParameters loadParameters(const std::string& filename) {
+OmplReedsSheppPlannerParameters loadOmplReedsSheppPlannerParameters(const std::string& filename) {
   YAML::Node basenode = YAML::LoadFile(filename);
 
   if (basenode.IsNull()) {
-    throw std::runtime_error("OmplReedsSheppPlannerRosParameters::loadParameters loading failed");
+    throw std::runtime_error("OmplReedsSheppPlannerParameters::loadParameters loading failed");
   }
 
-  OmplReedsSheppPlannerRosParameters parameters;
+  OmplReedsSheppPlannerParameters parameters;
   {
     auto node = basenode["state_space"];
     parameters.xLowerBound_ = node["x_lower"].as<double>();
@@ -31,15 +31,28 @@ OmplReedsSheppPlannerRosParameters loadParameters(const std::string& filename) {
 
   {
     auto node = basenode["planner"];
-    parameters.pathNavMsgTopic_ = node["nav_msgs_path_topic"].as<std::string>();
-    parameters.pathFrame_ = node["path_frame"].as<std::string>();
     parameters.pathSpatialResolution_ = node["path_spatial_resolution"].as<double>();
     parameters.plannerRange_ = node["planner_range"].as<double>();
     parameters.maxPlanningTime_ = node["max_planning_time"].as<double>();
-    parameters.planningSerivceName_ = node["planning_service_name"].as<std::string>();
-    parameters.pathNavMsgResolution_ = node["nav_msg_path_spatial_resolution"].as<double>();
-    parameters.pathMsgTopic_ = node["path_msg_topic"].as<std::string>();
   }
+
+  return parameters;
+}
+
+OmplReedsSheppPlannerRosParameters loadOmplReedsSheppPlannerRosParameters(const std::string& filename) {
+  YAML::Node basenode = YAML::LoadFile(filename);
+
+  if (basenode.IsNull()) {
+    throw std::runtime_error("OmplReedsSheppPlannerRosParameters::loadParameters loading failed");
+  }
+
+  OmplReedsSheppPlannerRosParameters parameters;
+  auto node = basenode["planner_ros"];
+  parameters.pathNavMsgTopic_ = node["nav_msgs_path_topic"].as<std::string>();
+  parameters.pathFrame_ = node["path_frame"].as<std::string>();
+  parameters.planningSerivceName_ = node["planning_service_name"].as<std::string>();
+  parameters.pathNavMsgResolution_ = node["nav_msg_path_spatial_resolution"].as<double>();
+  parameters.pathMsgTopic_ = node["path_msg_topic"].as<std::string>();
 
   return parameters;
 }

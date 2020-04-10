@@ -7,17 +7,17 @@
 
 #pragma once
 
-#include "se2_planning/OmplReedsSheppPlanner.hpp"
-
 #include <nav_msgs/Path.h>
 #include <ros/ros.h>
 #include <string>
 #include "se2_navigation_msgs/Path.hpp"
 #include "se2_navigation_msgs/RequestPathSrv.h"
+#include "se2_planning/OmplReedsSheppPlanner.hpp"
+#include "se2_planning_ros/PlannerRos.hpp"
 
 namespace se2_planning {
 
-struct OmplReedsSheppPlannerRosParameters : public OmplReedsSheppPlannerParameters {
+struct OmplReedsSheppPlannerRosParameters {
   std::string pathFrame_ = "map";
   std::string pathNavMsgTopic_ = "ompl_rs_planner_ros/nav_msgs_path";
   std::string planningSerivceName_ = "ompl_rs_planner_ros/planning_service";
@@ -25,25 +25,23 @@ struct OmplReedsSheppPlannerRosParameters : public OmplReedsSheppPlannerParamete
   double pathNavMsgResolution_ = 1.0;
 };
 
-class OmplReedsSheppPlannerRos : public OmplReedsSheppPlanner {
-  using BASE = OmplReedsSheppPlanner;
+class OmplReedsSheppPlannerRos : public PlannerRos {
+  using BASE = PlannerRos;
 
  public:
-  explicit OmplReedsSheppPlannerRos(ros::NodeHandle* nh);
+  explicit OmplReedsSheppPlannerRos(ros::NodeHandlePtr nh);
   ~OmplReedsSheppPlannerRos() override = default;
 
-  bool initialize() final;
-  bool plan() final;
+  bool initialize() override;
+  bool plan() override;
   void setParameters(const OmplReedsSheppPlannerRosParameters& parameters);
+  void publishPath() const final;
 
  private:
   void initRos();
   void publishPathNavMsgs() const;
-  using PlanningService = se2_navigation_msgs::RequestPathSrv;
-  void publishPath() const;
-  bool planningService(PlanningService::Request& req, PlanningService::Response& res);
+  bool planningService(PlanningService::Request& req, PlanningService::Response& res) override;
 
-  ros::NodeHandle* nh_;
   ros::Publisher pathNavMsgsPublisher_;
   ros::Publisher pathPublisher_;
   OmplReedsSheppPlannerRosParameters parameters_;

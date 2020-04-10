@@ -11,7 +11,11 @@ namespace se2_planning {
 
 PlannerRos::PlannerRos(ros::NodeHandlePtr nh) : nh_(nh) {}
 
-void PlannerRos::setPlanner(std::unique_ptr<Planner> planner) {
+void PlannerRos::publishPath() const {
+  throw std::runtime_error("Publish path not implemented");
+}
+
+void PlannerRos::setPlanningStrategy(std::unique_ptr<Planner> planner) {
   planner_ = std::move(planner);
 }
 
