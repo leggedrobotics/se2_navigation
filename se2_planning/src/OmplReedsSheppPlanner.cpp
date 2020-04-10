@@ -219,4 +219,12 @@ unsigned int ReedsSheppPath::numPoints() const {
   return numPoints;
 }
 
+bool operator==(const ReedsSheppState& s1, const ReedsSheppState& s2) {
+  const double tolerance = 1e-3;
+  auto isEqual = [](double x, double y, double tolerance) { return std::fabs(x - y) <= tolerance; };
+  const bool isPositionEqual = isEqual(s1.x_, s2.x_, tolerance) && isEqual(s1.y_, s2.y_, tolerance);
+  const bool isYawEqual = isEqual(s1.yaw_, s2.yaw_, tolerance);
+  return isPositionEqual && isYawEqual;
+}
+
 } /* namespace se2_planning */

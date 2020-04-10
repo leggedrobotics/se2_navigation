@@ -16,6 +16,7 @@ struct ReedsSheppState : public State {
   double y_ = 0.0;
   double yaw_ = 0.0;
   friend std::ostream& operator<<(std::ostream& out, const ReedsSheppState& rsState);
+  friend bool operator==(const ReedsSheppState& s1, const ReedsSheppState& s2);
 };
 
 struct ReedsSheppPathSegment {
