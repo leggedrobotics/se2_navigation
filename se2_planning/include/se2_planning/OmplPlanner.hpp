@@ -26,8 +26,11 @@ class OmplPlanner : public Planner {
   void getPath(Path* path) const final;
 
   void setMaxPlanningDuration(double T);
-  ompl::geometric::PathGeometric& getOmplPath() const;
-  ompl::geometric::PathGeometric& getOmplInterpolatedPath() const;
+  void getOmplPath(ompl::geometric::PathGeometric* omplPath) const;
+  void getOmplInterpolatedPath(ompl::geometric::PathGeometric* omplPath, double spatialResolution) const;
+  void getInterpolatedPath(Path* interpolatedPath, double spatialResolution) const;
+  void getOmplInterpolatedPath(ompl::geometric::PathGeometric* omplPath, unsigned int numPoints) const;
+  void getInterpolatedPath(Path* interpolatedPath, unsigned int numPoints) const;
 
  protected:
   virtual void initializeStateSpace() = 0;
@@ -45,5 +48,5 @@ class OmplPlanner : public Planner {
 };
 
 ompl::geometric::PathGeometric interpolatePath(const ompl::geometric::PathGeometric& inputPath, double desiredResolution);
-
+ompl::geometric::PathGeometric interpolatePath(const ompl::geometric::PathGeometric& inputPath, unsigned int desiredNumPoints);
 }  // namespace se2_planning

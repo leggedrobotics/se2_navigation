@@ -61,24 +61,39 @@ void OmplPlanner::setMaxPlanningDuration(double T) {
   maxPlanningDuration_ = T;
 }
 
-ompl::geometric::PathGeometric& OmplPlanner::getOmplPath() const {
+void OmplPlanner::getOmplPath(ompl::geometric::PathGeometric* omplPath) const {
   if (path_ == nullptr) {
     throw std::runtime_error("Ompl planner: path_ is nullptr");
   }
-  return *path_;
+  *omplPath = *path_;
+}
+void OmplPlanner::getOmplInterpolatedPath(ompl::geometric::PathGeometric* omplPath, double spatialResolution) const {
+  *omplPath = interpolatePath(*path_, spatialResolution);
+}
+void OmplPlanner::getInterpolatedPath(Path* interpolatedPath, double spatialResolution) const {
+  const auto interpolatedOmplPath = interpolatePath(*path_, spatialResolution);
+  convert(interpolatedOmplPath, interpolatedPath);
 }
 
-ompl::geometric::PathGeometric& OmplPlanner::getOmplInterpolatedPath() const {
-  if (interpolatedPath_ == nullptr) {
-    throw std::runtime_error("Ompl planner: interpolatedPath_ is nullptr");
-  }
-  return *interpolatedPath_;
+void OmplPlanner::getOmplInterpolatedPath(ompl::geometric::PathGeometric* omplPath, unsigned int numPoints) const {
+  *omplPath = interpolatePath(*path_, numPoints);
+}
+void OmplPlanner::getInterpolatedPath(Path* interpolatedPath, unsigned int numPoints) const {
+  const auto interpolatedOmplPath = interpolatePath(*path_, numPoints);
+  convert(interpolatedOmplPath, interpolatedPath);
 }
 
 ompl::geometric::PathGeometric interpolatePath(const ompl::geometric::PathGeometric& inputPath, double desiredResolution) {
+  const auto desiredNumPoints = static_cast<unsigned int>(std::ceil(std::fabs(inputPath.length()) / desiredResolution));
+  return interpolatePath(inputPath, desiredNumPoints);
+}
+
+ompl::geometric::PathGeometric interpolatePath(const ompl::geometric::PathGeometric& inputPath, unsigned int desiredNumPoints) {
   ompl::geometric::PathGeometric interpolatedPath = inputPath;
   const unsigned int currentNumPoints = inputPath.getStateCount();
-  const unsigned int desiredNumPoints = static_cast<unsigned int>(std::ceil(std::fabs(inputPath.length()) / desiredResolution));
+  if (currentNumPoints > desiredNumPoints) {
+    std::cerr << "Interpolated path would have less points than the non-interpolated one, returning the original path." << std::endl;
+  }
   const unsigned int numPoints = std::max(currentNumPoints, desiredNumPoints);
   interpolatedPath.interpolate(numPoints);
   return interpolatedPath;
