@@ -6,13 +6,15 @@ state_space:
   y_upper: 1000.0
   turning_radius: 10.0
   
-planner:
+planner_ros:
   nav_msgs_path_topic: ompl_rs_planner_ros/nav_msgs_path
   planning_service_name: ompl_rs_planner_ros/planning_service
   path_msg_topic: ompl_rs_planner_ros/nav_msgs_path
   path_frame: map
-  path_spatial_resolution: 0.05
   nav_msg_path_spatial_resolution: 1.5
+
+planner:
+  path_spatial_resolution: 0.05
   planner_range: 15.0
   max_planning_time: 1.0
   
