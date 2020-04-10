@@ -21,7 +21,7 @@ void OmplPlanner::setGoalState(const State& goalState) {
 }
 
 void OmplPlanner::getPath(Path* path) const {
-  convert(*path_, path);
+  convert(*interpolatedPath_, path);
 }
 
 bool OmplPlanner::plan() {
@@ -34,8 +34,7 @@ bool OmplPlanner::plan() {
 
   const ompl::geometric::PathGeometric solution = simpleSetup_->getSolutionPath();
   *path_ = solution;
-  *pathRaw_ = solution;
-
+  *interpolatedPath_ = solution;
   std::cout << "Solution plan has: " << solution.getStateCount() << " states." << std::endl;
 
   return true;
@@ -54,12 +53,26 @@ bool OmplPlanner::initialize() {
   ompl::base::SpaceInformationPtr si = simpleSetup_->getSpaceInformation();
   simpleSetup_->setStateValidityChecker(std::bind(&OmplPlanner::isStateValid, this, si.get(), std::placeholders::_1));
   path_ = std::make_unique<ompl::geometric::PathGeometric>(si);
-  pathRaw_ = std::make_unique<ompl::geometric::PathGeometric>(si);
+  interpolatedPath_ = std::make_unique<ompl::geometric::PathGeometric>(si);
   return true;
 }
 
 void OmplPlanner::setMaxPlanningDuration(double T) {
   maxPlanningDuration_ = T;
+}
+
+ompl::geometric::PathGeometric& OmplPlanner::getOmplPath() const {
+  if (path_ == nullptr) {
+    throw std::runtime_error("Ompl planner: path_ is nullptr");
+  }
+  return *path_;
+}
+
+ompl::geometric::PathGeometric& OmplPlanner::getOmplInterpolatedPath() const {
+  if (interpolatedPath_ == nullptr) {
+    throw std::runtime_error("Ompl planner: interpolatedPath_ is nullptr");
+  }
+  return *interpolatedPath_;
 }
 
 ompl::geometric::PathGeometric interpolatePath(const ompl::geometric::PathGeometric& inputPath, double desiredResolution) {

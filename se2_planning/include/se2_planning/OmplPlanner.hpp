@@ -24,7 +24,10 @@ class OmplPlanner : public Planner {
   void setStartingState(const State& startingState) final;
   void setGoalState(const State& goalState) final;
   void getPath(Path* path) const final;
+
   void setMaxPlanningDuration(double T);
+  ompl::geometric::PathGeometric& getOmplPath() const;
+  ompl::geometric::PathGeometric& getOmplInterpolatedPath() const;
 
  protected:
   virtual void initializeStateSpace() = 0;
@@ -35,12 +38,12 @@ class OmplPlanner : public Planner {
   ompl::base::StateSpacePtr stateSpace_;
   ompl::geometric::SimpleSetupPtr simpleSetup_;
   ompl::base::ScopedStatePtr startState_, goalState_;
-  std::unique_ptr<ompl::geometric::PathGeometric> path_, pathRaw_;
+  std::unique_ptr<ompl::geometric::PathGeometric> path_, interpolatedPath_;
 
  private:
   double maxPlanningDuration_ = 1.0;
 };
 
-ompl::geometric::PathGeometric interpolatePath(const ompl::geometric::PathGeometric& inputPath, double deisredResolution);
+ompl::geometric::PathGeometric interpolatePath(const ompl::geometric::PathGeometric& inputPath, double desiredResolution);
 
 }  // namespace se2_planning

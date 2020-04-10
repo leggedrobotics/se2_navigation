@@ -42,18 +42,18 @@ struct OmplReedsSheppPlannerParameters {
   double maxPlanningTime_ = 1.0;
 };
 
-class OmplReedsSheppPlanner : public OmplPlanner {
+class OmplReedsSheppPlanner final : public OmplPlanner {
   using BASE = OmplPlanner;
 
  public:
   OmplReedsSheppPlanner() = default;
   ~OmplReedsSheppPlanner() override = default;
 
-  bool initialize() override;
-  bool plan() override;
+  bool initialize() final;
+  bool plan() final;
   void setParameters(const OmplReedsSheppPlannerParameters& parameters);
 
- protected:
+ private:
   void initializeStateSpace() final;
   void setStateSpaceBoundaries();
   bool isStateValid(const ompl::base::SpaceInformation* si, const ompl::base::State* state) final;
@@ -63,8 +63,6 @@ class OmplReedsSheppPlanner : public OmplPlanner {
 
   std::unique_ptr<ompl::base::RealVectorBounds> bounds_;
   const int reedsSheppStateSpaceDim_ = 2;
-
- private:
   OmplReedsSheppPlannerParameters parameters_;
 };
 

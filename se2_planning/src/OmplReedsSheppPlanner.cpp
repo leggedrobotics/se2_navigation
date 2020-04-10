@@ -47,7 +47,7 @@ void OmplReedsSheppPlanner::initializeStateSpace() {
 }
 bool OmplReedsSheppPlanner::plan() {
   bool result = BASE::plan();
-  *path_ = interpolatePath(*pathRaw_, parameters_.pathSpatialResolution_);
+  *interpolatedPath_ = interpolatePath(*path_, parameters_.pathSpatialResolution_);
   return result;
 }
 void OmplReedsSheppPlanner::setStateSpaceBoundaries() {
@@ -87,8 +87,8 @@ void OmplReedsSheppPlanner::convert(const ompl::geometric::PathGeometric& pathOm
    * find first point that is not of type NOP, see
    * ompl/base/spaces/ReedsSheppStateSpace.h"
    */
-  unsigned int idStart = 0;
-  Direction prevDirection;
+  int idStart = 0;
+  Direction prevDirection = Direction::FWD;
   for (; idStart < nPoints - 1; ++idStart) {
     const int sign = getDistanceSignAt(pathOmpl, idStart);
     if (sign != 0) {
@@ -116,7 +116,7 @@ void OmplReedsSheppPlanner::convert(const ompl::geometric::PathGeometric& pathOm
   const int lastElemId = nPoints - 1;
 
   // iterate from the first state onwards
-  for (unsigned int i = idStart + 1; i < lastElemId; i++) {
+  for (int i = idStart + 1; i < lastElemId; i++) {
     const int sign = getDistanceSignAt(pathOmpl, i);
     switch (sign) {
       case 0: {
@@ -188,6 +188,8 @@ std::string toString(ReedsSheppPathSegment::Direction direction) {
       return "FWD";
     case ReedsSheppPathSegment::Direction::BCK:
       return "BCK";
+    default:
+      throw std::runtime_error("Unknown direction");
   }
 }
 std::ostream& operator<<(std::ostream& out, const ReedsSheppPathSegment& pathSegment) {

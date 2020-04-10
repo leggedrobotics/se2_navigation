@@ -9,6 +9,7 @@
 
 #include "se2_planning/State.hpp"
 
+#include <boost/concept_check.hpp>
 namespace se2_planning {
 
 class Planner {
@@ -26,6 +27,18 @@ class Planner {
   virtual void getStartingState(State* startingState) { throw std::runtime_error("Planner: getStartingState() not implemented"); }
 
   virtual void getGoalState(State* goalState) { throw std::runtime_error("Planner: getGoalState() not implemented"); }
+
+  template <class T>
+  const T* as() const {
+    BOOST_CONCEPT_ASSERT((boost::Convertible<T*, Planner*>));
+    return static_cast<const T*>(this);
+  }
+
+  template <class T>
+  T* as() {
+    BOOST_CONCEPT_ASSERT((boost::Convertible<T*, Planner*>));
+    return static_cast<T*>(this);
+  }
 };
 
 } /* namespace se2_planning */
