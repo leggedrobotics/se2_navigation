@@ -5,11 +5,14 @@
  *      Author: jelavice
  */
 
-#ifndef SRC_PATH_FOLLOWING_SE2_PLANNING_TEST_TEST_HELPERS_HPP_
-#define SRC_PATH_FOLLOWING_SE2_PLANNING_TEST_TEST_HELPERS_HPP_
+#pragma once
 
+#include <random>
 
+namespace se2_planning_test {
 
+extern std::mt19937 rndGenerator;
+int seedRndGenerator();
+double randomNumber(double lo, double hi);
 
-
-#endif /* SRC_PATH_FOLLOWING_SE2_PLANNING_TEST_TEST_HELPERS_HPP_ */
+} /* namespace se2_planning_test */

@@ -93,7 +93,21 @@ if(cmake_clang_tools_FOUND)
 endif(cmake_clang_tools_FOUND)
 
 
+#############
+## Testing ##
+#############
+if(CATKIN_ENABLE_TESTING)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+catkin_add_gtest(${PROJECT_NAME}-test
+  test/test_planning.cpp
+  test/test_helpers.cpp
+  test/OmplReedsSheppPlannerTest.cpp
+  )
+endif()
 
+if(TARGET ${PROJECT_NAME}-test)
+  target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
+endif()
 
 
 
