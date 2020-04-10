@@ -20,13 +20,7 @@ bool AckermannSteeringController::advanceImpl() {
   const Point anchorPoint = computeAnchorPoint(currentRobotState_.pose_, activeAnchorDistance_, drivingDirection);
   currentAnchorPoint_ = anchorPoint;
   const unsigned int closestPointOnPathId = getIdOfTheClosestPointOnThePath(currentPathSegment_, robotPose.position_, lastClosestPointId_);
-  //
-  //  std::cout << "Current Robot state: " << currentRobotState_ << std::endl;
-  //  std::cout << "Active lookahead: " << activeLookaheadDistance_ << std::endl;
-  //  std::cout << "Active anchor: " << activeAnchorDistance_ << std::endl;
-  //  std::cout << "Driving direction: " << static_cast<int>(drivingDirection) << std::endl;
-  //  std::cout << "AnchorPoint: " << anchorPoint.transpose() << std::endl;
-  //  std::cout << "closest id: " << closestPointOnPathId << std::endl;
+
   Point lookaheadPoint;
   if (!computeLookaheadPoint(closestPointOnPathId, activeLookaheadDistance_, currentRobotState_, drivingDirection, currentPathSegment_,
                              activeAnchorDistance_, &lookaheadPoint)) {
@@ -35,39 +29,31 @@ bool AckermannSteeringController::advanceImpl() {
   }
   currentLookaheadPoint_ = lookaheadPoint;
 
-  //  std::cout << "lookahead point: " << lookaheadPoint.transpose() << std::endl;
   double lookaheadAngle = 0.0;
   const auto heading = computeDesiredHeadingVector(robotPose.yaw_, drivingDirection);
-  //  std::cout << "Heading direction: " << heading.transpose() << std::endl;
   if (!computeLookaheadAngle(lookaheadPoint, anchorPoint, heading, drivingDirection, &lookaheadAngle)) {
     std::cerr << "AckermannSteeringController: Failed to compute lookahead angle" << std::endl;
     return false;
   }
-  //  std::cout << "lookahead angle: " << lookaheadAngle << std::endl;
 
   const double steeringAngle =
       computeSteeringAngleCmd(lookaheadAngle, activeLookaheadDistance_, activeAnchorDistance_, parameters_.wheelBase_);
 
-  //  std::cout << "Steering angle: " << steeringAngle << std::endl;
   if (std::isnan(steeringAngle) || std::isinf(steeringAngle)) {
     std::cerr << "AckermannSteeringController: Computed steering angle is nan" << std::endl;
     return false;
   }
 
   const double filtered = avgFilter_.filterInputValue(steeringAngle);
-  //  std::cout << "Filtered: " << filtered << std::endl;
   const double deadZoned = deadZone(filtered, parameters_.deadZoneWidth_);
-  //  std::cout << "dead zoned: " << deadZoned << std::endl;
   const double rateLimited = rateLimiter_.limitRateOfChange(deadZoned);
-  //  std::cout << "rate limited: " << rateLimited << std::endl;
   const double boundToRange = bindToRange(rateLimited, -parameters_.maxSteeringAngleMagnitude_, parameters_.maxSteeringAngleMagnitude_);
   steeringAngle_ = boundToRange;
-  //  std::cout << "bound to range: " << boundToRange << std::endl;
   lastClosestPointId_ = closestPointOnPathId;
   return true;
 }
 
-bool AckermannSteeringController::initializeImpl() {
+bool AckermannSteeringController::initialize() {
   lastClosestPointId_ = 0.0;
   return true;
 }
@@ -76,12 +62,12 @@ bool AckermannSteeringController::computeSteeringAngle() {
   return true;
 }
 bool AckermannSteeringController::computeYawRate() {
-  const double v = currentVelocity_.norm();
+  const double v = desiredLinearVelocity_.norm();
   yawRate_ = v / parameters_.wheelBase_ * std::tan(steeringAngle_);
   return true;
 }
 bool AckermannSteeringController::computeTurningRadius() {
-  const double v = currentVelocity_.norm();
+  const double v = desiredLinearVelocity_.norm();
   const double yawRate = v / parameters_.wheelBase_ * std::tan(steeringAngle_);
   turningRadius_ = v / (std::fabs(yawRate) + 1e-4) * sgn(yawRate);
   return true;

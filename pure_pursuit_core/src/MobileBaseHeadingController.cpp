@@ -9,9 +9,12 @@
 
 namespace pure_pursuit {
 
-bool MobileBaseHeadingController::initializeImpl() {
-  // todo implement
-  return true;
-}
+bool MobileBaseHeadingController::advanceImpl() {}
+
+bool MobileBaseHeadingController::computeYawRate() {}
+
+bool MobileBaseHeadingController::computeTurningRadius() {}
+
+bool MobileBaseHeadingController::computeSteeringAngle() {}
 
 } /* namespace pure_pursuit */

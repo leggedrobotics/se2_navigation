@@ -29,10 +29,10 @@ class AckermannSteeringController : public HeadingController {
   void setParameters(const AckermannSteeringCtrlParameters& parameters);
   AckermannSteeringCtrlParameters getParameters() const;
   void updateCurrentPathSegment(const PathSegment& pathSegment) override;
+  bool initialize() override;
 
  protected:
   bool advanceImpl() override;
-  bool initializeImpl() override;
   bool computeYawRate() override;
   bool computeTurningRadius() override;
   bool computeSteeringAngle() override;

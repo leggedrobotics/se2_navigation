@@ -17,7 +17,7 @@ struct HeadingControllerParameters {
   double lookaheadDistanceBck_ = 4.0;
   double anchorDistanceFwd_ = 0.2;
   double anchorDistanceBck_ = 0.2;
-  double deadZoneWidth_ = 0.0;  // rad
+  double deadZoneWidth_ = 0.0;
   double avgFilgerCurrentSampleWeight_ = 1.0;
 };
 
@@ -26,18 +26,17 @@ class HeadingController {
   HeadingController() = default;
   virtual ~HeadingController() = default;
 
-  bool initialize();
+  virtual bool initialize();
   bool advance();
   virtual void updateCurrentPathSegment(const PathSegment& pathSegment);
   virtual void updateCurrentState(const RobotState& robState);
-  void updateCurrentVelocity(const Vector& v);
+  void updateDesiredVelocity(const Vector& v);
   double getTurningRadius() const;
   double getYawRate() const;
   double getSteeringAngle() const;
 
  private:
   virtual bool advanceImpl() = 0;
-  virtual bool initializeImpl() = 0;
   virtual bool computeYawRate() = 0;
   virtual bool computeTurningRadius() = 0;
   virtual bool computeSteeringAngle() = 0;
@@ -52,7 +51,7 @@ class HeadingController {
   double activeLookaheadDistance_ = 0.2;
   PathSegment currentPathSegment_;
   unsigned int lastClosestPointId_ = 0;
-  Vector currentVelocity_;
+  Vector desiredLinearVelocity_;
 };
 
 }  // namespace pure_pursuit

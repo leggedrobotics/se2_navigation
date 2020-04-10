@@ -17,13 +17,11 @@
 
 namespace pure_pursuit {
 
-void SimplePathTracker::setParameters(const SimplePathTrackerParameters& parameters)
-{
+void SimplePathTracker::setParameters(const SimplePathTrackerParameters& parameters) {
   parameters_ = parameters;
 }
 
-void SimplePathTracker::importCurrentPath(const Path& path)
-{
+void SimplePathTracker::importCurrentPath(const Path& path) {
   if (path.segment_.empty()) {
     throw std::runtime_error("empty path");
   }
@@ -33,12 +31,10 @@ void SimplePathTracker::importCurrentPath(const Path& path)
   currentFSMState_ = States::NoOperation;
 }
 
-void SimplePathTracker::advanceStateMachine()
-{
-  const bool isSegmentTrackingFinished = progressValidator_->isPathSegmentTrackingFinished(
-      currentPath_.segment_.at(currentPathSegmentId_), currentRobotState_);
-  const bool isPathTrackingFinished = progressValidator_->isPathTrackingFinished(
-      currentPath_, currentRobotState_, currentPathSegmentId_);
+void SimplePathTracker::advanceStateMachine() {
+  const bool isSegmentTrackingFinished =
+      progressValidator_->isPathSegmentTrackingFinished(currentPath_.segment_.at(currentPathSegmentId_), currentRobotState_);
+  const bool isPathTrackingFinished = progressValidator_->isPathTrackingFinished(currentPath_, currentRobotState_, currentPathSegmentId_);
 
   if (isPathTrackingFinished) {
     currentFSMState_ = States::NoOperation;
@@ -58,8 +54,7 @@ void SimplePathTracker::advanceStateMachine()
   }
 
   if (currentFSMState_ == States::Waiting) {
-    const bool isWaitedLongEnough = stopwatch_.getElapsedTimeSinceStartSeconds()
-        > parameters_.waitingTimeBetweenDirectionSwitches_;
+    const bool isWaitedLongEnough = stopwatch_.getElapsedTimeSinceStartSeconds() > parameters_.waitingTimeBetweenDirectionSwitches_;
     if (isWaitedLongEnough) {
       currentFSMState_ = States::Driving;
       std::cout << "Going to driving state (done waiting)" << std::endl;
@@ -81,14 +76,12 @@ void SimplePathTracker::advanceStateMachine()
   isPathReceived_ = false;
 }
 
-bool SimplePathTracker::advanceControllers()
-{
+bool SimplePathTracker::advanceControllers() {
   bool result = true;
   velocityController_->updateCurrentState(currentRobotState_);
   velocityController_->updateDrivingDirection(currentDrivingDirection_);
   headingController_->updateCurrentState(currentRobotState_);
-  headingController_->updateCurrentVelocity(Vector(longitudinalVelocity_, 0.0));
-  //  std::cout << "Current state: " << static_cast<int>(currentFSMState_) << std::endl;
+  headingController_->updateDesiredVelocity(Vector(longitudinalVelocity_, 0.0));
   switch (currentFSMState_) {
     case States::Driving: {
       const bool velControllerStatus = velocityController_->advance();
@@ -96,8 +89,6 @@ bool SimplePathTracker::advanceControllers()
       const bool headingControllerStatus = headingController_->advance();
       result = result && headingControllerStatus;
       longitudinalVelocity_ = velocityController_->getVelocity();
-      //      std::cout << "velocity controller status: " << std::boolalpha << velControllerStatus << std::endl;
-      //      std::cout << "heading controller status: " << std::boolalpha << headingControllerStatus << std::endl;
       break;
     }
     case States::NoOperation: {
@@ -106,7 +97,6 @@ bool SimplePathTracker::advanceControllers()
     }
     case States::Waiting: {
       longitudinalVelocity_ = 0.0;
-      // todo maybe update the longitudinal velocity in the heading controller
       result = result && headingController_->advance();
       break;
     }
@@ -116,32 +106,23 @@ bool SimplePathTracker::advanceControllers()
   yawRate_ = headingController_->getYawRate();
   steeringAngle_ = headingController_->getSteeringAngle();
   //
-  //  std::cout << "turning radius: " << turningRadius_ << std::endl;
-  //  std::cout << "result: " << std::boolalpha << result << std::endl;
+
   result = result && std::isfinite(turningRadius_);
-  //  std::cout << "steering angle: " << steeringAngle_ << std::endl;
-  //  std::cout << "result: " << std::boolalpha << result << std::endl;
   result = result && std::isfinite(yawRate_);
-  //  std::cout << "yaw rate: " << yawRate_ << std::endl;
-  //  std::cout << "result: " << std::boolalpha << result << std::endl;
   result = result && std::isfinite(steeringAngle_);
-  //  std::cout << "result: " << std::boolalpha << result << std::endl;
 
   return result;
 }
 
-void SimplePathTracker::stopTracking()
-{
+void SimplePathTracker::stopTracking() {
   currentFSMState_ = States::NoOperation;
 }
 
-std::unique_ptr<PathTracker> createSimplePathTracker(
-    const SimplePathTrackerParameters& parameters,
-    std::shared_ptr<LongitudinalVelocityController> velocityController,
-    std::shared_ptr<HeadingController> headingController,
-    std::shared_ptr<ProgressValidator> validator,
-    std::shared_ptr<PathPreprocessor> pathPreprocessor)
-{
+std::unique_ptr<PathTracker> createSimplePathTracker(const SimplePathTrackerParameters& parameters,
+                                                     std::shared_ptr<LongitudinalVelocityController> velocityController,
+                                                     std::shared_ptr<HeadingController> headingController,
+                                                     std::shared_ptr<ProgressValidator> validator,
+                                                     std::shared_ptr<PathPreprocessor> pathPreprocessor) {
   std::unique_ptr<SimplePathTracker> tracker = std::make_unique<SimplePathTracker>();
   tracker->setParameters(parameters);
   tracker->setHeadingController(headingController);

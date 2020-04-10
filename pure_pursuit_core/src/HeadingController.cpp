@@ -14,7 +14,7 @@
 namespace pure_pursuit {
 
 bool HeadingController::initialize() {
-  return initializeImpl();
+  return true;
 }
 
 bool HeadingController::advance() {
@@ -39,8 +39,8 @@ double HeadingController::getSteeringAngle() const {
   return steeringAngle_;
 }
 
-void HeadingController::updateCurrentVelocity(const Vector& v) {
-  currentVelocity_ = v;
+void HeadingController::updateDesiredVelocity(const Vector& v) {
+  desiredLinearVelocity_ = v;
 }
 
 void HeadingController::chooseActiveAnchorAndLookaheadDistance(const HeadingControllerParameters& parameters) {
