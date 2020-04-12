@@ -19,6 +19,13 @@ How is this package differ from other planning/control packages?
 
 ## Dependencies
 
+### se2\_navigation\_msgs
+
+* std_msgs
+* geometry_msgs
+* message_generation
+
+
 ### se2_planning
 
 - [OMPL \[v1.4.2\]](https://github.com/ompl/ompl)
@@ -49,32 +56,7 @@ This package depends on [yaml-cpp](https://github.com/jbeder/yaml-cpp) package f
 `sudo apt install libyaml-cpp-dev`
 
 
-## Usage
+### pure\_pursuit\_core
 
-We provide a launch file which should be everything you need, if you work with ANYmal and have `local_guidance` in a working state. 
+* Eigen
 
-`roslaunch art_planner_ros art_planner.launch`
-
-In case you do not have the `local_guidance` or your own path follower, you can use our hacky and unsupported path follower.
-
-`rosrun art_planner_ros path_follower.py`
-
-For this one to work you need to manually start your desired motion controller.
-
-### Configuration
-
-The config file which is loaded when following the instructions above is located in `art_planner_ros/config/params.yaml`.
-It has extensive comments describing the function of each parameter.
-
-The defaults should be fine for ANYmal B.
-
-## TODO
-
-Although the planner is overall pretty :fire::fire::fire::100::fire::fire::fire: some things are still :poop:.
-
-### Known issues
-
-- Planning to a new goal can sometimes take a very long time :snail:
-- Path simplication rarely produces non-sensical paths :zap: (single waypoints are far away)
-- Ambiguity in going around symmetric obstacles :left_right_arrow: (replanning jumps)
-- Random crashes throwing `std::bad_array_new_length` :bomb: (so far only happened on our robot)
