@@ -27,22 +27,22 @@ se2_planning::ReedsSheppState randomState(
 TEST(Planning, OmplReedsSheppPlanner)
 {
   const int seed = test::seedRndGenerator();
-  const int testCases = 10;
+  const int testCases = 100;
 
   se2_planning::OmplReedsSheppPlannerParameters parameters;
-  const double stateBound = 20.0;
-  parameters.maxPlanningTime_ = 0.1;
+  const double stateBound = 10.0;
+  parameters.maxPlanningTime_ = 0.12;
   parameters.turningRadius_ = 1.0;
-  parameters.xLowerBound_ = -stateBound * 1.1;
-  parameters.xUpperBound_ = stateBound * 1.1;
-  parameters.yLowerBound_ = -stateBound * 1.1;
-  parameters.yUpperBound_ = stateBound * 1.1;
-  parameters.plannerRange_ = 25.0;
+  parameters.xLowerBound_ = -stateBound * 1.5;
+  parameters.xUpperBound_ = stateBound * 1.5;
+  parameters.yLowerBound_ = -stateBound * 1.5;
+  parameters.yUpperBound_ = stateBound * 1.5;
+  parameters.plannerRange_ = 3.0*stateBound;
 
   se2_planning::OmplReedsSheppPlanner planner;
   planner.setParameters(parameters);
   planner.initialize();
-
+  int sucesses = 0;
   for (int i = 0; i < testCases; ++i) {
     const auto start = randomState(parameters);
     const auto goal = randomState(parameters);
@@ -56,11 +56,16 @@ TEST(Planning, OmplReedsSheppPlanner)
     const auto firstState = path.segment_.front().point_.front();
     const auto lastState = path.segment_.back().point_.back();
     EXPECT_TRUE(firstState == start);
-    EXPECT_TRUE(lastState == goal);
+    const bool reachedLastState = lastState == goal;
+    EXPECT_TRUE(reachedLastState);
+    if (reachedLastState){
+      sucesses++;
+    }
   }
 
   if (::testing::Test::HasFailure()) {
     std::cout << "\n Test Planning, OmplReedsSheppPlanner failed with seed: " << seed << std::endl;
+    std::cout << "Planning success rate: " << sucesses <<"/"<<testCases<<std::endl;
   }
 }
 
