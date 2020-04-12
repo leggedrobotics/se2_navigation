@@ -9,7 +9,7 @@
 	<buildtool_depend>catkin</buildtool_depend>
 	
 	<depend>eigen</depend>
-	<depend>any_ompl</depend>
+	<depend>ompl</depend>
 	<depend>boost</depend>
 	
 </package>
