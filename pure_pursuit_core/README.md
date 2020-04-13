@@ -3,7 +3,7 @@
 ## Conventions
 
 ### Path
-[![Path conventions](doc/path_conventions.png)](doc/path_conventions.pdf)
+<img src="doc/path_conventions.png" width="600" height="605">
 
 todo - add a sketch path convention
 todo - add a sketch with the conventions in the controller
