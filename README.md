@@ -8,14 +8,15 @@ How is this package different from other SE(2) planning/control packages?
 
 * Provides a planner for car like vehicles which are non-holonomic
 * Provides a controller for car like vehicles
+* Correctly handles both forward and reverse driving
 * Comes with a minimal set of dependencies
 * Core algorithmics is separated from ros dependent code
 * Tested on real-hardware
-* Comes with a real car example that can easily be extended
+* Comes with a real car example
 * Features visualizatios and rviz planning interface
 * Easily extensible
 
-**Warning:** This planning and control framework uses geometric planners which makes it unsuitable for high-speed driving. It is meant to be used fow slow maneuvers, e.g. parking maneuvers. 
+**Warning:** At the moment, this planning and control framework uses geometric planners which makes it unsuitable for high-speed driving. It is meant to be used fow slow maneuvers, e.g. parking maneuvers. 
 
 **Author:** Edo Jelavic
 
