@@ -28,17 +28,22 @@ How is this package different from other SE(2) planning/control packages?
 
 This package is split into smaller units each of which features it's own README. Follow   these links for more info:
 
-* [car\_demo](car_demo/README.md)
-* [pure\_pursuit\_core](pure_pursuit_core/README.md)
-* [pure\_pursuit\_ros](pure_pursuit_ros/README.md)
-* [se2\_navigation\_msgs](se2_navigation_msgs/README.md)
-* [se2\_planning](se2_planning/README.md)
-* [se2\_planning\_ros](se2_planning_ros/README.md)
-* [se2\_planning\_rviz](se2_planning_rviz/README.md)
-* [se2\_visualization\_ros](se2_visualization_ros/README.md)
+* [car_demo](car_demo/README.md)
+* [pure_pursuit_core](pure_pursuit_core/README.md)
+* [pure_pursuit_ros](pure_pursuit_ros/README.md)
+* [se2_navigation_msgs](se2_navigation_msgs/README.md)
+* [se2_planning](se2_planning/README.md)
+* [se2_planning_ros](se2_planning_ros/README.md)
+* [se2_planning_rviz](se2_planning_rviz/README.md)
+* [se2_visualization_ros](se2_visualization_ros/README.md)
 
 ## Dependencies
 
+### car_demo
+
+### pure\_pursuit\_core
+
+### pure\_pursuit\_ros
 
 ### se2\_navigation\_msgs
 
@@ -49,20 +54,6 @@ This package is split into smaller units each of which features it's own README.
 
 ### se2_planning
 
-- [OMPL \[v1.4.2\]](https://github.com/ompl/ompl)
-- Boost
-- Eigen 
-
-You can install OMPL from source if you want to use the planner without ROS integration. The easiest wayto build ompl is to build it using catkin build system:
-
-Indice your catkin workspace source folder (src) do:
-
-`git clone git@github.com:ompl/ompl.git`
-`catkin build ompl` 
-
-In case this does not work for you refere to the OMPL [website](https://github.com/ompl/ompl/blob/master/doc/markdown/installation.md) for installation instructions. If you're using the ROS interface, installation can also be done through PPA.
-
-`sudo apt install ros-melodic-ompl`
 
 **Warning:** Do NOT install the `libompl-dev` package from PPA as this version contains different interfaces.
 
@@ -77,7 +68,13 @@ This package depends on [yaml-cpp](https://github.com/jbeder/yaml-cpp) package f
 `sudo apt install libyaml-cpp-dev`
 
 
-### pure\_pursuit\_core
+### pure\_planning_rviz
 
 * Eigen
 
+### se2\_visualization_ros
+  roscpp
+  geometry_msgs
+  visualization_msgs
+  tf2
+  eigen_conversions
