@@ -2,6 +2,9 @@
 
 ## Conventions
 
+### Path
+[![Path conventions](doc/path_conventions.png)](doc/path_conventions.pdf)
+
 todo - add a sketch path convention
 todo - add a sketch with the conventions in the controller
 
