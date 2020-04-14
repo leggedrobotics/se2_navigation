@@ -49,3 +49,8 @@ Refer to [car_demo](car_demo/README.md) for the details.
 Run the main demo with:   
 `roslaunch car_demo demo_autonomous.launch`   
 See [car_demo](car_demo/README.md) for the details.
+
+## Coming soon
+* Obstacles
+* Integration with grid_map
+* Mobile base demo
