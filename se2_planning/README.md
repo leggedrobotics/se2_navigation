@@ -11,7 +11,7 @@ Coming soon:
 
 se2_planning depends on following packages:
 
-- [OMPL \[v1.4.2\]](https://github.com/ompl/ompl)
+- [OMPL](https://github.com/ompl/ompl)
 - Boost
 - Eigen
 
@@ -21,7 +21,7 @@ Eigen and Boost are shipped with the Ubuntu distribution. You can install OMPL f
 
 Indice your catkin workspace source folder (src) do:
 
-`git clone git@github.com:ompl/ompl.git`
+`git clone git@github.com:ompl/ompl.git`   
 `catkin build ompl` 
 
 You can also build using CMake, plese refer to https://ompl.kavrakilab.org/.
