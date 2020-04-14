@@ -15,27 +15,31 @@ This pakcage also depends on [Qt](https://www.qt.io/) version 5.
 ## Installation
 Make sure that you have installed Qt on your machine.
 Build with:
-`catkin build se2_planning_rviz`
-
-## Usage
+`catkin build se2_planning_rviz`   
 Make sure that the package is built and that your workspace has been sourced.
 
 You can add the plugin in a following way:  
 1. Open Rviz
 2. Click on `Panels` -> `Add New Panel`
-3. From the panel type menu, uder tab `se2_planning_rviz`, select `PlanningPanel`
-4. The panel should apper on the left of the rviz window.
+3. From the panel type menu, under tab `se2_planning_rviz`, select `PlanningPanel`
+4. The panel should appear on the left of the rviz window.
 
 [<img src="doc/adding_panel.gif" width="547" height="400">](doc/adding_panel.gif)
 
 
-## Parameters
+## Usage
+The planning panel is shown below:
 
-### Planner ros
-This planner extendes the one inside the `se2_planning` package. The parametes are topics to be advertised by the planner.
+[<img src="doc/panel.png" width="320" height="300">](doc/panel.png)
 
-* `nav_msgs_path_topic` - topic where nav_msgs::Path message is published. Used merely for visualization with Rviz.
-* `planning_service_name` - name of the planning service
-* `path_msg_topic` - topic where the path will be published (used by the controllers)
-* `path_frame` - frame id of the path
-* `nav_msg_path_spatial_resolution` - spatial resolution of nav_msgs::Path in meters (euclidean distance between two points in the path)
+* `Ctrl command topic` - enter the name of the service to send commands to the controller (advertised by the controller)
+* `Planning service` - enter the name of the service to send planning request (advertised by the planner)
+* `Curr State Service` - enter the name of the service to get current state form the controller (advertised by the controller)
+
+All services and messages are defined in [se2_navigation_msgs](../se2_navigation_msgs) package. Topic names and service names are defined in the corresponging packages.
+
+* `Request Plan Button` - call planning service advertised by the planner
+* `Start Tracking Button` - send start tracking command to the controller (calls `controller command` service)
+* `Stop Tracking Button` - send stop tracking command to the controller (calls `controller command` service)
+* `Start == current positino` - if enabled, the GUI will call `get current pose` service advetised by the controller to get the current pose of the robot. This will be used as a starting pose for the planner. Starting pose in the GUI will be ignored.
+
