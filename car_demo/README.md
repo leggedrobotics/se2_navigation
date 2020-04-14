@@ -1,10 +1,36 @@
-# Demo of Prius in ROS/GAZEBO
+# Car demo
 
-This is a minimal version of Prius car from Open Source Robotics Foundation. The original code is available available at: https://github.com/osrf/car_demo 
+This is a minimal version of Prius car from Open Source Robotics Foundation (Demo of Prius in ROS/GAZEBO). The original code is available available at: https://github.com/osrf/car_demo . This slightly modified version, can be run with `se2_navigation` planning and control pipeline. 
 
-This demo has been tested on Ubuntu Bionic (18.04).
+This demo has been tested on Ubuntu Bionic (18.04). 
 
-# Running
+[<img src="doc/car.gif" width="544" height="400">](doc/car.gif)
+
+## Dependencies
+To build `car_demo` package you need to build the whole `se2_navigation` stack. You will need the full ros melodic install with Gazebo 9 to run this demo. The instructions to do so, you can find here: http://wiki.ros.org/melodic/Installation 
+
+1. Make sure that you have installed [OMPL](https://github.com/ompl/ompl). You can find some instructions [here](../se2_planning)
+2. Install `yaml-cpp`. [Instructions](../pure_pursuit_ros)
+
+## Installation
+Build with `catkin build car_demo`   
+
+## Autonomous Mode
+1. Launch with:
+`roslaunch car_demo demo_autonomous.launch`   
+
+2. The rviz planning panel should pop up. 
+3. Make sure that the `Start==curent position` checkbox is checked
+
+You can drag the goal marker to set goal positions. Starting position is determined automatically from the simulation (it is current position of the car). 
+
+1. Press `Request Plan` to trigger planning
+2. Press `Start Tracking` to start tracking the plan
+3. Press `Stop Tracking` to stop tracking the plan
+
+## Manual Mode
+Launch with:  
+`roslaunch car_demo demo_joystick.launch`   
 
 If using a Logitech F710 controller:
 
