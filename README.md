@@ -22,6 +22,10 @@ How is this package different from other SE(2) planning/control packages?
 
 **Maintainer:** Edo Jelavic, [jelavice@ethz.ch](jelavice@ethz.ch)
 
+| Navigation with prius        | Navigation with Menzi Muck M545 |
+|:----------------------:|:-----------------:| 
+| [<img src="car_demo/doc/car.gif" width="340" height="250">](car_demo/doc/car.gif)  |[<img src="car_demo/doc/m545.gif" width="340" height="250">](car_demo/doc/m545.gif)  |
+
 ## Publications
  Coming soon
 
@@ -38,44 +42,10 @@ This package is split into smaller units each of which features it's own README.
 * [se2_planning_rviz](se2_planning_rviz/README.md)
 * [se2_visualization_ros](se2_visualization_ros/README.md)
 
-## Dependencies
+## Instalation
+Refer to [car_demo](car_demo/README.md) for the details.
 
-### car_demo
-
-### pure\_pursuit\_core
-
-### pure\_pursuit\_ros
-
-### se2\_navigation\_msgs
-
-* std_msgs
-* geometry_msgs
-* message_generation
-
-
-### se2_planning
-
-
-**Warning:** Do NOT install the `libompl-dev` package from PPA as this version contains different interfaces.
-
-### se2\_planning\_ros
-
-The dependencies of the ROS interface can be installed with the following command:
-
-`sudo apt install ros-melodic-geometry_msgs ros-melodic-nav_msgs ros-melodic-roscpp ros-melodic-tf2 ros-melodic-tf2_ros`
-
-This package depends on [yaml-cpp](https://github.com/jbeder/yaml-cpp) package for parameter loading. You can install it from source (see [instructinos](https://github.com/jbeder/yaml-cpp/blob/master/install.txt)) or you can install the latest version from PPA.
-
-`sudo apt install libyaml-cpp-dev`
-
-
-### pure\_planning_rviz
-
-* Eigen
-
-### se2\_visualization_ros
-  roscpp
-  geometry_msgs
-  visualization_msgs
-  tf2
-  eigen_conversions
+## Usage
+Run the main demo with:   
+`roslaunch car_demo demo_autonomous.launch`   
+See [car_demo](car_demo/README.md) for the details.
