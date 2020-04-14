@@ -26,9 +26,13 @@ Build with:
 Run with:
 `roslaunch se2_planning_ros se2_planner.launch`
 
-The easiset way to use the planner is to use the planning interface for rviz.
+The easiset way to use the planner is to use the planning interface for rviz shown below:
+[<img src="doc/rviz_panel.png" width="755" height="400">](doc/rviz_panel.png)
 
-You can also call the planning service directly from the terminal:
+You can drag the interactive markers to change the start and goal position. The marker is enabled when you click on the `Edit` button. Click `Finish` button to finish editing and save current pose. Leave the  `Start==current position` box unchecked. To use the rviz interface you will have to build the [se2_planning_rviz](../se2_planning_rviz) package.
+
+
+Should you not want to use rviz interface, you can also call the planning service directly from the terminal. An example call that will compute a plan moving the robot 2 meters forward is given with:   
 `rosservice call /se2_planner_node/ompl_rs_planner_ros/planning_service "pathRequest:
   startingPose:
     position: 
