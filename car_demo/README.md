@@ -4,13 +4,15 @@ This is a minimal version of Prius car from Open Source Robotics Foundation (Dem
 
 This demo has been tested on Ubuntu Bionic (18.04). 
 
-[<img src="doc/car.gif" width="544" height="400">](doc/car.gif)
+[<img src="doc/car.gif" width="435" height="320">](doc/car.gif)
 
 ## Dependencies
 To build `car_demo` package you need to build the whole `se2_navigation` stack. You will need the full ros melodic install with Gazebo 9 to run this demo. The instructions to do so, you can find here: http://wiki.ros.org/melodic/Installation 
 
 1. Make sure that you have installed [OMPL](https://github.com/ompl/ompl). You can find some instructions [here](../se2_planning)
-2. Install `yaml-cpp`. [Instructions](../pure_pursuit_ros)
+2. Install `yaml-cpp` library. [Instructions](../pure_pursuit_ros/README.md)
+
+Assuming that the ros has installed correctly this should be enough to get you started. In case you cannot build the package refer to individual package README.
 
 ## Installation
 Build with `catkin build car_demo`   
