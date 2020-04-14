@@ -3,10 +3,14 @@
 ## Conventions
 
 ### Path
-![Path conventions](doc/path_conventions.png =300x303)
 
-todo - add a sketch path convention
-todo - add a sketch with the conventions in the controller
+Paths are divided into segments. A segment is a part of the path where the driving direction does not change. In the Figure below, the path has three segments. 
+
+[<img src="doc/path_conventions.png" width="300" height="303">](doc/path_conventions.pdf)
+
+
+### Pure pursuit controller
+todo add a sketch with the conventions in the controller
 
 ## Installation
 Build with:   
