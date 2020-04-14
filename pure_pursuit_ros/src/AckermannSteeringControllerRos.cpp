@@ -24,9 +24,9 @@ void AckermannSteeringControllerRos::initRos() {
 
   pathSegmentPub_ = nh_->advertise<visualization_msgs::Marker>("pure_pursuit_heading_control/path_segment", 1, true);
 
-  p1Pub_ = nh_->advertise<visualization_msgs::Marker>("pure_pursuit_heading_control/p1", 1, true);
-
-  p2Pub_ = nh_->advertise<visualization_msgs::Marker>("pure_pursuit_heading_control/p2", 1, true);
+//  p1Pub_ = nh_->advertise<visualization_msgs::Marker>("pure_pursuit_heading_control/p1", 1, true);
+//
+//  p2Pub_ = nh_->advertise<visualization_msgs::Marker>("pure_pursuit_heading_control/p2", 1, true);
 }
 
 bool AckermannSteeringControllerRos::advanceImpl() {
