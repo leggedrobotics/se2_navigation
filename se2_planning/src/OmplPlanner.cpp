@@ -12,6 +12,10 @@
 
 namespace se2_planning {
 
+ompl::geometric::SimpleSetupPtr OmplPlanner::getSimpleSetup() const {
+  return simpleSetup_;
+}
+
 void OmplPlanner::setStartingState(const State& startingState) {
   startState_ = convert(startingState);
 }

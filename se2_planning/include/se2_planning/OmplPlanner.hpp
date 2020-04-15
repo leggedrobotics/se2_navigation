@@ -31,6 +31,7 @@ class OmplPlanner : public Planner {
   void getInterpolatedPath(Path* interpolatedPath, double spatialResolution) const;
   void getOmplInterpolatedPath(ompl::geometric::PathGeometric* omplPath, unsigned int numPoints) const;
   void getInterpolatedPath(Path* interpolatedPath, unsigned int numPoints) const;
+  ompl::geometric::SimpleSetupPtr getSimpleSetup() const;
 
  protected:
   virtual void initializeStateSpace() = 0;

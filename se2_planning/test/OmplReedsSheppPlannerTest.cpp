@@ -11,6 +11,8 @@
 #include <cmath>
 #include "se2_planning/OmplReedsSheppPlanner.hpp"
 #include "test_helpers.hpp"
+#include "ompl/base/objectives/PathLengthOptimizationObjective.h"
+
 
 namespace test = se2_planning_test;
 
@@ -27,11 +29,11 @@ se2_planning::ReedsSheppState randomState(
 TEST(Planning, OmplReedsSheppPlanner)
 {
   const int seed = test::seedRndGenerator();
-  const int testCases = 100;
+  const int testCases = 1000;
 
   se2_planning::OmplReedsSheppPlannerParameters parameters;
   const double stateBound = 10.0;
-  parameters.maxPlanningTime_ = 0.12;
+  parameters.maxPlanningTime_ = 0.5;
   parameters.turningRadius_ = 1.0;
   parameters.xLowerBound_ = -stateBound * 1.5;
   parameters.xUpperBound_ = stateBound * 1.5;
@@ -42,6 +44,11 @@ TEST(Planning, OmplReedsSheppPlanner)
   se2_planning::OmplReedsSheppPlanner planner;
   planner.setParameters(parameters);
   planner.initialize();
+  auto si = planner.getSimpleSetup()->getSpaceInformation();
+  ompl::base::OptimizationObjectivePtr optimizationObjective(std::make_shared<ompl::base::PathLengthOptimizationObjective>(si));
+  optimizationObjective->setCostThreshold(ompl::base::Cost(1e10));
+  planner.getSimpleSetup()->setOptimizationObjective(optimizationObjective);
+
   int sucesses = 0;
   for (int i = 0; i < testCases; ++i) {
     const auto start = randomState(parameters);
@@ -62,6 +69,7 @@ TEST(Planning, OmplReedsSheppPlanner)
       sucesses++;
     }
   }
+
 
   if (::testing::Test::HasFailure()) {
     std::cout << "\n Test Planning, OmplReedsSheppPlanner failed with seed: " << seed << std::endl;
