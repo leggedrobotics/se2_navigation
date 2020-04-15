@@ -1,8 +1,8 @@
-# SE(2) Navigation
+# Planning and control for car-like vehicles
 
 ## Overview
 
-Collection of planners and controllers for navigation in SE(2) space.
+Pure pursuit controller and Reeds-Shepp sampling based planner for navigation in SE(2) space.
 
 How is this package different from other SE(2) planning/control packages? 
 
@@ -42,7 +42,7 @@ This package is split into smaller units each of which features it's own README.
 * [se2_planning_rviz](se2_planning_rviz/README.md)
 * [se2_visualization_ros](se2_visualization_ros/README.md)
 
-## Instalation
+## Installation
 Refer to [car_demo](car_demo/README.md) for the details.
 
 ## Usage
