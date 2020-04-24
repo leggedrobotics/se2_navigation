@@ -10,6 +10,7 @@
 	
 	<depend>eigen</depend>
 	<depend>ompl</depend>
+	<depend>grid_map_core</depend>
 	<depend>boost</depend>
 	
 </package>

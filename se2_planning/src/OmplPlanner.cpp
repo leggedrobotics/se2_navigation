@@ -55,7 +55,8 @@ bool OmplPlanner::initialize() {
   }
   simpleSetup_.reset(new ompl::geometric::SimpleSetup(stateSpace_));
   ompl::base::SpaceInformationPtr si = simpleSetup_->getSpaceInformation();
-  simpleSetup_->setStateValidityChecker(std::bind(&OmplPlanner::isStateValid, this, si.get(), std::placeholders::_1));
+  auto checker = [this, si](const ompl::base::State* state) { return this->isStateValid(si.get(), state); };
+  simpleSetup_->setStateValidityChecker(checker);
   path_ = std::make_unique<ompl::geometric::PathGeometric>(si);
   interpolatedPath_ = std::make_unique<ompl::geometric::PathGeometric>(si);
   return true;
