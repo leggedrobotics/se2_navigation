@@ -8,13 +8,11 @@
 #pragma once
 
 #include "se2_planning/OmplPlanner.hpp"
+#include "se2_planning/StateValidator.hpp"
 
 namespace se2_planning {
 
-struct ReedsSheppState : public State {
-  double x_ = 0.0;
-  double y_ = 0.0;
-  double yaw_ = 0.0;
+struct ReedsSheppState : public SE2state {
   friend std::ostream& operator<<(std::ostream& out, const ReedsSheppState& rsState);
   friend bool operator==(const ReedsSheppState& s1, const ReedsSheppState& s2);
 };
@@ -53,6 +51,7 @@ class OmplReedsSheppPlanner final : public OmplPlanner {
   bool initialize() final;
   bool plan() final;
   void setParameters(const OmplReedsSheppPlannerParameters& parameters);
+  void setStateValidator(std::unique_ptr<StateValidator> stateValidator);
 
  private:
   void initializeStateSpace() final;
@@ -65,6 +64,7 @@ class OmplReedsSheppPlanner final : public OmplPlanner {
   std::unique_ptr<ompl::base::RealVectorBounds> bounds_;
   const int reedsSheppStateSpaceDim_ = 2;
   OmplReedsSheppPlannerParameters parameters_;
+  std::unique_ptr<StateValidator> stateValidator_;
 };
 
 std::string toString(ReedsSheppPathSegment::Direction direction);

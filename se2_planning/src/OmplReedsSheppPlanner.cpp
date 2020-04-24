@@ -9,10 +9,9 @@
 
 #include <memory>
 
-#include "ompl/base/spaces/ReedsSheppStateSpace.h"
-
 #include "ompl/base/Planner.h"
 #include "ompl/base/objectives/PathLengthOptimizationObjective.h"
+#include "ompl/base/spaces/ReedsSheppStateSpace.h"
 #include "ompl/geometric/planners/rrt/RRTstar.h"
 
 namespace se2_planning {
@@ -28,6 +27,7 @@ void OmplReedsSheppPlanner::setParameters(const OmplReedsSheppPlannerParameters&
 }
 
 bool OmplReedsSheppPlanner::initialize() {
+  stateValidator_ = std::make_unique<SE2stateValidator>();
   BASE::initialize();
   auto si = simpleSetup_->getSpaceInformation();
   // todo separate planner creation
@@ -36,7 +36,6 @@ bool OmplReedsSheppPlanner::initialize() {
   simpleSetup_->setPlanner(planner);
   ompl::base::OptimizationObjectivePtr optimizationObjective(std::make_shared<ompl::base::PathLengthOptimizationObjective>(si));
   simpleSetup_->setOptimizationObjective(optimizationObjective);
-
   return true;
 }
 
@@ -58,7 +57,8 @@ void OmplReedsSheppPlanner::setStateSpaceBoundaries() {
   stateSpace_->as<ompl::base::SE2StateSpace>()->setBounds(*bounds_);
 }
 bool OmplReedsSheppPlanner::isStateValid(const ompl::base::SpaceInformation* si, const ompl::base::State* state) {
-  return true;
+  const ReedsSheppState rsState = se2_planning::convert(state);
+  return stateValidator_->isStateValid(rsState);
 }
 ompl::base::ScopedStatePtr OmplReedsSheppPlanner::convert(const State& state) const {
   ompl::base::ScopedStatePtr stateOmpl(std::make_shared<ompl::base::ScopedState<> >(stateSpace_));

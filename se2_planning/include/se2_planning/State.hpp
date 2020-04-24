@@ -50,4 +50,12 @@ struct Path {
   virtual ~Path() = default;
 };
 
+struct SE2state : public State {
+  double x_ = 0.0;
+  double y_ = 0.0;
+  double yaw_ = 0.0;
+  friend std::ostream& operator<<(std::ostream& out, const SE2state& rsState);
+  friend bool operator==(const SE2state& s1, const SE2state& s2);
+};
+
 }  // namespace se2_planning

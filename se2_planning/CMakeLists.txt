@@ -8,6 +8,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(SRC_FILES
   src/OmplPlanner.cpp
   src/OmplReedsSheppPlanner.cpp
+  src/State.cpp
+  src/StateValidator.cpp
 )
 
 set(CATKIN_PACKAGE_DEPENDENCIES 
