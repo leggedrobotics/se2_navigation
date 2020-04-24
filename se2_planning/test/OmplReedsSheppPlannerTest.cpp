@@ -30,16 +30,16 @@ TEST(Planning, OmplReedsSheppPlanner)
 {
   const int seed = test::seedRndGenerator();
   const int testCases = 1000;
-
+  ompl::RNG::setSeed(seed);
   se2_planning::OmplReedsSheppPlannerParameters parameters;
   const double stateBound = 10.0;
-  parameters.maxPlanningTime_ = 0.5;
+  parameters.maxPlanningTime_ = 10.0;
   parameters.turningRadius_ = 1.0;
   parameters.xLowerBound_ = -stateBound * 1.5;
   parameters.xUpperBound_ = stateBound * 1.5;
   parameters.yLowerBound_ = -stateBound * 1.5;
   parameters.yUpperBound_ = stateBound * 1.5;
-  parameters.plannerRange_ = 3.0*stateBound;
+  parameters.plannerRange_ = 1.5*stateBound;
 
   se2_planning::OmplReedsSheppPlanner planner;
   planner.setParameters(parameters);
@@ -76,4 +76,6 @@ TEST(Planning, OmplReedsSheppPlanner)
     std::cout << "Planning success rate: " << sucesses <<"/"<<testCases<<std::endl;
   }
 }
+
+
 
