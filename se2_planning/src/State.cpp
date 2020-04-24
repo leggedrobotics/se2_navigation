@@ -24,4 +24,6 @@ bool operator==(const SE2state& s1, const SE2state& s2) {
   return isPositionEqual && isYawEqual;
 }
 
+SE2state::SE2state(double x, double y, double yaw) : State(), x_(x), y_(y), yaw_(yaw) {}
+
 } /* namespace se2_planning */

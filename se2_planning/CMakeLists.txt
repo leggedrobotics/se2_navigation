@@ -106,11 +106,14 @@ catkin_add_gtest(${PROJECT_NAME}-test
   test/test_planning.cpp
   test/test_helpers.cpp
   test/OmplReedsSheppPlannerTest.cpp
+  test/GridMapStateValidatorTest.cpp
   )
 endif()
 
 if(TARGET ${PROJECT_NAME}-test)
-  target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
+  target_link_libraries(${PROJECT_NAME}-test 
+    ${PROJECT_NAME}
+    ${catkin_LIBRARIES})
 endif()
 
 

@@ -51,6 +51,8 @@ struct Path {
 };
 
 struct SE2state : public State {
+  SE2state() = default;
+  SE2state(double x, double y, double yaw);
   double x_ = 0.0;
   double y_ = 0.0;
   double yaw_ = 0.0;

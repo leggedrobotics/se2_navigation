@@ -17,7 +17,9 @@ bool GridMapStateValidator::isStateValid(const State& state) const {
   } /* Optimistic and assumes no obstacles */
 
   footprintAtPose(nominalFootprint_, *(state.as<SE2state>()), &currentFootprint_);
-  return isInCollision(toPolygon(currentFootprint_), gridMap_, obstacleLayerName_);
+  auto polygon = toPolygon(currentFootprint_);
+  polygon.setFrameId(gridMap_.getFrameId());
+  return !isInCollision(polygon, gridMap_, obstacleLayerName_);
 }
 
 void GridMapStateValidator::setGridMap(const grid_map::GridMap& gridMap) {
