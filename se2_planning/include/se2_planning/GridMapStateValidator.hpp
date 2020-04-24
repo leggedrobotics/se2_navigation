@@ -53,5 +53,6 @@ Eigen::Matrix2d rotationMatrix(double yawAngle);
 grid_map::Polygon toPolygon(const RobotFootprint& footprint);
 void footprintAtPose(const RobotFootprint& in, const SE2state& state, RobotFootprint* out);
 bool isInCollision(const grid_map::Polygon& polygon, const grid_map::GridMap& gridMap, const std::string& obstacleLayer);
+RobotFootprint computeFootPrint(double length, double width);
 
 } /* namespace se2_planning */
