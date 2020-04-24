@@ -19,7 +19,7 @@ struct Vertex {
 };
 
 struct RobotFootprint {
-  std::vector<Vertex> vertex_;
+  std::array<Vertex, 4> vertex_;
 };
 
 class GridMapStateValidator : public StateValidator {
@@ -34,6 +34,10 @@ class GridMapStateValidator : public StateValidator {
   void setFootprint(const RobotFootprint& footprint);
   void setObstacleLayerName(const std::string& layer);
 
+  const grid_map::GridMap& getGridMap() const;
+  const RobotFootprint& getFootprint() const;
+  const std::string& getObstacleLayerName() const;
+
  private:
   bool isGridMapInitialized_ = false;
   bool isFootprintInitialized_ = false;
@@ -41,11 +45,13 @@ class GridMapStateValidator : public StateValidator {
 
   std::string obstacleLayerName_;
   grid_map::GridMap gridMap_;
-  RobotFootprint footprint_;
-  grid_map::Polygon polygon_;
+  RobotFootprint nominalFootprint_;
+  mutable RobotFootprint currentFootprint_;
 };
 
+Eigen::Matrix2d rotationMatrix(double yawAngle);
 grid_map::Polygon toPolygon(const RobotFootprint& footprint);
+void footprintAtPose(const RobotFootprint& in, const SE2state& state, RobotFootprint* out);
 bool isInCollision(const grid_map::Polygon& polygon, const grid_map::GridMap& gridMap, const std::string& obstacleLayer);
 
 } /* namespace se2_planning */

@@ -16,7 +16,8 @@ bool GridMapStateValidator::isStateValid(const State& state) const {
     return true;
   } /* Optimistic and assumes no obstacles */
 
-  return isInCollision(polygon_, gridMap_, obstacleLayerName_);
+  footprintAtPose(nominalFootprint_, *(state.as<SE2state>()), &currentFootprint_);
+  return isInCollision(toPolygon(currentFootprint_), gridMap_, obstacleLayerName_);
 }
 
 void GridMapStateValidator::setGridMap(const grid_map::GridMap& gridMap) {
@@ -28,14 +29,23 @@ bool GridMapStateValidator::isInitialized() const {
 }
 
 void GridMapStateValidator::setFootprint(const RobotFootprint& footprint) {
-  footprint_ = footprint;
-  polygon_ = toPolygon(footprint);
+  nominalFootprint_ = footprint;
   isFootprintInitialized_ = true;
 }
 
 void GridMapStateValidator::setObstacleLayerName(const std::string& layer) {
   obstacleLayerName_ = layer;
   isLayerNameInitialized_ = true;
+}
+
+const grid_map::GridMap& GridMapStateValidator::getGridMap() const {
+  return gridMap_;
+}
+const RobotFootprint& GridMapStateValidator::getFootprint() const {
+  return nominalFootprint_;
+}
+const std::string& GridMapStateValidator::getObstacleLayerName() const {
+  return obstacleLayerName_;
 }
 
 bool isInCollision(const grid_map::Polygon& polygon, const grid_map::GridMap& gridMap, const std::string& obstacleLayer) {
@@ -73,6 +83,25 @@ grid_map::Polygon toPolygon(const RobotFootprint& footprint) {
     polygon.addVertex(grid_map::Position(vertex.x_, vertex.y_));
   }
   return polygon;
+}
+
+void footprintAtPose(const RobotFootprint& in, const SE2state& state, RobotFootprint* out) {
+  const double Cos = std::cos(state.yaw_);
+  const double Sin = std::sin(state.yaw_);
+  const double dx = state.x_;
+  const double dy = state.y_;
+  auto transformOperator = [Cos, Sin, dx, dy](const Vertex& v) {
+    return Vertex{Cos * v.x_ - Sin * v.y_ + dx, Sin * v.x_ + Cos * v.y_ + dy};
+  };
+  std::transform(in.vertex_.begin(), in.vertex_.end(), out->vertex_.begin(), transformOperator);
+}
+
+Eigen::Matrix2d rotationMatrix(double yawAngle) {
+  const double Cos = std::cos(yawAngle);
+  const double Sin = std::sin(yawAngle);
+  Eigen::Matrix2d mat;
+  mat << Cos, -Sin, Sin, Cos;
+  return mat;
 }
 
 } /* namespace se2_planning */
