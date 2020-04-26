@@ -26,8 +26,11 @@ void OmplReedsSheppPlanner::setParameters(const OmplReedsSheppPlannerParameters&
   setMaxPlanningDuration(parameters.maxPlanningTime_);
 }
 
-bool OmplReedsSheppPlanner::initialize() {
+OmplReedsSheppPlanner::OmplReedsSheppPlanner() : BASE() {
   stateValidator_ = std::make_unique<SE2stateValidator>();
+}
+
+bool OmplReedsSheppPlanner::initialize() {
   BASE::initialize();
   auto si = simpleSetup_->getSpaceInformation();
   // todo separate planner creation
@@ -56,6 +59,11 @@ void OmplReedsSheppPlanner::setStateSpaceBoundaries() {
   bounds_->high[1] = parameters_.yUpperBound_;
   stateSpace_->as<ompl::base::SE2StateSpace>()->setBounds(*bounds_);
 }
+
+void OmplReedsSheppPlanner::setStateValidator(std::unique_ptr<StateValidator> stateValidator) {
+  stateValidator_ = std::move(stateValidator);
+}
+
 bool OmplReedsSheppPlanner::isStateValid(const ompl::base::SpaceInformation* si, const ompl::base::State* state) {
   const ReedsSheppState rsState = se2_planning::convert(state);
   return stateValidator_->isStateValid(rsState);
@@ -176,6 +184,8 @@ ReedsSheppState convert(const ompl::base::State* s) {
 
   return retState;
 }
+
+ReedsSheppState::ReedsSheppState(double x, double y, double yaw) : SE2state(x, y, yaw) {}
 
 std::ostream& operator<<(std::ostream& out, const ReedsSheppState& rsState) {
   out << "x =" << rsState.x_ << ", y=" << rsState.y_ << ", yaw=" << rsState.yaw_;  // actual output done here

@@ -13,6 +13,9 @@
 namespace se2_planning {
 
 struct ReedsSheppState : public SE2state {
+  ReedsSheppState() = default;
+  ReedsSheppState(double x, double y, double yaw);
+  ~ReedsSheppState() override = default;
   friend std::ostream& operator<<(std::ostream& out, const ReedsSheppState& rsState);
   friend bool operator==(const ReedsSheppState& s1, const ReedsSheppState& s2);
 };
@@ -45,7 +48,7 @@ class OmplReedsSheppPlanner final : public OmplPlanner {
   using BASE = OmplPlanner;
 
  public:
-  OmplReedsSheppPlanner() = default;
+  OmplReedsSheppPlanner();
   ~OmplReedsSheppPlanner() override = default;
 
   bool initialize() final;
