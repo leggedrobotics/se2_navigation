@@ -31,6 +31,7 @@ TEST(Planning, OmplReedsSheppPlanner)
   const int seed = test::seedRndGenerator();
   const int testCases = 1000;
   ompl::RNG::setSeed(seed);
+  ompl::msg::setLogLevel(ompl::msg::LogLevel::LOG_NONE);
   se2_planning::OmplReedsSheppPlannerParameters parameters;
   const double stateBound = 10.0;
   parameters.maxPlanningTime_ = 10.0;

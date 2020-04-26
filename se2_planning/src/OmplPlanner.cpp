@@ -39,7 +39,7 @@ bool OmplPlanner::plan() {
   const ompl::geometric::PathGeometric solution = simpleSetup_->getSolutionPath();
   *path_ = solution;
   *interpolatedPath_ = solution;
-  std::cout << "Solution plan has: " << solution.getStateCount() << " states." << std::endl;
+  // std::cout << "Solution plan has: " << solution.getStateCount() << " states." << std::endl;
 
   return true;
 }

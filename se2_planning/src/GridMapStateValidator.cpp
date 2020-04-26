@@ -106,13 +106,13 @@ Eigen::Matrix2d rotationMatrix(double yawAngle) {
   return mat;
 }
 
-RobotFootprint computeFootprint(double length, double width) {
+RobotFootprint computeFootprint(double lengthForward, double lengthBackwards, double widthLeft, double widthRight) {
   enum Vertices { RH, RF, LF, LH };
   RobotFootprint f;
-  f.vertex_.at(RH) = Vertex{0.0, -width / 2.0};
-  f.vertex_.at(RF) = Vertex{length, -width / 2.0};
-  f.vertex_.at(LF) = Vertex{length, width / 2.0};
-  f.vertex_.at(LH) = Vertex{0.0, width / 2.0};
+  f.vertex_.at(RH) = Vertex{-lengthBackwards, -widthRight};
+  f.vertex_.at(RF) = Vertex{lengthForward, -widthRight};
+  f.vertex_.at(LF) = Vertex{lengthForward, widthLeft};
+  f.vertex_.at(LH) = Vertex{-lengthBackwards, widthLeft};
   return f;
 }
 

@@ -43,10 +43,10 @@ TEST(StateValidator, GridMapTest1)
   }
 
   se2_planning::GridMapStateValidator validator;
-  EXPECT_TRUE(validator.isStateValid(se2_planning::SE2state { 0.0, 0.0, 0.0 }));
+  EXPECT_TRUE(validator.isStateValid(se2_planning::SE2state(0.0, 0.0, 0.0 )));
   validator.setGridMap(gridMap);
   validator.setObstacleLayerName(testLayer);
-  validator.setFootprint(se2_planning::computeFootprint(1.0, 1.0));
+  validator.setFootprint(se2_planning::computeFootprint(1.0, 0.0, 0.5, 0.5));
   EXPECT_FALSE(validator.isStateValid(se2_planning::SE2state(0.0, 0.0, 0.0)));
   EXPECT_FALSE(validator.isStateValid(se2_planning::SE2state(1.0, 1.0, 0.0)));
   EXPECT_FALSE(validator.isStateValid(se2_planning::SE2state(5.0, 5.0, 1.0)));
@@ -64,7 +64,8 @@ TEST(StateValidator, GridMapTest1)
 
 TEST(StateValidator, GridMapTest2)
 {
-  const int seed = test::seedRndGenerator();
+  const int seed = 371195984;
+  test::rndGenerator.seed(seed);
   const int testCases = 10000;
   grid_map::GridMap gridMap;
   gridMap.setGeometry(grid_map::Length(40.0, 40.0), 0.1);
@@ -80,10 +81,10 @@ TEST(StateValidator, GridMapTest2)
   se2_planning::GridMapStateValidator validator;
   validator.setGridMap(gridMap);
   validator.setObstacleLayerName(testLayer);
-  validator.setFootprint(se2_planning::computeFootprint(1.0, 1.0));
+  validator.setFootprint(se2_planning::computeFootprint(1.0, 0.0, 0.5, 0.5));
   for (unsigned int i = 0; i < testCases; ++i) {
     const auto s = randomState(gridMap, 2.0);
-    if (s.x_ > 0 && s.y_ > 0) {
+    if (s.x_ > 1.0 && s.y_ > 1.0) {
       EXPECT_FALSE(validator.isStateValid(s));
     }
 
