@@ -69,6 +69,26 @@ target_link_libraries(${PROJECT_NAME}
   ${OMPL_LIBRARIES}
 )
 
+add_library(test_helpers
+  test/test_helpers.cpp
+)
+
+target_link_libraries(test_helpers
+  ${PROJECT_NAME}
+  ${catkin_LIBRARIES}
+  ${OMPL_LIBRARIES}
+)
+
+add_executable(planning_benchmark
+  src/planning_benchmark.cpp
+)
+target_link_libraries(planning_benchmark
+  ${catkin_LIBRARIES}
+  ${PROJECT_NAME}
+  ${OMPL_LIBRARIES}
+  test_helpers
+)
+
 #############
 ## Install ##
 #############
