@@ -2,17 +2,17 @@
 
 ## Overview
 
-Pure pursuit controller and Reeds-Shepp sampling based planner for navigation in SE(2) space.
+Pure pursuit controller and Reeds-Shepp sampling based planner for navigation in SE(2) space. This package has been mainly intended for car-like vehicles, although it can be used with mobile bases too (in that case you might want to check out move_base from ROS).
 
 How is this package different from other SE(2) planning/control packages? 
 
-* Provides a planner for car like vehicles which are non-holonomic
-* Provides a controller for car like vehicles
+* Provides planning and control for car like vehicles which are non-holonomic
 * Correctly handles both forward and reverse driving
 * Comes with a minimal set of dependencies
 * Core algorithmics is separated from ros dependent code
 * Tested on real-hardware
-* Comes with a real car example
+* Comes with a car example
+* Integrated with [grid_map](https://github.com/ANYbotics/grid_map) package
 * Features visualizatios and rviz planning interface
 * Easily extensible
 
@@ -51,6 +51,4 @@ Run the main demo with:
 See [car_demo](car_demo/README.md) for the details.
 
 ## Coming soon
-* Obstacles
-* Integration with grid_map
 * Mobile base demo
