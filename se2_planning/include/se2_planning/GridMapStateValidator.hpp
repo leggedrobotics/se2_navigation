@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <memory>
+
 #include "grid_map_core/GridMap.hpp"
 #include "grid_map_core/Polygon.hpp"
 #include "se2_planning/StateValidator.hpp"
@@ -54,5 +56,7 @@ grid_map::Polygon toPolygon(const RobotFootprint& footprint);
 void footprintAtPose(const RobotFootprint& in, const SE2state& state, RobotFootprint* out);
 bool isInCollision(const grid_map::Polygon& polygon, const grid_map::GridMap& gridMap, const std::string& obstacleLayer);
 RobotFootprint computeFootprint(double lengthForward, double lengthBackwards, double widthLeft, double widthRight);
+std::unique_ptr<GridMapStateValidator> createGridMapStateValidator(const grid_map::GridMap& gridMap, const RobotFootprint& footprint,
+                                                                   const std::string& obstacleLayer);
 
 } /* namespace se2_planning */

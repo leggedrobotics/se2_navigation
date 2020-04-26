@@ -42,23 +42,25 @@ TEST(StateValidator, GridMapTest1)
     }
   }
 
-  se2_planning::GridMapStateValidator validator;
-  EXPECT_TRUE(validator.isStateValid(se2_planning::SE2state(0.0, 0.0, 0.0 )));
-  validator.setGridMap(gridMap);
-  validator.setObstacleLayerName(testLayer);
-  validator.setFootprint(se2_planning::computeFootprint(1.0, 0.0, 0.5, 0.5));
-  EXPECT_FALSE(validator.isStateValid(se2_planning::SE2state(0.0, 0.0, 0.0)));
-  EXPECT_FALSE(validator.isStateValid(se2_planning::SE2state(1.0, 1.0, 0.0)));
-  EXPECT_FALSE(validator.isStateValid(se2_planning::SE2state(5.0, 5.0, 1.0)));
+  {
+    se2_planning::GridMapStateValidator v;
+    EXPECT_TRUE(v.isStateValid(se2_planning::SE2state(0.0, 0.0, 0.0)));
+  }
+  auto validator = se2_planning::createGridMapStateValidator(
+      gridMap, se2_planning::computeFootprint(1.0, 0.0, 0.5, 0.5), testLayer);
 
-  EXPECT_TRUE(validator.isStateValid(se2_planning::SE2state(-5.0, -5.0, 1.0)));
-  EXPECT_TRUE(validator.isStateValid(se2_planning::SE2state(-5.0, -5.0, 2.0)));
+  EXPECT_FALSE(validator->isStateValid(se2_planning::SE2state(0.0, 0.0, 0.0)));
+  EXPECT_FALSE(validator->isStateValid(se2_planning::SE2state(1.0, 1.0, 0.0)));
+  EXPECT_FALSE(validator->isStateValid(se2_planning::SE2state(5.0, 5.0, 1.0)));
 
-  EXPECT_TRUE(validator.isStateValid(se2_planning::SE2state(5.0, -5.0, 2.0)));
-  EXPECT_TRUE(validator.isStateValid(se2_planning::SE2state(5.0, -5.0, M_PI)));
+  EXPECT_TRUE(validator->isStateValid(se2_planning::SE2state(-5.0, -5.0, 1.0)));
+  EXPECT_TRUE(validator->isStateValid(se2_planning::SE2state(-5.0, -5.0, 2.0)));
 
-  EXPECT_TRUE(validator.isStateValid(se2_planning::SE2state(-5.0, 5.0, 2.0)));
-  EXPECT_TRUE(validator.isStateValid(se2_planning::SE2state(-5.0, 5.0, 3.0)));
+  EXPECT_TRUE(validator->isStateValid(se2_planning::SE2state(5.0, -5.0, 2.0)));
+  EXPECT_TRUE(validator->isStateValid(se2_planning::SE2state(5.0, -5.0, M_PI)));
+
+  EXPECT_TRUE(validator->isStateValid(se2_planning::SE2state(-5.0, 5.0, 2.0)));
+  EXPECT_TRUE(validator->isStateValid(se2_planning::SE2state(-5.0, 5.0, 3.0)));
 
 }
 
@@ -78,18 +80,16 @@ TEST(StateValidator, GridMapTest2)
     }
   }
 
-  se2_planning::GridMapStateValidator validator;
-  validator.setGridMap(gridMap);
-  validator.setObstacleLayerName(testLayer);
-  validator.setFootprint(se2_planning::computeFootprint(1.0, 0.0, 0.5, 0.5));
+  auto validator = se2_planning::createGridMapStateValidator(
+      gridMap, se2_planning::computeFootprint(1.0, 0.0, 0.5, 0.5), testLayer);
   for (unsigned int i = 0; i < testCases; ++i) {
     const auto s = randomState(gridMap, 2.0);
     if (s.x_ > 1.0 && s.y_ > 1.0) {
-      EXPECT_FALSE(validator.isStateValid(s));
+      EXPECT_FALSE(validator->isStateValid(s));
     }
 
     if (s.x_ < -2.0 || s.y_ < -2.0) {
-      EXPECT_TRUE(validator.isStateValid(s));
+      EXPECT_TRUE(validator->isStateValid(s));
     }
   }
 

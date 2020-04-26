@@ -117,4 +117,13 @@ RobotFootprint computeFootprint(double lengthForward, double lengthBackwards, do
   return f;
 }
 
+std::unique_ptr<GridMapStateValidator> createGridMapStateValidator(const grid_map::GridMap& gridMap, const RobotFootprint& footprint,
+                                                                   const std::string& obstacleLayer) {
+  std::unique_ptr<GridMapStateValidator> validator = std::make_unique<GridMapStateValidator>();
+  validator->setGridMap(gridMap);
+  validator->setObstacleLayerName(obstacleLayer);
+  validator->setFootprint(footprint);
+  return std::move(validator);
+}
+
 } /* namespace se2_planning */
