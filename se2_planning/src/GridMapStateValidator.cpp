@@ -23,6 +23,9 @@ bool GridMapStateValidator::isStateValid(const State& state) const {
 }
 
 void GridMapStateValidator::setGridMap(const grid_map::GridMap& gridMap) {
+  if (gridMap.getLayers().empty()) {
+    throw std::runtime_error("Grid map has no layers");
+  }
   gridMap_ = gridMap;
   isGridMapInitialized_ = true;
 }
@@ -108,8 +111,9 @@ Eigen::Matrix2d rotationMatrix(double yawAngle) {
 }
 
 RobotFootprint computeFootprint(double lengthForward, double lengthBackwards, double widthLeft, double widthRight) {
-  enum Vertices { RH, RF, LF, LH };
+  enum Vertices { RH, RF, LF, LH, NUM_VERTICES };
   RobotFootprint f;
+  f.vertex_.resize(NUM_VERTICES);
   f.vertex_.at(RH) = Vertex{-lengthBackwards, -widthRight};
   f.vertex_.at(RF) = Vertex{lengthForward, -widthRight};
   f.vertex_.at(LF) = Vertex{lengthForward, widthLeft};

@@ -21,7 +21,7 @@ struct Vertex {
 };
 
 struct RobotFootprint {
-  std::array<Vertex, 4> vertex_;
+  std::vector<Vertex> vertex_;
 };
 
 class GridMapStateValidator : public StateValidator {
@@ -29,7 +29,7 @@ class GridMapStateValidator : public StateValidator {
   GridMapStateValidator() = default;
   ~GridMapStateValidator() override = default;
 
-  bool isStateValid(const State& state) const final;
+  bool isStateValid(const State& state) const override;
   bool isInitialized() const;
 
   void setGridMap(const grid_map::GridMap& gridMap);
@@ -40,13 +40,15 @@ class GridMapStateValidator : public StateValidator {
   const RobotFootprint& getFootprint() const;
   const std::string& getObstacleLayerName() const;
 
- private:
+ protected:
   bool isGridMapInitialized_ = false;
   bool isFootprintInitialized_ = false;
   bool isLayerNameInitialized_ = false;
 
   std::string obstacleLayerName_;
   grid_map::GridMap gridMap_;
+
+ private:
   RobotFootprint nominalFootprint_;
   mutable RobotFootprint currentFootprint_;
 };
