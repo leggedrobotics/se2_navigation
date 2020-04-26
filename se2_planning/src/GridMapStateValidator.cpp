@@ -57,7 +57,7 @@ bool isInCollision(const grid_map::Polygon& polygon, const grid_map::GridMap& gr
    */
   const double collisionThreshold = 0.1;
 
-  const auto& data = gridMap.get(obstacleLayer);  // by convention
+  const auto& data = gridMap.get(obstacleLayer);
   for (grid_map::PolygonIterator iterator(gridMap, polygon); !iterator.isPastEnd(); ++iterator) {
     double occupancy = 0.0;
     try {
@@ -67,7 +67,8 @@ bool isInCollision(const grid_map::Polygon& polygon, const grid_map::GridMap& gr
       return true;
     }
 
-    // in case something is nan then continue
+    // ignore nans since they might come from faulty
+    // perception pipeline
     if (std::isnan(occupancy)) {
       continue;
     }
