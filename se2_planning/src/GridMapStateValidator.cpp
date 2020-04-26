@@ -35,6 +35,7 @@ bool GridMapStateValidator::isInitialized() const {
 
 void GridMapStateValidator::setFootprint(const RobotFootprint& footprint) {
   nominalFootprint_ = footprint;
+  currentFootprint_ = footprint;
   isFootprintInitialized_ = true;
 }
 
