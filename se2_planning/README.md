@@ -6,20 +6,25 @@ Coming soon:
 * planning for holonomic robots such as mobile bases
 * integration of more ompl planners
 
+## Conventions
 
+### Collision checking
+Collision footprint is shown in an image below. At the moment only rectangular footprint is supported. The footprint is defined by four points:   
+* Right Hind (RH)
+* Right Front (RF)
+* Left Front (LF)
+* Left Hind (LH)
 
+User can either specify those point manually, of define 4 measures shown in the image below. The points will then be calculated automatically. All distances are marked with `d` and measured from the origin of the coordinate system.
 
-
-Inside your catkin workspace source folder (src) do:
-
-`git clone git@github.com:ANYbotics/grid_map.git`   
+[<img src="doc/collision_footprint_conventions.png" width="235" height="300">](collision_footprint_conventions.pdf)
 
 ## Dependencies
 
 se2_planning depends on following packages:
 
 - [OMPL](https://github.com/ompl/ompl)
-- [grid_map_core](https://github.com/ANYbotics/grid_m)
+- [grid_map_core](https://github.com/ANYbotics/grid_map)
 - Boost
 - Eigen
 
