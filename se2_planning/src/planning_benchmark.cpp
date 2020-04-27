@@ -50,6 +50,7 @@ void runPlanner(se2_planning::OmplReedsSheppPlanner& planner) {
   std::cout << "Done, success rate: " << count << "/" << numTestCases << std::endl;
   std::cout << "total duration: " << duration(tFinish - tStart) << " miliseconds" << std::endl;
   std::cout << "per planning query: " << static_cast<double>(duration(tFinish - tStart)) / numTestCases << " miliseconds" << std::endl;
+  std::cout << "\n===================\n";
 }
 
 void runNormalValidator(se2_planning::OmplReedsSheppPlanner& planner, const grid_map::GridMap& gridMap) {
@@ -61,12 +62,33 @@ void runNormalValidator(se2_planning::OmplReedsSheppPlanner& planner, const grid
   runPlanner(planner);
 }
 
-void runlazylValidator(se2_planning::OmplReedsSheppPlanner& planner, const grid_map::GridMap& gridMap) {
+void runLazyValidator(se2_planning::OmplReedsSheppPlanner& planner, const grid_map::GridMap& gridMap) {
   // create state validator
   auto plannerStateValidator =
       se2_planning::createGridMapLazyStateValidator(gridMap, se2_planning::computeFootprint(1.0, 0.0, 0.5, 0.5), benchmarkLayer);
   planner.setStateValidator(std::move(plannerStateValidator));
   std::cout << "benchmarking lazy validator " << std::endl;
+  runPlanner(planner);
+}
+
+void runLazyRandomValidator(se2_planning::OmplReedsSheppPlanner& planner, const grid_map::GridMap& gridMap) {
+  // create state validator
+  auto plannerStateValidator =
+      se2_planning::createGridMapLazyStateValidator(gridMap, se2_planning::computeFootprint(1.0, 0.0, 0.5, 0.5), benchmarkLayer);
+  plannerStateValidator->setIsUseRandomizedStrategy(true);
+  planner.setStateValidator(std::move(plannerStateValidator));
+  std::cout << "benchmarking lazy random validator " << std::endl;
+  runPlanner(planner);
+}
+
+void runLazyRandomEarlyStoppingValidator(se2_planning::OmplReedsSheppPlanner& planner, const grid_map::GridMap& gridMap) {
+  // create state validator
+  auto plannerStateValidator =
+      se2_planning::createGridMapLazyStateValidator(gridMap, se2_planning::computeFootprint(1.0, 0.0, 0.5, 0.5), benchmarkLayer);
+  plannerStateValidator->setIsUseRandomizedStrategy(true);
+  plannerStateValidator->setIsUseEarlyStoppingHeuristic(true);
+  planner.setStateValidator(std::move(plannerStateValidator));
+  std::cout << "benchmarking lazy early stopping random validator " << std::endl;
   runPlanner(planner);
 }
 
@@ -95,8 +117,8 @@ int main(int argc, char** argv) {
   setCostThreshold(&planner);
 
   runNormalValidator(planner, gridMap);
-  std::cout << "\n===================\n";
-  runlazylValidator(planner, gridMap);
-
+  runLazyValidator(planner, gridMap);
+  runLazyRandomValidator(planner, gridMap);
+  runLazyRandomEarlyStoppingValidator(planner, gridMap);
   return 0;
 }

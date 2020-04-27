@@ -7,10 +7,34 @@
 
 #include "se2_planning/GridMapLazyStateValidator.hpp"
 
+#include <algorithm>
 #include <iostream>
+#include <random>
+
 #include "grid_map_core/iterators/PolygonIterator.hpp"
 
 namespace se2_planning {
+
+void GridMapLazyStateValidator::setIsUseRandomizedStrategy(bool value) {
+  isUseRandomizedStrategy_ = value;
+}
+bool GridMapLazyStateValidator::getIsUseRandomizedStrategy() const {
+  return isUseRandomizedStrategy_;
+}
+
+void GridMapLazyStateValidator::setIsUseEarlyStoppingHeuristic(bool value) {
+  isUseEarlyStoppingHeuristic_ = value;
+}
+bool GridMapLazyStateValidator::setIsUseEarlyStoppingHeuristic() const {
+  return isUseEarlyStoppingHeuristic_;
+}
+
+void GridMapLazyStateValidator::setSeed(int value) {
+  seed_ = value;
+}
+int GridMapLazyStateValidator::getSeed() const {
+  return seed_;
+}
 
 void GridMapLazyStateValidator::initialize() {
   if (!isGridMapInitialized_) {
@@ -18,6 +42,14 @@ void GridMapLazyStateValidator::initialize() {
   }
 
   computeFootprintPoints(gridMap_, nominalFootprint_, &nominalFootprintPoints_);
+
+  if (isUseRandomizedStrategy_) {
+    std::shuffle(nominalFootprintPoints_.begin(), nominalFootprintPoints_.end(), std::default_random_engine(seed_));
+  }
+
+  if (isUseEarlyStoppingHeuristic_) {
+    addExtraPointsForEarlyStopping(nominalFootprint_, &nominalFootprintPoints_, seed_);
+  }
   isInitializeCalled_ = true;
 }
 
@@ -62,7 +94,7 @@ bool isInCollision(const SE2state& state, const std::vector<Vertex>& footprint, 
     return Vertex{Cos * v.x_ - Sin * v.y_ + dx, Sin * v.x_ + Cos * v.y_ + dy};
   };
   const auto& data = gridMap.get(obstacleLayer);
-  for (const auto vertex : footprint) {
+  for (const auto& vertex : footprint) {
     double occupancy = 0.0;
     try {
       const auto v = transformOperator(vertex);
@@ -86,6 +118,46 @@ bool isInCollision(const SE2state& state, const std::vector<Vertex>& footprint, 
   }
 
   return false;
+}
+
+void divideAndAdd(std::vector<Vertex>* vertices, int depth, const Vertex& pLeft, const Vertex& pRight) {
+  if (depth <= 0) {
+    return;
+  }
+  const Vertex pMiddle{(pLeft.x_ + pRight.x_) / 2.0, (pLeft.y_ + pRight.y_) / 2.0};
+  vertices->push_back(pMiddle);
+  divideAndAdd(vertices, depth - 1, pLeft, pMiddle);
+  divideAndAdd(vertices, depth - 1, pMiddle, pRight);
+}
+
+void addExtraPointsForEarlyStopping(const RobotFootprint& footprint, std::vector<Vertex>* points, int seed) {
+  const int nVertices = footprint.vertex_.size();
+  std::vector<Vertex> extraPoints;
+
+  const int desiredRecursionDepth = 2;
+  for (int i = 1; i < nVertices; ++i) {
+    const auto v1 = footprint.vertex_.at(i - 1);
+    const auto v2 = footprint.vertex_.at(i);
+    std::vector<Vertex> temp;
+    divideAndAdd(&temp, desiredRecursionDepth, v1, v2);
+    extraPoints.insert(extraPoints.begin(), temp.begin(), temp.end());
+  }
+
+  {  // connect first and last vertex
+    const auto v1 = footprint.vertex_.back();
+    const auto v2 = footprint.vertex_.front();
+    std::vector<Vertex> temp;
+    divideAndAdd(&temp, desiredRecursionDepth, v1, v2);
+    extraPoints.insert(extraPoints.begin(), temp.begin(), temp.end());
+  }
+
+  // add the original vertices
+  for (const auto& v : footprint.vertex_) {
+    extraPoints.push_back(v);
+  }
+
+  std::shuffle(extraPoints.begin(), extraPoints.end(), std::default_random_engine(seed));
+  points->insert(points->begin(), extraPoints.begin(), extraPoints.end());
 }
 
 std::unique_ptr<GridMapLazyStateValidator> createGridMapLazyStateValidator(const grid_map::GridMap& gridMap,
