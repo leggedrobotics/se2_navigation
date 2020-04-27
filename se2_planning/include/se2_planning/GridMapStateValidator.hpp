@@ -30,7 +30,7 @@ class GridMapStateValidator : public StateValidator {
   ~GridMapStateValidator() override = default;
 
   bool isStateValid(const State& state) const override;
-  bool isInitialized() const;
+  bool isInitialized() const override;
 
   void setGridMap(const grid_map::GridMap& gridMap);
   void setFootprint(const RobotFootprint& footprint);
@@ -45,11 +45,11 @@ class GridMapStateValidator : public StateValidator {
   bool isFootprintInitialized_ = false;
   bool isLayerNameInitialized_ = false;
 
-  std::string obstacleLayerName_;
+  std::string obstacleLayerName_ = "";
   grid_map::GridMap gridMap_;
+  RobotFootprint nominalFootprint_;
 
  private:
-  RobotFootprint nominalFootprint_;
   mutable RobotFootprint currentFootprint_;
 };
 

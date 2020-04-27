@@ -9,6 +9,12 @@
 
 namespace se2_planning {
 
+void StateValidator::initialize() {}
+
+bool StateValidator::isInitialized() const {
+  return true;
+}
+
 bool SE2stateValidator::isStateValid(const State& state) const {
   // implement something useful here
   return true;

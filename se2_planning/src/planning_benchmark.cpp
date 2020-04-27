@@ -6,11 +6,12 @@
  */
 
 #include <iostream>
+
 #include "../test/test_helpers.hpp"
 #include "grid_map_core/GridMap.hpp"
 #include "grid_map_core/iterators/GridMapIterator.hpp"
 #include "ompl/base/objectives/PathLengthOptimizationObjective.h"
-#include "se2_planning/GridMapFastStateValidator.hpp"
+#include "se2_planning/GridMapLazyStateValidator.hpp"
 #include "se2_planning/OmplReedsSheppPlanner.hpp"
 
 #define duration(a) std::chrono::duration_cast<std::chrono::milliseconds>(a).count()
@@ -48,8 +49,8 @@ int main(int argc, char** argv) {
   //  se2_planning::GridMapStateValidator validator = *plannerStateValidator;
 
   auto plannerStateValidator =
-      se2_planning::createGridMapFastStateValidator(gridMap, se2_planning::computeFastFootprint(1.0, 0.0, 0.5, 0.5), testLayer);
-  se2_planning::GridMapFastStateValidator validator = *plannerStateValidator;
+      se2_planning::createGridMapLazyStateValidator(gridMap, se2_planning::computeFootprint(1.0, 0.0, 0.5, 0.5), testLayer);
+  se2_planning::GridMapLazyStateValidator validator = *plannerStateValidator;
 
   // setup planner
   se2_planning::OmplReedsSheppPlannerParameters parameters;

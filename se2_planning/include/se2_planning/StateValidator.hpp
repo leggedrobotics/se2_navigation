@@ -15,6 +15,8 @@ class StateValidator {
   StateValidator() = default;
   virtual ~StateValidator() = default;
   virtual bool isStateValid(const State& state) const = 0;
+  virtual void initialize();
+  virtual bool isInitialized() const;
 };
 
 class SE2stateValidator : public StateValidator {
