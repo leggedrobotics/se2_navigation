@@ -9,7 +9,8 @@ Coming soon:
 ## Conventions
 
 ### Collision checking
-Collision footprint is shown in an image below. At the moment only rectangular footprint is supported. The footprint is defined by four points:   
+Rectangular collision footprint is shown in an image below. We allow for arbitrary polygons to be used as a collision footprint, as long as the vertices are ordered counter-clockwise. Rectangular fooprints can be created using conveniece functions provided. The footprint is defined by four points:   
+
 * Right Hind (RH)
 * Right Front (RF)
 * Left Front (LF)
