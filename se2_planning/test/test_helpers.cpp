@@ -60,5 +60,15 @@ se2_planning::SE2state randomState(const grid_map::GridMap &gm, double margin)
   return s;
 }
 
+grid_map::GridMap createGridMap(double length, double width, double resolution,
+                                std::function<bool(double, double)> isAnObstacle)
+{
+  grid_map::GridMap gridMap;
+  gridMap.setGeometry(grid_map::Length(length, width), resolution);
+  gridMap.add(testLayer, 0.0);
+  addObstacles(isAnObstacle, testLayer, &gridMap);
+  return gridMap;
+}
+
 } /* namespace se2_planning_test */
 

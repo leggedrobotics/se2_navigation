@@ -55,6 +55,7 @@ class OmplReedsSheppPlanner final : public OmplPlanner {
   bool plan() final;
   void setParameters(const OmplReedsSheppPlannerParameters& parameters);
   void setStateValidator(std::unique_ptr<StateValidator> stateValidator);
+  const StateValidator& getStateValidator() const;
 
  private:
   void initializeStateSpace() final;
