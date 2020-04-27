@@ -11,7 +11,7 @@
 #include "grid_map_core/GridMap.hpp"
 #include "grid_map_core/iterators/GridMapIterator.hpp"
 #include "ompl/base/objectives/PathLengthOptimizationObjective.h"
-#include "se2_planning/GridMapStateValidator.hpp"
+#include "se2_planning/GridMapLazyStateValidator.hpp"
 #include "se2_planning/OmplReedsSheppPlanner.hpp"
 #include "test_helpers.hpp"
 
@@ -48,7 +48,7 @@ void createRectangularStateSpace(double stateBound,
 
 TEST(Planning, OmplReedsSheppPlanner)
 {
-  const int seed = test::seedRndGenerator();
+  const int seed = 1321;
   const int testCases = 100;
   ompl::RNG::setSeed(seed);
   ompl::msg::setLogLevel(ompl::msg::LogLevel::LOG_NONE);
@@ -213,6 +213,134 @@ TEST(PlanningObstacle2, OmplReedsSheppPlanner)
 
   if (::testing::Test::HasFailure()) {
     std::cout << "\n Test PlanningObstacle2, OmplReedsSheppPlanner failed with seed: " << seed
+              << std::endl;
+  }
+}
+
+
+TEST(PlanningObstacle3, OmplReedsSheppPlanner)
+{
+  const int seed = 1000;
+  ompl::RNG::setSeed(seed);
+  ompl::msg::setLogLevel(ompl::msg::LogLevel::LOG_NONE);
+
+  // create environment
+  grid_map::GridMap gridMap;
+  gridMap.setGeometry(grid_map::Length(40.0, 40.0), 0.1);
+  gridMap.add(testLayer, 0.0);
+  std::function<bool(double, double)> isAnObstacle = [](double x, double y) {
+    return test::isInsideRectangle(x,y, 0.0, 0.0, 10.0, 10.0);
+  };
+  test::addObstacles(isAnObstacle, testLayer, &gridMap);
+
+  // create state validator
+  auto plannerStateValidator = se2_planning::createGridMapLazyStateValidator(
+      gridMap, se2_planning::computeFootprint(1.0, 0.0, 0.5, 0.5), testLayer);
+  se2_planning::GridMapLazyStateValidator validator = *plannerStateValidator;
+
+  //setup planner
+  se2_planning::OmplReedsSheppPlannerParameters parameters;
+  parameters.maxPlanningTime_ = 10.0;
+  parameters.turningRadius_ = 1.0;
+  parameters.plannerRange_ = 15.0;
+  createRectangularStateSpace(20.0, &parameters);
+  se2_planning::OmplReedsSheppPlanner planner;
+  planner.setParameters(parameters);
+  planner.initialize();
+  planner.setStateValidator(std::move(plannerStateValidator));
+  setCostThreshold(&planner);
+
+  const se2_planning::ReedsSheppState start(0.0, -10.0, 0.0);
+  const se2_planning::ReedsSheppState goal(0.0, 10.0, 0.0);
+
+  // run 10 test cases
+  for (int i = 0; i < 10; ++i) {
+    planner.setStartingState(start);
+    planner.setGoalState(goal);
+    const bool status = planner.plan();
+    EXPECT_TRUE(status);
+    se2_planning::ReedsSheppPath path;
+    planner.getPath(&path);
+    const auto firstState = path.segment_.front().point_.front();
+    const auto lastState = path.segment_.back().point_.back();
+    EXPECT_TRUE(firstState == start);
+    const bool reachedLastState = lastState == goal;
+    EXPECT_TRUE(reachedLastState);
+
+    //check whether the trajectory is truly collision free
+    for (const auto &segment : path.segment_) {
+      for (const auto &point : segment.point_) {
+        EXPECT_TRUE(validator.isStateValid(point));
+      }
+    }
+  }
+
+  if (::testing::Test::HasFailure()) {
+    std::cout << "\n Test PlanningObstacle3, OmplReedsSheppPlanner failed with seed: " << seed
+              << std::endl;
+  }
+}
+
+TEST(PlanningObstacle4, OmplReedsSheppPlanner)
+{
+  const int seed = 6786546;
+  ompl::RNG::setSeed(seed);
+  ompl::msg::setLogLevel(ompl::msg::LogLevel::LOG_NONE);
+
+  // create environment
+  grid_map::GridMap gridMap;
+  gridMap.setGeometry(grid_map::Length(40.0, 40.0), 0.1);
+  gridMap.add(testLayer, 0.0);
+  std::function<bool(double, double)> isAnObstacle =
+      [](double x, double y) {
+        return test::isInsideRectangle(x,y, -10.0, 0.0, 40.0,2.0) || test::isInsideRectangle(x,y, 5.0, 5.0, 5.0,5.0);
+      };
+  test::addObstacles(isAnObstacle, testLayer, &gridMap);
+
+  // create state validator
+  auto plannerStateValidator = se2_planning::createGridMapLazyStateValidator(
+      gridMap, se2_planning::computeFootprint(1.0, 0.0, 0.5, 0.5), testLayer);
+  se2_planning::GridMapLazyStateValidator validator = *plannerStateValidator;
+
+  //setup planner
+  se2_planning::OmplReedsSheppPlannerParameters parameters;
+  parameters.maxPlanningTime_ = 10.0;
+  parameters.turningRadius_ = 1.0;
+  parameters.plannerRange_ = 15.0;
+  createRectangularStateSpace(20.0, &parameters);
+  se2_planning::OmplReedsSheppPlanner planner;
+  planner.setParameters(parameters);
+  planner.initialize();
+  planner.setStateValidator(std::move(plannerStateValidator));
+  setCostThreshold(&planner);
+
+  const se2_planning::ReedsSheppState start(0.0, -10.0, 0.0);
+  const se2_planning::ReedsSheppState goal(0.0, 10.0, 0.0);
+
+  // run 10 test cases
+  for (int i = 0; i < 10; ++i) {
+    planner.setStartingState(start);
+    planner.setGoalState(goal);
+    const bool status = planner.plan();
+    EXPECT_TRUE(status);
+    se2_planning::ReedsSheppPath path;
+    planner.getPath(&path);
+    const auto firstState = path.segment_.front().point_.front();
+    const auto lastState = path.segment_.back().point_.back();
+    EXPECT_TRUE(firstState == start);
+    const bool reachedLastState = lastState == goal;
+    EXPECT_TRUE(reachedLastState);
+
+    //check whether the trajectory is truly collision free
+    for (const auto &segment : path.segment_) {
+      for (const auto &point : segment.point_) {
+        EXPECT_TRUE(validator.isStateValid(point));
+      }
+    }
+  }
+
+  if (::testing::Test::HasFailure()) {
+    std::cout << "\n Test PlanningObstacle4, OmplReedsSheppPlanner failed with seed: " << seed
               << std::endl;
   }
 }
