@@ -119,7 +119,7 @@ TEST(Planning, OmplReedsSheppPlanner)
   }
 }
 
-TEST(PlanningObstacle, OmplReedsSheppPlanner)
+TEST(PlanningObstacle, PlanningWithStateValidator)
 {
   const int seed = 1000;
   ompl::RNG::setSeed(seed);
@@ -161,12 +161,12 @@ TEST(PlanningObstacle, OmplReedsSheppPlanner)
   }
 
   if (::testing::Test::HasFailure()) {
-    std::cout << "\n Test PlanningObstacle, OmplReedsSheppPlanner failed with seed: " << seed
+    std::cout << "\n Test PlanningObstacle, PlanningWithStateValidator failed with seed: " << seed
               << std::endl;
   }
 }
 
-TEST(PlanningObstacle2, OmplReedsSheppPlanner)
+TEST(PlanningObstacle, PlanningWithStateValidatorHarder)
 {
   const int seed = 6786546;
   ompl::RNG::setSeed(seed);
@@ -209,12 +209,12 @@ TEST(PlanningObstacle2, OmplReedsSheppPlanner)
   }
 
   if (::testing::Test::HasFailure()) {
-    std::cout << "\n Test PlanningObstacle2, OmplReedsSheppPlanner failed with seed: " << seed
+    std::cout << "\n Test PlanningObstacle, PlanningWithStateValidatorHarder failed with seed: " << seed
               << std::endl;
   }
 }
 
-TEST(PlanningObstacle3, OmplReedsSheppPlanner)
+TEST(PlanningObstacle, PlanningWithLazyStateValidator)
 {
   const int seed = 1000;
   ompl::RNG::setSeed(seed);
@@ -273,12 +273,12 @@ TEST(PlanningObstacle3, OmplReedsSheppPlanner)
   runTest();
 
   if (::testing::Test::HasFailure()) {
-    std::cout << "\n Test PlanningObstacle3, OmplReedsSheppPlanner failed with seed: " << seed
+    std::cout << "\n Test PlanningObstacle, PlanningWithLazyStateValidator failed with seed: " << seed
               << std::endl;
   }
 }
 
-TEST(PlanningObstacle4, OmplReedsSheppPlanner)
+TEST(PlanningObstacle, PlanningWithLazyStateValidatorHarder)
 {
   const int seed = 6786546;
   ompl::RNG::setSeed(seed);
@@ -339,7 +339,7 @@ TEST(PlanningObstacle4, OmplReedsSheppPlanner)
     runTest();
 
   if (::testing::Test::HasFailure()) {
-    std::cout << "\n Test PlanningObstacle4, OmplReedsSheppPlanner failed with seed: " << seed
+    std::cout << "\n Test PlanningObstacle, PlanningWithLazyStateValidatorHarder failed with seed: " << seed
               << std::endl;
   }
 }
