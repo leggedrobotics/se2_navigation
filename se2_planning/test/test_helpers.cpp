@@ -49,5 +49,16 @@ bool isInsideRectangle(double _x, double _y, double x0, double y0, double xLengt
   return x < halfSideLengthX && x > -halfSideLengthX && y < halfSideLengthY && y > -halfSideLengthY;
 }
 
+se2_planning::SE2state randomState(const grid_map::GridMap &gm, double margin)
+{
+  se2_planning::SE2state s;
+  const double l = gm.getLength()(0) / 2.0 - margin;
+  const double w = gm.getLength()(1) / 2.0 - margin;
+  s.x_ = randomNumber(-l, l);
+  s.y_ = randomNumber(-w, w);
+  s.yaw_ = randomNumber(-M_PI, M_PI);
+  return s;
+}
+
 } /* namespace se2_planning_test */
 

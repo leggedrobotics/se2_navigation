@@ -7,12 +7,12 @@
 
 #include <iostream>
 
-#include "../test/test_helpers.hpp"
 #include "grid_map_core/GridMap.hpp"
 #include "grid_map_core/iterators/GridMapIterator.hpp"
 #include "ompl/base/objectives/PathLengthOptimizationObjective.h"
 #include "se2_planning/GridMapLazyStateValidator.hpp"
 #include "se2_planning/OmplReedsSheppPlanner.hpp"
+#include "test_helpers.hpp"
 
 #define duration(a) std::chrono::duration_cast<std::chrono::milliseconds>(a).count()
 

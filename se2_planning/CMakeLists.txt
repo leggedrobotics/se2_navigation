@@ -37,6 +37,7 @@ catkin_package(
   INCLUDE_DIRS
     include
     ${EIGEN3_INCLUDE_DIR}
+    test
   LIBRARIES
     ${PROJECT_NAME}
   CATKIN_DEPENDS
@@ -49,6 +50,7 @@ catkin_package(
 
 include_directories(
   include
+    test
     ${EIGEN3_INCLUDE_DIR}
     ${Boost_INCLUDE_DIRS}
     ${OMPL_INCLUDE_DIRS}
@@ -99,8 +101,9 @@ install(TARGETS ${PROJECT_NAME}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
-install(DIRECTORY include/${PROJECT_NAME}/
+install(DIRECTORY include/${PROJECT_NAME}/ test
   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+  FILES_MATCHING PATTERN "*.hpp"
 )
 
 #################
@@ -125,16 +128,17 @@ if(CATKIN_ENABLE_TESTING)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 catkin_add_gtest(${PROJECT_NAME}-test
   test/test_planning.cpp
-  test/test_helpers.cpp
   test/OmplReedsSheppPlannerTest.cpp
   test/GridMapStateValidatorTest.cpp
+  test/GridMapLazyStateValidatorTest.cpp
   )
 endif()
 
 if(TARGET ${PROJECT_NAME}-test)
   target_link_libraries(${PROJECT_NAME}-test 
     ${PROJECT_NAME}
-    ${catkin_LIBRARIES})
+    ${catkin_LIBRARIES}
+    test_helpers)
 endif()
 
 
