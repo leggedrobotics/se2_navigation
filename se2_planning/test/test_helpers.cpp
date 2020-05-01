@@ -5,9 +5,9 @@
  *      Author: jelavice
  */
 
-#include "grid_map_core/grid_map_core.hpp"
+#include <grid_map_core/grid_map_core.hpp>
 #include "test_helpers.hpp"
-
+#include <ompl/base/objectives/PathLengthOptimizationObjective.h>
 #include <iostream>
 
 namespace se2_planning_test {
@@ -68,6 +68,86 @@ grid_map::GridMap createGridMap(double length, double width, double resolution,
   gridMap.add(testLayer, 0.0);
   addObstacles(isAnObstacle, testLayer, &gridMap);
   return gridMap;
+}
+
+bool isPathCollisionFree(const se2_planning::ReedsSheppPath &path,
+                         const se2_planning::StateValidator &validator)
+{
+
+  for (const auto &segment : path.segment_) {
+    for (const auto &point : segment.point_) {
+      if (!validator.isStateValid(point)) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+bool isStartAndGoalStateOK(const se2_planning::ReedsSheppPath &path,
+                           const se2_planning::ReedsSheppState &start,
+                           const se2_planning::ReedsSheppState &goal)
+{
+  const auto firstState = path.segment_.front().point_.front();
+  const auto lastState = path.segment_.back().point_.back();
+  return firstState == start && lastState == goal;
+}
+
+se2_planning::ReedsSheppState randomState(
+    const se2_planning::OmplReedsSheppPlannerParameters &parameters)
+{
+  se2_planning::ReedsSheppState s;
+  s.x_ = randomNumber(0.8 * parameters.xLowerBound_, 0.8 * parameters.xUpperBound_);
+  s.y_ = randomNumber(0.8 * parameters.yLowerBound_, 0.8 * parameters.yUpperBound_);
+  s.yaw_ = randomNumber(-M_PI, M_PI);
+  return s;
+}
+
+void setCostThreshold(se2_planning::OmplReedsSheppPlanner *planner)
+{
+  auto si = planner->getSimpleSetup()->getSpaceInformation();
+  ompl::base::OptimizationObjectivePtr optimizationObjective(
+      std::make_shared<ompl::base::PathLengthOptimizationObjective>(si));
+  optimizationObjective->setCostThreshold(ompl::base::Cost(1e10));
+  planner->getSimpleSetup()->setOptimizationObjective(optimizationObjective);
+}
+
+se2_planning::OmplReedsSheppPlannerParameters createRectangularStateSpaceWithDefaultParams(
+    double stateBound)
+{
+  se2_planning::OmplReedsSheppPlannerParameters parameters;
+  parameters.xLowerBound_ = -stateBound;
+  parameters.xUpperBound_ = stateBound;
+  parameters.yLowerBound_ = -stateBound;
+  parameters.yUpperBound_ = stateBound;
+  parameters.maxPlanningTime_ = 10.0;
+  parameters.turningRadius_ = 1.0;
+  parameters.plannerRange_ = 15.0;
+  return parameters;
+}
+
+void setupPlanner(const se2_planning::OmplReedsSheppPlannerParameters &parameters,
+                  se2_planning::OmplReedsSheppPlanner *planner)
+{
+  planner->setParameters(parameters);
+  planner->initialize();
+  setCostThreshold(planner);
+}
+
+bool simplePlanBetweenRandomStartAndGoalTest(
+    se2_planning::OmplReedsSheppPlanner &planner,
+    const se2_planning::OmplReedsSheppPlannerParameters &parameters)
+{
+  const auto start = randomState(parameters);
+  const auto goal = randomState(parameters);
+  planner.setStartingState(start);
+  planner.setGoalState(goal);
+  const bool status = planner.plan();
+
+  se2_planning::ReedsSheppPath path;
+  planner.getPath(&path);
+  const bool success = isStartAndGoalStateOK(path, start, goal);
+  return status && success;
 }
 
 } /* namespace se2_planning_test */

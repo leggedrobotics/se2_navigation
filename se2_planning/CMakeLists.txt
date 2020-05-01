@@ -129,6 +129,7 @@ if(CATKIN_ENABLE_TESTING)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 catkin_add_gtest(${PROJECT_NAME}-test
   test/test_planning.cpp
+  test/ompl_planner_creators_test.cpp
   test/OmplReedsSheppPlannerTest.cpp
   test/GridMapStateValidatorTest.cpp
   test/GridMapLazyStateValidatorTest.cpp

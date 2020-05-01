@@ -33,7 +33,7 @@ OmplReedsSheppPlanner::OmplReedsSheppPlanner() : BASE() {
 bool OmplReedsSheppPlanner::initialize() {
   BASE::initialize();
   auto si = simpleSetup_->getSpaceInformation();
-  // todo separate planner creation
+  // default is rrtStar
   auto planner = std::make_shared<ompl::geometric::RRTstar>(si);
   planner->setRange(parameters_.plannerRange_);
   simpleSetup_->setPlanner(planner);
