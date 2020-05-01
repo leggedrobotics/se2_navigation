@@ -6,6 +6,7 @@ add_compile_options(-Wall -Wextra -Wpedantic)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(SRC_FILES
+  src/ompl_planner_creators.cpp
   src/GridMapLazyStateValidator.cpp
   src/GridMapStateValidator.cpp
   src/OmplPlanner.cpp

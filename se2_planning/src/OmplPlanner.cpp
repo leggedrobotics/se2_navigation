@@ -12,6 +12,10 @@
 
 namespace se2_planning {
 
+void OmplPlanner::setPlanner(ompl::base::PlannerPtr planner) {
+  simpleSetup_->setPlanner(planner);
+}
+
 ompl::geometric::SimpleSetupPtr OmplPlanner::getSimpleSetup() const {
   return simpleSetup_;
 }
