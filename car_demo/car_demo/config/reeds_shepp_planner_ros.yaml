@@ -15,6 +15,11 @@ planner_ros:
 
 planner:
   path_spatial_resolution: 0.05
-  planner_range: 15.0
+  ompl_planner: RRTstar # see ompl_planner_creators.hpp for list of available planners
   max_planning_time: 1.0
   
+ompl_planners:
+  rrt_star:
+    planner_range: 15.0
+  rrt_sharp:
+    planner_range: 15.0

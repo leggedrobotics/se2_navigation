@@ -162,9 +162,9 @@ void PriusControllerRos::translateVelocity(double desiredVelocityMagnitude, priu
   //translate velocity
   const double measuredVelocityMagnitude = std::fabs(longitudinalVelocity(priusState_));
   const double cmd = pidController_.update(dt_, desiredVelocityMagnitude, measuredVelocityMagnitude);
-  ROS_INFO_STREAM_THROTTLE(1.0, "Cmd fomr the controller: " << cmd);
-  ROS_INFO_STREAM_THROTTLE(1.0, "Desired Vel: " << desiredVelocityMagnitude);
-  ROS_INFO_STREAM_THROTTLE(1.0, "Measured vel: " << measuredVelocityMagnitude);
+//  ROS_INFO_STREAM_THROTTLE(1.0, "Cmd fomr the controller: " << cmd);
+//  ROS_INFO_STREAM_THROTTLE(1.0, "Desired Vel: " << desiredVelocityMagnitude);
+//  ROS_INFO_STREAM_THROTTLE(1.0, "Measured vel: " << measuredVelocityMagnitude);
   switch (pure_pursuit::sgn(cmd)) {
     case 1: {
       ctrl->brake_ = 0.0;

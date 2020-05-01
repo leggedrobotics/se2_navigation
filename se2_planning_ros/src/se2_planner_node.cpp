@@ -25,16 +25,11 @@ int main(int argc, char** argv) {
   plannerRos.setParameters(plannerRosParameters);
   plannerRos.initialize();
   OmplPlannerParameters plannerOmplParameters;
-  const std::string plannerName = "BITstar";
-  std::cout << "Here 0" << std::endl;
+  const std::string plannerName = plannerParameters.omplPlannerName_;
   loadOmplPlannerParameters(plannerName, filename, &plannerOmplParameters);
-  std::cout << "Here 01" << std::endl;
   auto omplPlanner = createPlanner(planner->getSimpleSetup()->getSpaceInformation(), plannerName);
-  std::cout << "Here" << std::endl;
   setPlannerParameters(plannerOmplParameters, plannerName, omplPlanner);
-  std::cout << "Here 2" << std::endl;
   planner->setOmplPlanner(omplPlanner);
-  std::cout << "Here 3" << std::endl;
 
   ros::spin();
 

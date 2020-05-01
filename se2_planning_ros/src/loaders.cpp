@@ -33,6 +33,7 @@ OmplReedsSheppPlannerParameters loadOmplReedsSheppPlannerParameters(const std::s
     auto node = basenode["planner"];
     parameters.pathSpatialResolution_ = node["path_spatial_resolution"].as<double>();
     parameters.maxPlanningTime_ = node["max_planning_time"].as<double>();
+    parameters.omplPlannerName_ = node["ompl_planner"].as<std::string>();
   }
 
   return parameters;
