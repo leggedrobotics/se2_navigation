@@ -24,7 +24,7 @@ class PlannerRos : public Planner {
   void getStartingState(State* startingState) override;
   void getGoalState(State* goalState) override;
 
-  void setPlanningStrategy(std::unique_ptr<Planner> planner);
+  void setPlanningStrategy(std::shared_ptr<Planner> planner);
   virtual void publishPath() const;
 
  protected:
@@ -35,7 +35,7 @@ class PlannerRos : public Planner {
   virtual bool planningService(PlanningService::Request& req, PlanningService::Response& res) = 0;
 
   ros::NodeHandlePtr nh_;
-  std::unique_ptr<Planner> planner_;
+  std::shared_ptr<Planner> planner_;
 };
 
 } /* namespace se2_planning*/

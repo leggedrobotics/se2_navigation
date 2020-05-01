@@ -28,6 +28,7 @@ void OmplReedsSheppPlanner::setParameters(const OmplReedsSheppPlannerParameters&
 
 OmplReedsSheppPlanner::OmplReedsSheppPlanner() : BASE() {
   stateValidator_ = std::make_unique<SE2stateValidator>();
+  createDefaultStateSpace();
 }
 
 bool OmplReedsSheppPlanner::initialize() {
@@ -42,6 +43,11 @@ bool OmplReedsSheppPlanner::initialize() {
 }
 
 void OmplReedsSheppPlanner::initializeStateSpace() {
+  // todo maybe not really needed
+  createDefaultStateSpace();
+}
+
+void OmplReedsSheppPlanner::createDefaultStateSpace() {
   stateSpace_.reset(new ompl::base::ReedsSheppStateSpace(parameters_.turningRadius_));
   bounds_ = std::make_unique<ompl::base::RealVectorBounds>(reedsSheppStateSpaceDim_);
   setStateSpaceBoundaries();

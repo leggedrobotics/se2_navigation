@@ -57,6 +57,7 @@ class OmplReedsSheppPlanner final : public OmplPlanner {
   const StateValidator& getStateValidator() const;
 
  private:
+  void createDefaultStateSpace();
   void initializeStateSpace() final;
   void setStateSpaceBoundaries();
   bool isStateValid(const ompl::base::SpaceInformation* si, const ompl::base::State* state) final;

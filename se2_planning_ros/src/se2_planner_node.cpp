@@ -18,16 +18,23 @@ int main(int argc, char** argv) {
   std::string filename = nh->param<std::string>("/ompl_planner_ros/parameter_path", "ompl_rs_planner_ros/nav_msgs_path");
   const auto plannerParameters = loadOmplReedsSheppPlannerParameters(filename);
   const auto plannerRosParameters = loadOmplReedsSheppPlannerRosParameters(filename);
-  auto planner = std::make_unique<OmplReedsSheppPlanner>();
+  auto planner = std::make_shared<OmplReedsSheppPlanner>();
   planner->setParameters(plannerParameters);
-  const auto rrtStarParams = loadRRTstarParameters(filename);
-  auto rrtStar = createPlanner(planner->getSimpleSetup()->getSpaceInformation(), "RRTstar");
-  setRRTstarParameters(rrtStarParams, rrtStar);
-  planner->setOmplPlanner(rrtStar);
   se2_planning::OmplReedsSheppPlannerRos plannerRos(nh);
-  plannerRos.setPlanningStrategy(std::move(planner));
+  plannerRos.setPlanningStrategy(planner);
   plannerRos.setParameters(plannerRosParameters);
   plannerRos.initialize();
+  OmplPlannerParameters plannerOmplParameters;
+  const std::string plannerName = "BITstar";
+  std::cout << "Here 0" << std::endl;
+  loadOmplPlannerParameters(plannerName, filename, &plannerOmplParameters);
+  std::cout << "Here 01" << std::endl;
+  auto omplPlanner = createPlanner(planner->getSimpleSetup()->getSpaceInformation(), plannerName);
+  std::cout << "Here" << std::endl;
+  setPlannerParameters(plannerOmplParameters, plannerName, omplPlanner);
+  std::cout << "Here 2" << std::endl;
+  planner->setOmplPlanner(omplPlanner);
+  std::cout << "Here 3" << std::endl;
 
   ros::spin();
 

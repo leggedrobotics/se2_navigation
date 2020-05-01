@@ -12,11 +12,11 @@
 
 namespace se2_planning {
 
-ompl::base::PlannerPtr createPlanner(const ompl::base::SpaceInformationPtr si, const std::string& plannerName) {
+ompl::base::PlannerPtr createPlanner(const ompl::base::SpaceInformationPtr& si, const std::string& plannerName) {
   return createPlanner(si, plannerKeyAndName.right.at(plannerName));
 }
 
-ompl::base::PlannerPtr createPlanner(const ompl::base::SpaceInformationPtr si, OmplPlanners type) {
+ompl::base::PlannerPtr createPlanner(const ompl::base::SpaceInformationPtr& si, OmplPlanners type) {
   switch (type) {
     case OmplPlanners::RRTstar: {
       return ompl::base::PlannerPtr(new ompl::geometric::RRTstar(si));
@@ -31,19 +31,43 @@ ompl::base::PlannerPtr createPlanner(const ompl::base::SpaceInformationPtr si, O
   }
 }
 
-void setRRTstarParameters(const RRTstarParameters& params, ompl::base::PlannerPtr planner) {
+void setPlannerParameters(const OmplPlannerParameters& params, const std::string& plannerName, ompl::base::PlannerPtr planner) {
+  setPlannerParameters(params, plannerKeyAndName.right.at(plannerName), planner);
+}
+
+void setPlannerParameters(const OmplPlannerParameters& params, OmplPlanners type, ompl::base::PlannerPtr planner) {
+  switch (type) {
+    case OmplPlanners::RRTstar: {
+      setRRTstarParameters(params, planner);
+      break;
+    }
+    case OmplPlanners::RRTsharp: {
+      setRRTsharpParameters(params, planner);
+      break;
+    }
+    case OmplPlanners::BITstar: {
+      // do nothing
+      break;
+    }
+    default: { throw std::runtime_error("Unknkown planner type"); }
+  }
+}
+
+void setRRTstarParameters(const OmplPlannerParameters& params, ompl::base::PlannerPtr planner) {
   auto rrtStar = planner->as<ompl::geometric::RRTstar>();
-  if (rrtStar == nullptr) {
+  const RRTstarParameters* rrtStarParameters = params.as<RRTstarParameters>();
+  if (rrtStar == nullptr || rrtStarParameters == nullptr) {
     throw std::runtime_error("Couldn't set parameters for planner rrt star");
   }
-  rrtStar->setRange(params.range_);
+  rrtStar->setRange(rrtStarParameters->range_);
 }
-void setRRTsharpParameters(const RRTsharpParameters& params, ompl::base::PlannerPtr planner) {
+void setRRTsharpParameters(const OmplPlannerParameters& params, ompl::base::PlannerPtr planner) {
   auto rrtSharp = planner->as<ompl::geometric::RRTsharp>();
-  if (rrtSharp == nullptr) {
+  const RRTsharpParameters* rrtSharpParameters = params.as<RRTsharpParameters>();
+  if (rrtSharp == nullptr || rrtSharpParameters == nullptr) {
     throw std::runtime_error("Couldn't set parameters for planner rrt sharp");
   }
-  rrtSharp->setRange(params.range_);
+  rrtSharp->setRange(rrtSharpParameters->range_);
 }
 
 } /* namespace se2_planning */

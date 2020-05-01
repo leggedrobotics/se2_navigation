@@ -56,9 +56,7 @@ OmplReedsSheppPlannerRosParameters loadOmplReedsSheppPlannerRosParameters(const 
   return parameters;
 }
 
-RRTstarParameters loadRRTstarParameters(const std::string& filename) {
-  RRTstarParameters parameters;
-
+void loadRRTstarParameters(const std::string& filename, RRTstarParameters* parameters) {
   YAML::Node basenode = YAML::LoadFile(filename);
 
   if (basenode.IsNull()) {
@@ -66,13 +64,9 @@ RRTstarParameters loadRRTstarParameters(const std::string& filename) {
   }
 
   auto node = basenode["ompl_planners"]["rrt_star"];
-  parameters.range_ = node["planner_range"].as<double>();
-
-  return parameters;
+  parameters->range_ = node["planner_range"].as<double>();
 }
-RRTsharpParameters loadRRTsharpParameters(const std::string& filename) {
-  RRTsharpParameters parameters;
-
+void loadRRTsharpParameters(const std::string& filename, RRTsharpParameters* parameters) {
   YAML::Node basenode = YAML::LoadFile(filename);
 
   if (basenode.IsNull()) {
@@ -80,9 +74,29 @@ RRTsharpParameters loadRRTsharpParameters(const std::string& filename) {
   }
 
   auto node = basenode["ompl_planners"]["rrt_sharp"];
-  parameters.range_ = node["planner_range"].as<double>();
+  parameters->range_ = node["planner_range"].as<double>();
+}
 
-  return parameters;
+void loadOmplPlannerParameters(const std::string& plannerName, const std::string& filename, OmplPlannerParameters* params) {
+  loadOmplPlannerParameters(plannerKeyAndName.right.at(plannerName), filename, params);
+}
+
+void loadOmplPlannerParameters(OmplPlanners type, const std::string& filename, OmplPlannerParameters* params) {
+  switch (type) {
+    case OmplPlanners::RRTstar: {
+      loadRRTstarParameters(filename, params->as<RRTstarParameters>());
+      break;
+    }
+    case OmplPlanners::RRTsharp: {
+      loadRRTsharpParameters(filename, params->as<RRTsharpParameters>());
+      break;
+    }
+    case OmplPlanners::BITstar: {
+      // do nothing
+      break;
+    }
+    default: { throw std::runtime_error("Unknown parameters type"); }
+  }
 }
 
 } /* namespace se2_planning */
