@@ -35,7 +35,6 @@ bool OmplReedsSheppPlanner::initialize() {
   auto si = simpleSetup_->getSpaceInformation();
   // default is rrtStar
   auto planner = std::make_shared<ompl::geometric::RRTstar>(si);
-  planner->setRange(parameters_.plannerRange_);
   simpleSetup_->setPlanner(planner);
   ompl::base::OptimizationObjectivePtr optimizationObjective(std::make_shared<ompl::base::PathLengthOptimizationObjective>(si));
   simpleSetup_->setOptimizationObjective(optimizationObjective);

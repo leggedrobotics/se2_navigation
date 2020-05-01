@@ -12,7 +12,7 @@
 
 namespace se2_planning {
 
-void OmplPlanner::setPlanner(ompl::base::PlannerPtr planner) {
+void OmplPlanner::setOmplPlanner(ompl::base::PlannerPtr planner) {
   simpleSetup_->setPlanner(planner);
 }
 

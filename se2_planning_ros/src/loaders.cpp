@@ -32,7 +32,6 @@ OmplReedsSheppPlannerParameters loadOmplReedsSheppPlannerParameters(const std::s
   {
     auto node = basenode["planner"];
     parameters.pathSpatialResolution_ = node["path_spatial_resolution"].as<double>();
-    parameters.plannerRange_ = node["planner_range"].as<double>();
     parameters.maxPlanningTime_ = node["max_planning_time"].as<double>();
   }
 
@@ -53,6 +52,35 @@ OmplReedsSheppPlannerRosParameters loadOmplReedsSheppPlannerRosParameters(const 
   parameters.planningSerivceName_ = node["planning_service_name"].as<std::string>();
   parameters.pathNavMsgResolution_ = node["nav_msg_path_spatial_resolution"].as<double>();
   parameters.pathMsgTopic_ = node["path_msg_topic"].as<std::string>();
+
+  return parameters;
+}
+
+RRTstarParameters loadRRTstarParameters(const std::string& filename) {
+  RRTstarParameters parameters;
+
+  YAML::Node basenode = YAML::LoadFile(filename);
+
+  if (basenode.IsNull()) {
+    throw std::runtime_error("loadRRTstarParameters failed");
+  }
+
+  auto node = basenode["ompl_planners"]["rrt_star"];
+  parameters.range_ = node["planner_range"].as<double>();
+
+  return parameters;
+}
+RRTsharpParameters loadRRTsharpParameters(const std::string& filename) {
+  RRTsharpParameters parameters;
+
+  YAML::Node basenode = YAML::LoadFile(filename);
+
+  if (basenode.IsNull()) {
+    throw std::runtime_error("loadRRTstarParameters failed");
+  }
+
+  auto node = basenode["ompl_planners"]["rrt_sharp"];
+  parameters.range_ = node["planner_range"].as<double>();
 
   return parameters;
 }

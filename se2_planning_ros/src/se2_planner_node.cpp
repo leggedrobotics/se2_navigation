@@ -20,6 +20,10 @@ int main(int argc, char** argv) {
   const auto plannerRosParameters = loadOmplReedsSheppPlannerRosParameters(filename);
   auto planner = std::make_unique<OmplReedsSheppPlanner>();
   planner->setParameters(plannerParameters);
+  const auto rrtStarParams = loadRRTstarParameters(filename);
+  auto rrtStar = createPlanner(planner->getSimpleSetup()->getSpaceInformation(), "RRTstar");
+  setRRTstarParameters(rrtStarParams, rrtStar);
+  planner->setOmplPlanner(rrtStar);
   se2_planning::OmplReedsSheppPlannerRos plannerRos(nh);
   plannerRos.setPlanningStrategy(std::move(planner));
   plannerRos.setParameters(plannerRosParameters);

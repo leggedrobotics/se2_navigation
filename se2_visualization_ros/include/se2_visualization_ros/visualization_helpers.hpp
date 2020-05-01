@@ -24,7 +24,6 @@
  * limitations under the License.
  */
 
-
 #pragma once
 
 #include <std_msgs/ColorRGBA.h>

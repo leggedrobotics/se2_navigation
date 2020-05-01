@@ -28,7 +28,6 @@ TEST(Planning, OmplReedsSheppPlanner)
 
   se2_planning::OmplReedsSheppPlannerParameters parameters =
       createRectangularStateSpaceWithDefaultParams(10.0);
-  parameters.plannerRange_ = 10.0;
 
   se2_planning::OmplReedsSheppPlanner planner;
   setupPlanner(parameters, &planner);

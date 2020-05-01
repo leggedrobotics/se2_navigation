@@ -34,7 +34,6 @@ struct ReedsSheppPath : public Path {
 };
 
 struct OmplReedsSheppPlannerParameters {
-  double plannerRange_ = 15.0;
   double turningRadius_ = 10.0;
   double xLowerBound_ = -1000.0;
   double xUpperBound_ = 1000.0;

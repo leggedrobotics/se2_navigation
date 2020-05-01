@@ -37,12 +37,11 @@ TEST(Planning, PlanRRTstar)
 
   se2_planning::OmplReedsSheppPlannerParameters parameters =
       createRectangularStateSpaceWithDefaultParams(10.0);
-  parameters.plannerRange_ = 10.0;
 
   se2_planning::OmplReedsSheppPlanner planner;
   setupPlanner(parameters, &planner);
   auto rrtStarPlanner = se2_planning::createPlanner(planner.getSimpleSetup()->getSpaceInformation(), "RRTstar");
-  planner.setPlanner(rrtStarPlanner);
+  planner.setOmplPlanner(rrtStarPlanner);
   for (int i = 0; i < testCases; ++i){
     EXPECT_TRUE(simplePlanBetweenRandomStartAndGoalTest(planner, parameters));
   }
@@ -59,12 +58,11 @@ TEST(Planning, PlanRRTsharp)
 
   se2_planning::OmplReedsSheppPlannerParameters parameters =
       createRectangularStateSpaceWithDefaultParams(10.0);
-  parameters.plannerRange_ = 10.0;
 
   se2_planning::OmplReedsSheppPlanner planner;
   setupPlanner(parameters, &planner);
   auto rrtSharp = se2_planning::createPlanner(planner.getSimpleSetup()->getSpaceInformation(), "RRTsharp");
-  planner.setPlanner(rrtSharp);
+  planner.setOmplPlanner(rrtSharp);
   for (int i = 0; i < testCases; ++i){
     EXPECT_TRUE(simplePlanBetweenRandomStartAndGoalTest(planner, parameters));
   }
@@ -81,12 +79,11 @@ TEST(Planning, BITstar)
 
   se2_planning::OmplReedsSheppPlannerParameters parameters =
       createRectangularStateSpaceWithDefaultParams(10.0);
-  parameters.plannerRange_ = 10.0;
 
   se2_planning::OmplReedsSheppPlanner planner;
   setupPlanner(parameters, &planner);
   auto bitStar = se2_planning::createPlanner(planner.getSimpleSetup()->getSpaceInformation(), "BITstar");
-  planner.setPlanner(bitStar);
+  planner.setOmplPlanner(bitStar);
   for (int i = 0; i < testCases; ++i){
     EXPECT_TRUE(simplePlanBetweenRandomStartAndGoalTest(planner, parameters));
   }

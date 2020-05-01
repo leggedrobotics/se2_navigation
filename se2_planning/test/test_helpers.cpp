@@ -122,7 +122,6 @@ se2_planning::OmplReedsSheppPlannerParameters createRectangularStateSpaceWithDef
   parameters.yUpperBound_ = stateBound;
   parameters.maxPlanningTime_ = 10.0;
   parameters.turningRadius_ = 1.0;
-  parameters.plannerRange_ = 15.0;
   return parameters;
 }
 

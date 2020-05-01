@@ -109,7 +109,6 @@ int main(int argc, char** argv) {
   se2_planning::OmplReedsSheppPlannerParameters parameters;
   parameters.maxPlanningTime_ = 10.0;
   parameters.turningRadius_ = 1.0;
-  parameters.plannerRange_ = 15.0;
   createRectangularStateSpace(20.0, &parameters);
   se2_planning::OmplReedsSheppPlanner planner;
   planner.setParameters(parameters);
