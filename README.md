@@ -16,7 +16,9 @@ How is this package different from other SE(2) planning/control packages?
 * Features visualizatios and rviz planning interface
 * Easily extensible
 
-**Warning:** At the moment, this planning and control framework uses geometric planners which makes it unsuitable for high-speed driving. It is meant to be used fow slow maneuvers, e.g. parking maneuvers. 
+**Warning:** At the moment, this planning and control framework uses geometric planners which makes it unsuitable for high-speed driving. It is meant to be used for slow maneuvers, e.g. parking maneuvers. 
+
+Released under [BSD 3-Clause license](LICENSE).
 
 **Author:** Edo Jelavic
 
