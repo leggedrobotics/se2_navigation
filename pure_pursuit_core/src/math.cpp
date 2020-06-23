@@ -244,12 +244,11 @@ void findIdOfFirstPointsCloserThanLookaheadAndFirstPointsFartherThanLookahead(co
                                                                               unsigned int* closerPointId, unsigned int* fartherPointId) {
   const int nPoints = pathSegment.point_.size();
   /* okay find the first point ahead of the robot that is further than the lookahead distance */
-  const double epsilon = 0.05;
   int pointFartherThanLookaheadId = startingPoint;
   for (; pointFartherThanLookaheadId < nPoints; ++pointFartherThanLookaheadId) {
     const auto& p = pathSegment.point_.at(pointFartherThanLookaheadId).position_;
     const double distance = (p - anchorPoint).norm();
-    if (distance > lookaheadDistance + epsilon) {
+    if (distance > lookaheadDistance) {
       break;
     }
   }
@@ -260,7 +259,7 @@ void findIdOfFirstPointsCloserThanLookaheadAndFirstPointsFartherThanLookahead(co
   for (; pointCloserThanLookaheadId >= 0; --pointCloserThanLookaheadId) {
     const auto& p = pathSegment.point_.at(pointCloserThanLookaheadId).position_;
     const double distance = (p - anchorPoint).norm();
-    if (distance < lookaheadDistance - epsilon) {
+    if (distance < lookaheadDistance) {
       break;
     }
   }
