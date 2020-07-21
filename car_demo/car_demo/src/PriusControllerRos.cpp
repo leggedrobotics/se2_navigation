@@ -119,6 +119,7 @@ void PriusControllerRos::update()
   const bool doneFollowing = pathTracker_->isTrackingFinished();
   const bool isRisingEdge = doneFollowing && !doneFollowingPrev_;
   if (isRisingEdge) {
+    ROS_WARN_STREAM("Tracking finished automatically: Goal state reached!");
     currentlyExecutingPlan_ = false;
     receivedStartTrackingCommand_ = false;
     planReceived_ = false;
@@ -253,22 +254,23 @@ void PriusControllerRos::pathCallback(const se2_navigation_msgs::PathMsg &pathMs
 {
   currentPath_ = se2_navigation_msgs::convert(pathMsg);
 
-  if (currentlyExecutingPlan_) {
-    ROS_WARN_STREAM("PathFollowerRos:: Robot is tracking the previous plan. Rejecting this one.");
-    return;
-  }
-
   if (currentPath_.segment_.empty()) {
-    ROS_WARN_STREAM("Path follower received an empty plan!");
+    ROS_WARN_STREAM("PathFollowerRos: Path follower received an empty plan!");
     return;
   }
 
   pure_pursuit::Path path;
   convert(currentPath_, &path);
-  pathTracker_->importCurrentPath(path);
+
+  if (currentlyExecutingPlan_) {
+    ROS_WARN_STREAM("PathFollowerRos: Robot is already tracking a plan. Updating the plan.");
+    pathTracker_->updateCurrentPath(path);
+  } else {
+    pathTracker_->importCurrentPath(path);
+  }
 
   ROS_INFO_STREAM(
-      "PathFollowerRos subscriber received a plan, num segments: " << path.segment_.size());
+      "PathFollowerRos: Subscriber received a new plan, num segments: " << path.segment_.size());
 
   planReceived_ = true;
 }
@@ -318,7 +320,7 @@ void PriusControllerRos::processStartTrackingCommand()
 
   if (currentlyExecutingPlan_) {
     ROS_WARN_STREAM(
-        "PriusControllerRos:: Rejecting  the start command since the robot is already executing another plan");;
+        "PriusControllerRos:: Rejecting  the start command since the robot is already executing another plan");
     return;
   }
 
