@@ -29,6 +29,7 @@ PriusControllerRos::~PriusControllerRos() = default;
 void PriusControllerRos::initialize(double dt)
 {
   dt_ = dt;
+  priusState_.pose.pose.orientation.w = 1.0;
   createPathTrackerAndLoadParameters();
   loadPIDParameters();
   ROS_INFO_STREAM("PriusControllerRos: Initialization done");
