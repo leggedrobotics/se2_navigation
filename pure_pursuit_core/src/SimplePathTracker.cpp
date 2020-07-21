@@ -23,12 +23,22 @@ void SimplePathTracker::setParameters(const SimplePathTrackerParameters& paramet
 
 void SimplePathTracker::importCurrentPath(const Path& path) {
   if (path.segment_.empty()) {
-    throw std::runtime_error("empty path");
+    throw std::runtime_error("Trying to import an empty path");
   }
   currentPath_ = path;
   isPathReceived_ = true;
   currentPathSegmentId_ = 0;
   currentFSMState_ = States::NoOperation;
+}
+
+void SimplePathTracker::updateCurrentPath(const Path& path) {
+  if (path.segment_.empty()) {
+    throw std::runtime_error("Update attempt with empty path");
+  }
+  currentPath_ = path;
+  isPathReceived_ = true;
+  currentPathSegmentId_ = 0;           // assume replanning from current position
+  currentFSMState_ = States::Driving;  // keep driving state
 }
 
 void SimplePathTracker::advanceStateMachine() {
@@ -59,6 +69,13 @@ void SimplePathTracker::advanceStateMachine() {
       currentFSMState_ = States::Driving;
       std::cout << "Going to driving state (done waiting)" << std::endl;
     }
+  }
+
+  if (currentFSMState_ == States::Driving && isPathReceived_) {
+    headingController_->updateCurrentPathSegment(currentPath_.segment_.at(currentPathSegmentId_));
+    headingController_->initialize();
+    velocityController_->updateCurrentPathSegment(currentPath_.segment_.at(currentPathSegmentId_));
+    std::cout << "Update plan in driving state" << std::endl;
   }
 
   if (currentFSMState_ == States::NoOperation && isPathReceived_) {

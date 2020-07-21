@@ -19,6 +19,7 @@ class SimplePathTrackerRos : public SimplePathTracker {
   explicit SimplePathTrackerRos(ros::NodeHandle* nh);
 
   void importCurrentPath(const Path& path) override;
+  void updateCurrentPath(const Path& path) override;
 
  private:
   bool advanceControllers() override;
