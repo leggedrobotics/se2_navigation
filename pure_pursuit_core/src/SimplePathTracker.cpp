@@ -27,6 +27,7 @@ void SimplePathTracker::importCurrentPath(const Path& path) {
   }
   currentPath_ = path;
   isPathReceived_ = true;
+  isPathUpdated_ = false;
   currentPathSegmentId_ = 0;
   currentFSMState_ = States::NoOperation;
 }
@@ -37,8 +38,9 @@ void SimplePathTracker::updateCurrentPath(const Path& path) {
   }
   currentPath_ = path;
   isPathReceived_ = true;
-  currentPathSegmentId_ = 0;           // assume replanning from current position
-  currentFSMState_ = States::Driving;  // keep driving state
+  isPathUpdated_ = true;
+  currentPathSegmentId_ = 0;  // assume replanning from current position
+  // keep current state, do not change it
 }
 
 void SimplePathTracker::advanceStateMachine() {
@@ -71,11 +73,11 @@ void SimplePathTracker::advanceStateMachine() {
     }
   }
 
-  if (currentFSMState_ == States::Driving && isPathReceived_) {
+  if (isPathUpdated_) {
     headingController_->updateCurrentPathSegment(currentPath_.segment_.at(currentPathSegmentId_));
     headingController_->initialize();
     velocityController_->updateCurrentPathSegment(currentPath_.segment_.at(currentPathSegmentId_));
-    std::cout << "Update plan in driving state" << std::endl;
+    std::cout << "Update plan (no state change)" << std::endl;
   }
 
   if (currentFSMState_ == States::NoOperation && isPathReceived_) {
@@ -91,6 +93,7 @@ void SimplePathTracker::advanceStateMachine() {
   }
 
   isPathReceived_ = false;
+  isPathUpdated_ = false;
 }
 
 bool SimplePathTracker::advanceControllers() {

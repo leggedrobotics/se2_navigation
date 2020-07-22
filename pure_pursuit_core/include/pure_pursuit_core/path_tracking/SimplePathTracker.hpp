@@ -34,6 +34,7 @@ class SimplePathTracker : public PathTracker {
 
   States currentFSMState_ = States::NoOperation;
   bool isPathReceived_ = false;
+  bool isPathUpdated_ = false;
   Stopwatch stopwatch_;
   SimplePathTrackerParameters parameters_;
 };
