@@ -200,3 +200,34 @@ TEST(Geometry, IsPastLastPoint)
     std::cout << "\n Test Geometry, IsPastLastPoint failed with seed: " << seed << std::endl;
   }
 }
+
+
+TEST(Geometry, CoarseWaypoints1)
+{
+  /* this test addresses the ISSUE #3
+   * https://github.com/leggedrobotics/se2_navigation/issues/3
+   */
+  using namespace pp;
+  RobotState robotState;
+  robotState.pose_ = RobotPose(-7.52288223073, 0.383239928729, 0.5042049);
+  PathSegment pathSegment;
+  pathSegment.drivingDirection_ = DrivingDirection::FWD;
+  pathSegment.point_.push_back(PathPoint(-9.64970568409, 0.036127697624)); // 0
+  pathSegment.point_.push_back(PathPoint(-6.11220568409, 2.16112769762)); // 1
+  pathSegment.point_.push_back(PathPoint(0.0, 5.0)); // 2
+  pathSegment.point_.push_back(PathPoint(6.11220568409, 2.16112769762)); // 3
+  pathSegment.point_.push_back(PathPoint(9.64970568409, 0.036127697624)); // 4
+  pathSegment.point_.push_back(PathPoint(13.9358333817, -2.53857798646)); // 5
+  const double lookaheadDistance = 2.5;
+  appendPointAlongFinalApproachDirection(5.0 * lookaheadDistance, &pathSegment);
+  unsigned int closerPointId=0, fartherPointId=0;
+  const Point anchorPoint(-7.08510279935,0.624795656177 );
+
+
+  findIdsOfTwoPointsDefiningALine(robotState, pathSegment, anchorPoint, 0, lookaheadDistance, &closerPointId, &fartherPointId);
+
+  EXPECT_EQ(closerPointId,1);
+  EXPECT_EQ(fartherPointId,2);
+
+  std::cout << "id closer: " << closerPointId << ", farther point id: " << fartherPointId << std::endl;
+}

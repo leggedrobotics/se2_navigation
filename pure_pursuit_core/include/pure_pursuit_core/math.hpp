@@ -87,9 +87,9 @@ Vector computeDesiredHeadingVector(double yawAngle, DrivingDirection desiredDriv
 Matrix rotationMatrix(double angle);
 unsigned int getIdOfTheClosestPointOnThePath(const PathSegment& pathSegment, const Point& robotPosition, unsigned int lastClosestId = 0);
 bool isPastLastPoint(const PathSegment& pathSegment, const Point& robPos);
-void findIdOfFirstPointsCloserThanLookaheadAndFirstPointsFartherThanLookahead(const PathSegment& pathSegment, const Point& anchorPoint,
-                                                                              unsigned int startingPoint, double lookaheadDistance,
-                                                                              unsigned int* closerPointId, unsigned int* fartherPointId);
+void findIdsOfTwoPointsDefiningALine(const RobotState& robotState, const PathSegment& pathSegment, const Point& anchorPoint,
+                                     unsigned int startingPoint, double lookaheadDistance, unsigned int* closerPointId,
+                                     unsigned int* fartherPointId);
 Point chooseCorrectLookaheadPoint(const Intersection& intersection, const Vector& desiredHeading, const Point& origin);
 bool computeLookaheadAngle(const Point& lookaheadPoint, const Point& anchorPoint, const Vector& heading, DrivingDirection drivingDirection,
                            double* lookaheadAngle);

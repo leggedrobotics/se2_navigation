@@ -40,7 +40,7 @@ bool AckermannSteeringControllerRos::advanceImpl() {
   //  const auto& pathSegment = currentPathSegment_;
   //  const unsigned int closestPointOnPathId = getIdOfTheClosestPointOnThePath(currentPathSegment_, robotPose.position_,
   //  lastClosestPointId_); unsigned int fartherPointId, closerPointId;
-  //  findIdOfFirstPointsCloserThanLookaheadAndFirstPointsFartherThanLookahead(pathSegment, currentAnchorPoint_, closestPointOnPathId,
+  //  findIdsOfTwoPointsDefiningALine(currentRobotState_, pathSegment, currentAnchorPoint_, closestPointOnPathId,
   //                                                                           activeLookaheadDistance_, &closerPointId, &fartherPointId);
   //
   //  const Line line(pathSegment.point_.at(closerPointId).position_, pathSegment.point_.at(fartherPointId).position_);

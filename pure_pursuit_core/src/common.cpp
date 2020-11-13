@@ -19,6 +19,8 @@ std::string toString(DrivingDirection direction) {
   }
 }
 
+RobotPose::RobotPose(double x, double y, double yaw) : position_(x, y), yaw_(yaw) {}
+
 std::ostream& operator<<(std::ostream& out, const RobotPose& robotPose) {
   const auto& p = robotPose.position_;
   out << "x =" << p.x() << ", y=" << p.y() << ", yaw=" << robotPose.yaw_;  // actual output done here
