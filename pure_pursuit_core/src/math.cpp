@@ -239,16 +239,20 @@ bool isPastLastPoint(const PathSegment& pathSegment, const Point& robPos) {
   return (finalApproach.transpose() * robPositionToSecondLast <= 0);
 }
 
-void findIdOfFirstPointsCloserThanLookaheadAndFirstPointsFartherThanLookahead(const PathSegment& pathSegment, const Point& anchorPoint,
-                                                                              unsigned int startingPoint, double lookaheadDistance,
-                                                                              unsigned int* closerPointId, unsigned int* fartherPointId) {
+void findIdsOfTwoPointsDefiningALine(const RobotState& robotState, const PathSegment& pathSegment, const Point& anchorPoint,
+                                     unsigned int startingPoint, double lookaheadDistance, unsigned int* closerPointId,
+                                     unsigned int* fartherPointId) {
+  const auto headingRobot = computeDesiredHeadingVector(robotState.pose_.yaw_, pathSegment.drivingDirection_);
+
   const int nPoints = pathSegment.point_.size();
   /* okay find the first point ahead of the robot that is further than the lookahead distance */
   int pointFartherThanLookaheadId = startingPoint;
   for (; pointFartherThanLookaheadId < nPoints; ++pointFartherThanLookaheadId) {
     const auto& p = pathSegment.point_.at(pointFartherThanLookaheadId).position_;
-    const double distance = (p - anchorPoint).norm();
-    if (distance > lookaheadDistance) {
+    const auto headingPoint = p - anchorPoint;
+    const bool isFarEnough = (p - anchorPoint).norm() > lookaheadDistance;
+    const bool isInFrontOfRobot = headingRobot.dot(headingPoint) > 0.0;
+    if (isFarEnough && isInFrontOfRobot) {
       break;
     }
   }
@@ -256,23 +260,42 @@ void findIdOfFirstPointsCloserThanLookaheadAndFirstPointsFartherThanLookahead(co
 
   /* now iterate back and find a point which is closer than the lookahead distance */
   int pointCloserThanLookaheadId = bindIndexToRange(pointFartherThanLookaheadId - 1, 0, nPoints - 1);
+  bool isSecondPointFound = false;
   for (; pointCloserThanLookaheadId >= 0; --pointCloserThanLookaheadId) {
     const auto& p = pathSegment.point_.at(pointCloserThanLookaheadId).position_;
     const double distance = (p - anchorPoint).norm();
     if (distance < lookaheadDistance) {
+      isSecondPointFound = true;
       break;
     }
   }
+
+  /* might not find a point that is closer than lookahead distance
+   * this happens when the points are very sparse */
+  if (!isSecondPointFound) {
+    pointCloserThanLookaheadId = bindIndexToRange(pointFartherThanLookaheadId - 1, 0, nPoints - 1);
+  }
+
   pointCloserThanLookaheadId = bindIndexToRange(pointCloserThanLookaheadId, 0, nPoints - 1);
 
+  /*Edge cases */
+
   /* This can happen at the end of the trajectory */
-  if (pointFartherThanLookaheadId == pointCloserThanLookaheadId) {
+  const bool isLastPoint = pointFartherThanLookaheadId == nPoints - 1;
+  const bool isFirstPoint = pointCloserThanLookaheadId == 0;
+  const bool isIdsIdentical = pointFartherThanLookaheadId == pointCloserThanLookaheadId;
+  if (isIdsIdentical && isLastPoint) {
     pointFartherThanLookaheadId = nPoints - 1;
     pointCloserThanLookaheadId = pointFartherThanLookaheadId - 1;
   }
 
-  *closerPointId = pointCloserThanLookaheadId;
-  *fartherPointId = pointFartherThanLookaheadId;
+  if (isIdsIdentical && isFirstPoint) {
+    pointFartherThanLookaheadId = 1;
+    pointCloserThanLookaheadId = 0;
+  }
+
+  *closerPointId = bindIndexToRange(pointCloserThanLookaheadId, 0, nPoints - 1);
+  *fartherPointId = bindIndexToRange(pointFartherThanLookaheadId, 0, nPoints - 1);
 }
 
 bool computeLookaheadAngle(const Point& lookaheadPoint, const Point& anchorPoint, const Vector& heading, DrivingDirection drivingDirection,
@@ -335,8 +358,8 @@ bool computeLookaheadPoint(unsigned int closestPointOnPathSegmentId, double look
                            Point* lookaheadPoint) {
   const Point anchorPoint = computeAnchorPoint(robotState.pose_, anchorDistance, drivingDirection);
   unsigned int fartherPointId, closerPointId;
-  findIdOfFirstPointsCloserThanLookaheadAndFirstPointsFartherThanLookahead(pathSegment, anchorPoint, closestPointOnPathSegmentId,
-                                                                           lookaheadDistance, &closerPointId, &fartherPointId);
+  findIdsOfTwoPointsDefiningALine(robotState, pathSegment, anchorPoint, closestPointOnPathSegmentId, lookaheadDistance, &closerPointId,
+                                  &fartherPointId);
 
   const Line line(pathSegment.point_.at(closerPointId).position_, pathSegment.point_.at(fartherPointId).position_);
   const Circle circle(anchorPoint, lookaheadDistance);

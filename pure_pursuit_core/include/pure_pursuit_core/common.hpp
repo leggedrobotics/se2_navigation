@@ -19,6 +19,8 @@ enum class DrivingDirection : int {
 
 struct RobotPose {
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+  RobotPose() = default;
+  RobotPose(double x, double y, double yaw);
   Point position_{0.0, 0.0};
   double yaw_ = 0.0;
   friend std::ostream& operator<<(std::ostream& out, const RobotPose& robotPose);
