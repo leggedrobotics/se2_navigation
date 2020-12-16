@@ -6,6 +6,7 @@
  */
 
 #include "se2_planning/GridMapLazyStateValidator.hpp"
+#include "se2_planning/common.hpp"
 
 #include <algorithm>
 #include <iostream>
@@ -90,17 +91,25 @@ bool isInCollision(const SE2state& state, const std::vector<Vertex>& footprint, 
   const double Sin = std::sin(state.yaw_);
   const double dx = state.x_;
   const double dy = state.y_;
+
   auto transformOperator = [Cos, Sin, dx, dy](const Vertex& v) -> Vertex {
     return Vertex{Cos * v.x_ - Sin * v.y_ + dx, Sin * v.x_ + Cos * v.y_ + dy};
   };
+
   const auto& data = gridMap.get(obstacleLayer);
+  const int nRows = data.rows();
+  const int nCols = data.cols();
   for (const auto& vertex : footprint) {
     double occupancy = 0.0;
     try {
       const auto v = transformOperator(vertex);
+      const auto position = grid_map::Position(v.x_, v.y_);
+      if (!gridMap.isInside(position)) {
+        return true;  // treat space outside the map as being in collision
+      }
       grid_map::Index id;
-      gridMap.getIndex(grid_map::Position(v.x_, v.y_), id);
-      occupancy = data(id.x(), id.y());
+      gridMap.getIndex(position, id);
+      occupancy = data(bindToRange(id.x(), 0, nRows), bindToRange(id.y(), 0, nCols));
     } catch (const std::out_of_range& e) {
       return true;
     }
