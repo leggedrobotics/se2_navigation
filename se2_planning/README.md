@@ -53,7 +53,7 @@ To build in release mode:
 
 `catkin build --cmake-args -DCMAKE_BUILD_TYPE=Release`  
 
-Building in release mode results in about 2-3 times less computation time.  
+Building in release mode affects the perfromance a lot (code runs about order of magnitude faster).  
 
 To run tests, use:
 `catkin build se2_planning --no-deps --verbose --catkin-make-args run_tests`
