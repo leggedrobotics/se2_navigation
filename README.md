@@ -26,7 +26,13 @@ Released under [BSD 3-Clause license](LICENSE).
 
 | Navigation with prius        | Navigation with Menzi Muck M545 |
 |:----------------------:|:-----------------:| 
-| [<img src="car_demo/doc/car.gif" width="340" height="250">](car_demo/doc/car.gif)  |[<img src="car_demo/doc/m545.gif" width="340" height="250">](car_demo/doc/m545.gif)  |
+| [<img src="car_demo/doc/car.gif" width="340" height="250">](car_demo/doc/car.gif)  |[<img src="car_demo/doc/m545.gif" width="340" height="250">](car_demo/doc/m545.gif)  |  
+
+
+| Navigation with Spacebok |
+|:----------------------:|
+|[<img src="car_demo/doc/spacebok_nav.gif" width="443" height="250">](car_demo/doc/spacebok_nav.gif)|
+
 
 ## Publications
  Coming soon
