@@ -47,7 +47,14 @@ double PathTracker::getLongitudinalVelocity() const {
 
 void PathTracker::importCurrentPath(const Path& path) {
   if (path.segment_.empty()) {
-    throw std::runtime_error("empty path");
+    throw std::runtime_error("Trying to import an empty path");
+  }
+  currentPath_ = path;
+}
+
+void PathTracker::updateCurrentPath(const Path& path) {
+  if (path.segment_.empty()) {
+    throw std::runtime_error("Update attempt with empty path");
   }
   currentPath_ = path;
 }

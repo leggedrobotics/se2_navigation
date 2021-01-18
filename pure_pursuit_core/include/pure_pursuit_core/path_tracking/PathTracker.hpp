@@ -36,6 +36,7 @@ class PathTracker {
 
   bool advance();
   virtual void importCurrentPath(const Path& path);
+  virtual void updateCurrentPath(const Path& path);
   virtual void stopTracking() = 0;
   virtual void updateRobotState(const RobotState& robotState);
   virtual bool initialize();

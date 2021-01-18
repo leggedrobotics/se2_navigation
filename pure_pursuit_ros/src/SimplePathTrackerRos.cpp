@@ -44,6 +44,12 @@ void SimplePathTrackerRos::importCurrentPath(const Path& path) {
   t.detach();
 }
 
+void SimplePathTrackerRos::updateCurrentPath(const Path& path) {
+  BASE::updateCurrentPath(path);
+  std::thread t([this]() { publishPath(currentPath_); });
+  t.detach();
+}
+
 bool SimplePathTrackerRos::advanceControllers() {
   bool status = BASE::advanceControllers();
   std::thread t([this]() { publishRobotPose(); });
