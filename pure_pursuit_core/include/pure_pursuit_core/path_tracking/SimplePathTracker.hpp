@@ -31,6 +31,7 @@ class SimplePathTracker : public PathTracker {
   enum class States : int { NoOperation, Waiting, Driving };
   void advanceStateMachine() override;
   bool advanceControllers() override;
+  bool isPathAndCurrenStateWithinRadius(const Path& path, double raidus) const;
 
   States currentFSMState_ = States::NoOperation;
   bool isPathReceived_ = false;

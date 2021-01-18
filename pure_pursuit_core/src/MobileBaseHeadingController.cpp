@@ -17,4 +17,8 @@ bool MobileBaseHeadingController::computeTurningRadius() {}
 
 bool MobileBaseHeadingController::computeSteeringAngle() {}
 
+const HeadingControllerParameters& MobileBaseHeadingController::getParameters() const {
+  return param_;
+}
+
 } /* namespace pure_pursuit */

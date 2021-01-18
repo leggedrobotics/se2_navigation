@@ -13,6 +13,9 @@
 
 namespace pure_pursuit {
 
+class RobotState;
+class RobotPose;
+
 struct Line {
   Line() = default;
   Line(const Point& p1, const Point& p2);
@@ -79,6 +82,10 @@ double bindToRange(double value, double lo, double hi);
 unsigned int bindIndexToRange(int idReq, int lo, int hi);
 bool isAlmostZero(double val);
 bool isClose(double val1, double val2);
+
+double euclideanDistance(const RobotState& s1, const RobotState& s2);
+double euclideanDistance(const RobotPose& p1, const RobotPose& p2);
+double euclideanDistance(const RobotState& s, const PathPoint& p);
 
 void computeIntersection(const Line& line, const Circle& circle, Intersection* intersection);
 Vector computeNormalizedFinalApproachDirection(const PathSegment& pathSegment);

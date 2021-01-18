@@ -27,7 +27,7 @@ class AckermannSteeringController : public HeadingController {
   ~AckermannSteeringController() override = default;
 
   void setParameters(const AckermannSteeringCtrlParameters& parameters);
-  AckermannSteeringCtrlParameters getParameters() const;
+  const AckermannSteeringCtrlParameters& getParameters() const override;
   void updateCurrentPathSegment(const PathSegment& pathSegment) override;
   bool initialize() override;
 

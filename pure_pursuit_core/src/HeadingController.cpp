@@ -17,6 +17,10 @@ bool HeadingController::initialize() {
   return true;
 }
 
+double HeadingController::getActiveLookaheadDistance() const {
+  return activeLookaheadDistance_;
+}
+
 bool HeadingController::advance() {
   bool status = advanceImpl();
   status = status && computeSteeringAngle();

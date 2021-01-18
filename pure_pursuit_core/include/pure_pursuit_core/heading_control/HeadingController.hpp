@@ -34,6 +34,8 @@ class HeadingController {
   double getTurningRadius() const;
   double getYawRate() const;
   double getSteeringAngle() const;
+  virtual const HeadingControllerParameters& getParameters() const = 0;
+  double getActiveLookaheadDistance() const;
 
  private:
   virtual bool advanceImpl() = 0;

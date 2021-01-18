@@ -15,12 +15,15 @@ class MobileBaseHeadingController : public HeadingController {
  public:
   MobileBaseHeadingController() = default;
   ~MobileBaseHeadingController() override = default;
+  const HeadingControllerParameters& getParameters() const override;
 
  private:
   bool advanceImpl() override;
   bool computeYawRate() override;
   bool computeTurningRadius() override;
   bool computeSteeringAngle() override;
+
+  HeadingControllerParameters param_;
 };
 
 }  // namespace pure_pursuit

@@ -121,7 +121,7 @@ void AckermannSteeringController::setParameters(const AckermannSteeringCtrlParam
   avgFilter_.setWeightForMostRecentMeasurement(parameters.avgFilgerCurrentSampleWeight_);
 }
 
-AckermannSteeringCtrlParameters AckermannSteeringController::getParameters() const {
+const AckermannSteeringCtrlParameters& AckermannSteeringController::getParameters() const {
   return parameters_;
 }
 

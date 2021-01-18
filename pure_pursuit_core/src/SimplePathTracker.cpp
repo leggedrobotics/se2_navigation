@@ -21,9 +21,19 @@ void SimplePathTracker::setParameters(const SimplePathTrackerParameters& paramet
   parameters_ = parameters;
 }
 
+bool SimplePathTracker::isPathAndCurrenStateWithinRadius(const Path& path, double radius) const {
+  if (path.segment_.front().point_.empty()) {
+    throw std::runtime_error("First segment of the path has no points!");
+  }
+  return euclideanDistance(currentRobotState_, path.segment_.front().point_.front()) <= radius;
+}
+
 void SimplePathTracker::importCurrentPath(const Path& path) {
   if (path.segment_.empty()) {
     throw std::runtime_error("Trying to import an empty path");
+  }
+  if (!isPathAndCurrenStateWithinRadius(path, headingController_->getActiveLookaheadDistance())) {
+    std::cout << "WARNING: path imported is more than one lookahead distance away from the current state" << std::endl;
   }
   currentPath_ = path;
   isPathReceived_ = true;
@@ -35,6 +45,9 @@ void SimplePathTracker::importCurrentPath(const Path& path) {
 void SimplePathTracker::updateCurrentPath(const Path& path) {
   if (path.segment_.empty()) {
     throw std::runtime_error("Update attempt with empty path");
+  }
+  if (!isPathAndCurrenStateWithinRadius(path, headingController_->getActiveLookaheadDistance())) {
+    std::cout << "WARNING: updated path is more than one lookahead distance away from the current state" << std::endl;
   }
   currentPath_ = path;
   isPathReceived_ = true;

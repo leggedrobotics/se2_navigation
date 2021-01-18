@@ -6,12 +6,25 @@
  */
 
 #include "pure_pursuit_core/math.hpp"
+#include "pure_pursuit_core/common.hpp"
 
 #include <iostream>
 
 namespace pure_pursuit {
 
 constexpr double zeroThreshold = 1e-5;
+
+double euclideanDistance(const RobotPose& p1, const RobotPose& p2) {
+  return (p1.position_ - p2.position_).norm();
+}
+
+double euclideanDistance(const RobotState& s1, const RobotState& s2) {
+  return euclideanDistance(s1.pose_, s2.pose_);
+}
+
+double euclideanDistance(const RobotState& s, const PathPoint& p) {
+  return (s.pose_.position_ - p.position_).norm();
+}
 
 Line::Line(const Point& p1, const Point& p2) : p1_(p1), p2_(p2) {}
 Line::Line(double x1, double y1, double x2, double y2) : p1_(x1, y1), p2_(x2, y2) {}
