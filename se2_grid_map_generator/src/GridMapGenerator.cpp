@@ -66,6 +66,18 @@ namespace se2_planning {
     mapPub_.publish(msg);
   }
 
+  void GridMapGenerator::setRectangleInMap(const std::string layerName, const double x, const double y, const double length,
+                                           const double width, const double value) {
+    for (grid_map::GridMapIterator iterator(map_); !iterator.isPastEnd(); ++iterator) {
+      grid_map::Position position;
+      map_.getPosition(*iterator, position);
+      if (position.x() < (x + length / 2.0) && position.x() > (x - length / 2.0)
+          && position.y() < (y + width / 2.0) && position.y() > (y - width / 2.0)) {
+        map_.at(layerName, *iterator) = value;
+      }
+    }
+  }
+
   void GridMapGenerator::obstacleCb(geometry_msgs::Point position) {
     double x = position.x;
     double y = position.y;
@@ -74,29 +86,13 @@ namespace se2_planning {
 
     // Reset elevation layer
     map_[elevationLayerName_].setConstant(0.0);
-
-    // Add obstacles to elevation layer
-    for (grid_map::GridMapIterator iterator(map_); !iterator.isPastEnd(); ++iterator) {
-      grid_map::Position position;
-      map_.getPosition(*iterator, position);
-      if (position.x() < (x + obstacleLength_ / 2.0) && position.x() > (x - obstacleLength_ / 2.0)
-          && position.y() < (y + obstacleWidth_ / 2.0) && position.y() > (y - obstacleWidth_ / 2.0)) {
-        map_.at(elevationLayerName_, *iterator) = obstacleElevation;  // height of obstacle
-      }
-    }
+    // Add obstacle to elevation layer
+    setRectangleInMap(elevationLayerName_, x, y, obstacleLength_, obstacleWidth_, obstacleElevation);
 
     // Reset traversability layer
     map_[traversabilityLayerName_].setConstant(1.0);
-
-    // Add obstacles to traversability layer
-    for (grid_map::GridMapIterator iterator(map_); !iterator.isPastEnd(); ++iterator) {
-      grid_map::Position position;
-      map_.getPosition(*iterator, position);
-      if (position.x() < (x + obstacleLength_ / 2.0) && position.x() > (x - obstacleLength_ / 2.0)
-          && position.y() < (y + obstacleWidth_ / 2.0) && position.y() > (y - obstacleWidth_ / 2.0)) {
-        map_.at(traversabilityLayerName_, *iterator) = obstacleTraversability;  // obstacles traversability value
-      }
-    }
+    // Add obstacle to traversability layer
+    setRectangleInMap(traversabilityLayerName_, x, y, obstacleLength_, obstacleWidth_, obstacleTraversability);
 
     publishMap();
   }
@@ -107,29 +103,13 @@ namespace se2_planning {
 
     // Reset elevation layer
     map_[elevationLayerName_].setConstant(0.0);
-
     // Add nans to elevation layer
-    for (grid_map::GridMapIterator iterator(map_); !iterator.isPastEnd(); ++iterator) {
-      grid_map::Position position;
-      map_.getPosition(*iterator, position);
-      if (position.x() < (x + obstacleLength_ / 2.0) && position.x() > (x - obstacleLength_ / 2.0)
-          && position.y() < (y + obstacleWidth_ / 2.0) && position.y() > (y - obstacleWidth_ / 2.0)) {
-        map_.at(elevationLayerName_, *iterator) = std::nanf("");  // unknow cells
-      }
-    }
+    setRectangleInMap(elevationLayerName_, x, y, obstacleLength_, obstacleWidth_, std::nanf(""));
 
     // Reset traversability layer
     map_[traversabilityLayerName_].setConstant(1.0);
-
     // Add nans to traversability layer
-    for (grid_map::GridMapIterator iterator(map_); !iterator.isPastEnd(); ++iterator) {
-      grid_map::Position position;
-      map_.getPosition(*iterator, position);
-      if (position.x() < (x + obstacleLength_ / 2.0) && position.x() > (x - obstacleLength_ / 2.0)
-          && position.y() < (y + obstacleWidth_ / 2.0) && position.y() > (y - obstacleWidth_ / 2.0)) {
-        map_.at(traversabilityLayerName_, *iterator) = std::nanf("");  // unknow cells
-      }
-    }
+    setRectangleInMap(traversabilityLayerName_, x, y, obstacleLength_, obstacleWidth_, std::nanf(""));
 
     publishMap();
   }

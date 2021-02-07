@@ -27,6 +27,8 @@ protected:
   void obstacleCb(geometry_msgs::Point position);
   void nanCb(geometry_msgs::Point position);
   void positionCb(geometry_msgs::Point position);
+  void setRectangleInMap(const std::string layerName, const double x, const double y, const double length,
+                         const double width, const double value);
 
   ros::NodeHandlePtr nh_;
   ros::Subscriber obstacleSub_;
