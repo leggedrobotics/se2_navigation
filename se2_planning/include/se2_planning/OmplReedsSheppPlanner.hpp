@@ -74,5 +74,6 @@ class OmplReedsSheppPlanner final : public OmplPlanner {
 
 std::string toString(ReedsSheppPathSegment::Direction direction);
 ReedsSheppState convert(const ompl::base::State* s);
+ompl::base::ScopedStatePtr convert(const ReedsSheppState& state, const ompl::base::SpaceInformationPtr& si);
 
 } /* namespace se2_planning */

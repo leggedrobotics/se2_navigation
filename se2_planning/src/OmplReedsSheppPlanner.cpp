@@ -78,14 +78,7 @@ bool OmplReedsSheppPlanner::isStateValid(const ompl::base::SpaceInformation* si,
   return stateValidator_->isStateValid(rsState);
 }
 ompl::base::ScopedStatePtr OmplReedsSheppPlanner::convert(const State& state) const {
-  ompl::base::ScopedStatePtr stateOmpl(std::make_shared<ompl::base::ScopedState<> >(stateSpace_));
-  auto s = ((*stateOmpl)())->as<ompl::base::SE2StateSpace::StateType>();
-  auto rsState = state.as<ReedsSheppState>();
-  s->setX(rsState->x_);
-  s->setY(rsState->y_);
-  s->setYaw(rsState->yaw_);
-
-  return stateOmpl;
+  return se2_planning::convert(*(state.as<ReedsSheppState>()), simpleSetup_->getSpaceInformation());
 }
 
 void OmplReedsSheppPlanner::convert(const ompl::geometric::PathGeometric& pathOmpl, Path* path) const {
@@ -244,6 +237,15 @@ bool operator==(const ReedsSheppState& s1, const ReedsSheppState& s2) {
   const bool isPositionEqual = isEqual(s1.x_, s2.x_, tolerance) && isEqual(s1.y_, s2.y_, tolerance);
   const bool isYawEqual = isEqual(s1.yaw_, s2.yaw_, tolerance);
   return isPositionEqual && isYawEqual;
+}
+
+ompl::base::ScopedStatePtr convert(const ReedsSheppState& state, const ompl::base::SpaceInformationPtr& si) {
+  ompl::base::ScopedStatePtr stateOmpl(std::make_shared<ompl::base::ScopedState<> >(si));
+  auto s = ((*stateOmpl)())->as<ompl::base::SE2StateSpace::StateType>();
+  s->setX(state.x_);
+  s->setY(state.y_);
+  s->setYaw(state.yaw_);
+  return stateOmpl;
 }
 
 } /* namespace se2_planning */
