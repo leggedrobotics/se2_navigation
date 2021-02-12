@@ -75,5 +75,6 @@ class OmplReedsSheppPlanner final : public OmplPlanner {
 std::string toString(ReedsSheppPathSegment::Direction direction);
 ReedsSheppState convert(const ompl::base::State* s);
 ompl::base::ScopedStatePtr convert(const ReedsSheppState& state, const ompl::base::SpaceInformationPtr& si);
-
+int getDistanceSignAt(const ompl::geometric::PathGeometric& path, const ompl::base::StateSpacePtr& stateSpace, unsigned int id);
+void convert(const ompl::geometric::PathGeometric& pathOmpl, const ompl::base::StateSpacePtr& stateSpace, Path* path);
 } /* namespace se2_planning */

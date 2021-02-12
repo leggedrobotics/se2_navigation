@@ -82,6 +82,10 @@ ompl::base::ScopedStatePtr OmplReedsSheppPlanner::convert(const State& state) co
 }
 
 void OmplReedsSheppPlanner::convert(const ompl::geometric::PathGeometric& pathOmpl, Path* path) const {
+  se2_planning::convert(pathOmpl, stateSpace_, path);
+}
+
+void convert(const ompl::geometric::PathGeometric& pathOmpl, const ompl::base::StateSpacePtr& stateSpace, Path* path) {
   using Direction = ReedsSheppPathSegment::Direction;
   const int nPoints = pathOmpl.getStateCount();
 
@@ -100,7 +104,7 @@ void OmplReedsSheppPlanner::convert(const ompl::geometric::PathGeometric& pathOm
   int idStart = 0;
   Direction prevDirection = Direction::FWD;
   for (; idStart < nPoints - 1; ++idStart) {
-    const int sign = getDistanceSignAt(pathOmpl, idStart);
+    const int sign = getDistanceSignAt(pathOmpl, stateSpace, idStart);
     if (sign != 0) {
       switch (sign) {
         case 1: {
@@ -127,7 +131,7 @@ void OmplReedsSheppPlanner::convert(const ompl::geometric::PathGeometric& pathOm
 
   // iterate from the first state onwards
   for (int i = idStart + 1; i < lastElemId; i++) {
-    const int sign = getDistanceSignAt(pathOmpl, i);
+    const int sign = getDistanceSignAt(pathOmpl, stateSpace, i);
     switch (sign) {
       case 0: {
         continue;  // NOP state ignored
@@ -165,9 +169,13 @@ void OmplReedsSheppPlanner::convert(const ompl::geometric::PathGeometric& pathOm
 }
 
 int OmplReedsSheppPlanner::getDistanceSignAt(const ompl::geometric::PathGeometric& path, unsigned int id) const {
+  return se2_planning::getDistanceSignAt(path, stateSpace_, id);
+}
+
+int getDistanceSignAt(const ompl::geometric::PathGeometric& path, const ompl::base::StateSpacePtr& stateSpace, unsigned int id) {
   const ompl::base::State* currState = path.getState(id);
   const ompl::base::State* stateNext = path.getState(id + 1);
-  const auto rsPath = stateSpace_->as<ompl::base::ReedsSheppStateSpace>()->reedsShepp(currState, stateNext);
+  const auto rsPath = stateSpace->as<ompl::base::ReedsSheppStateSpace>()->reedsShepp(currState, stateNext);
   const int numElemInRsPathLength = 5;
   std::vector<double> signedLengths(numElemInRsPathLength), lengths(numElemInRsPathLength);
   signedLengths.assign(rsPath.length_, rsPath.length_ + numElemInRsPathLength);
