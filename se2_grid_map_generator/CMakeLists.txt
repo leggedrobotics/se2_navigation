@@ -12,6 +12,7 @@ set(SRC_FILES
 set(CATKIN_PACKAGE_DEPENDENCIES
         roscpp
         grid_map_ros
+        se2_grid_map_generator_msgs
         )
 
 find_package(catkin REQUIRED

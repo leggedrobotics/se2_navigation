@@ -14,5 +14,6 @@
 
   <depend>roscpp</depend>
   <depend>grid_map_ros</depend>
+  <depend>se2_grid_map_generator_msgs</depend>
 
 </package>
