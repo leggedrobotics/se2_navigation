@@ -66,9 +66,10 @@ config/
 
 #### Subscribed Topics 
 
-* **`obstacle`** ([geometry_msgs/Point] )
+* **`obstacle`** ([se2_grid_map_generator_msgs/Obstacle] )
 
-	Desired position of a new obstacle in the map (uses x and y component for position and z for height of obstacle).
+	Desired position and value of the layer in this area of a new obstacle in the map. The elevation layer directly uses 
+    the value (limited from 0 to 1), the traversability layer uses the "inverted value" (1 - value).
 
 * **`nan`** ([geometry_msgs/Point] )
 
