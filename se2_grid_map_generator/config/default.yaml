@@ -1,0 +1,13 @@
+map:
+  frame_id:                     odom
+  elevation_layer_name:         elevation
+  traversability_layer_name:    traversability
+  resolution:                   0.1
+  position:
+    x:                          5.0
+    y:                          0.0
+  length:                       20.0  # x dimension
+  width:                        20.0  # y dimension
+obstacle:
+  length:                       0.50  # x dimension
+  width:                        0.50  # y dimension
