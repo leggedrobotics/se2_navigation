@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package format="2">
+
+  <name>se2_grid_map_generator</name>
+  <version>0.0.0</version>
+  <description>Package to easily generate test maps for the se2_navigation path planner.</description>
+
+  <author email="meyerc@student.ethz.ch">Christoph Meyer</author>
+  <maintainer email="jelavice@ethz.ch">jelavice</maintainer>
+
+  <license>TODO</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <depend>roscpp</depend>
+  <depend>grid_map_ros</depend>
+  <depend>se2_grid_map_generator_msgs</depend>
+
+</package>

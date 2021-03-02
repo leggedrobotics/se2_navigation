@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<launch>
+
+	<!-- Parameters -->
+	<arg name="launch_rviz" default="false" />
+	<arg name="rviz_config_file"
+		 default="$(find se2_grid_map_generator)/config/rviz/default.rviz" />
+
+	<!-- Nodes -->
+	<node name="se2_grid_map_generator_node" pkg="se2_grid_map_generator"
+		  type="se2_grid_map_generator_node" output="screen"
+	      launch-prefix="">
+		<rosparam file="$(find se2_grid_map_generator)/config/default.yaml"/>
+	</node>
+
+	<node name="rviz" pkg="rviz" type="rviz"
+		  args="-d $(arg rviz_config_file)" required="true"
+		  if="$(arg launch_rviz)" />
+
+</launch>
