@@ -22,9 +22,9 @@ namespace se2_planning {
 
   void GridMapGenerator::initRos() {
     mapPub_ = nh_->advertise<grid_map_msgs::GridMap>("grid_map", 1, true);
-    obstacleSub_ = nh_->subscribe("obstacle", 1, &GridMapGenerator::obstacleCb, this);
-    nanSub_ = nh_->subscribe("nan", 1, &GridMapGenerator::nanCb, this);
-    positionSub_ = nh_->subscribe("position", 1, &GridMapGenerator::positionCb, this);
+    obstacleSub_ = nh_->subscribe("obstacle", 1, &GridMapGenerator::obstacleCallback, this);
+    nanSub_ = nh_->subscribe("nan", 1, &GridMapGenerator::nanCallback, this);
+    positionSub_ = nh_->subscribe("position", 1, &GridMapGenerator::positionCallback, this);
   }
 
   bool GridMapGenerator::loadParameters() {
@@ -78,7 +78,7 @@ namespace se2_planning {
     }
   }
 
-  void GridMapGenerator::obstacleCb(se2_grid_map_generator_msgs::Obstacle obstacle) {
+  void GridMapGenerator::obstacleCallback(se2_grid_map_generator_msgs::Obstacle obstacle) {
     double x = obstacle.position.x;
     double y = obstacle.position.y;
     double obstacleElevation = std::min(1.0, std::max(obstacle.value.data, 0.0)); // limit to range 0 to 1
@@ -97,7 +97,7 @@ namespace se2_planning {
     publishMap();
   }
 
-  void GridMapGenerator::nanCb(geometry_msgs::Point position) {
+  void GridMapGenerator::nanCallback(geometry_msgs::Point position) {
     double x = position.x;
     double y = position.y;
 
@@ -114,7 +114,7 @@ namespace se2_planning {
     publishMap();
   }
 
-  void GridMapGenerator::positionCb(geometry_msgs::Point position) {
+  void GridMapGenerator::positionCallback(geometry_msgs::Point position) {
     grid_map::Position mapPosition;
     mapPosition.x() = position.x;
     mapPosition.y() = position.y;
