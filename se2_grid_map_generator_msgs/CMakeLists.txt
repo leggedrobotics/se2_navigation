@@ -6,7 +6,6 @@ add_definitions(-std=c++11)
 
 set(CATKIN_PACKAGE_DEPENDENCIES
     std_msgs
-    geometry_msgs
 )
 
 find_package(catkin REQUIRED COMPONENTS

@@ -13,7 +13,6 @@
 
   <depend>message_generation</depend>
   <depend>std_msgs</depend>
-  <depend>geometry_msgs</depend>
   <exec_depend>message_runtime</exec_depend>
 
 </package>

@@ -6,11 +6,10 @@ Collection of messages and services for communication with grid map generator.
 ----------- 
       
 #### Obstacle (Obstacle.msg)  
-+  *geometry_msgs/Position position*   
-+  *std_msgs/Float64[] value*
++  *std_msgs/Float64 x*   
++  *std_msgs/Float64 y*   
++  *std_msgs/Float64 value*
  
 ## Dependencies
 
 * std_msgs
-
-* geometry_msgs
