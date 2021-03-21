@@ -79,8 +79,8 @@ namespace se2_planning {
   }
 
   void GridMapGenerator::obstacleCallback(se2_grid_map_generator_msgs::Obstacle obstacle) {
-    double x = obstacle.x.data;
-    double y = obstacle.y.data;
+    double x = obstacle.position.x.data;
+    double y = obstacle.position.y.data;
     double obstacleElevation = std::min(1.0, std::max(obstacle.value.data, 0.0)); // limit to range 0 to 1
     double obstacleTraversability = 1.0 - obstacleElevation; // limited to range 0 to 1
 
@@ -97,9 +97,9 @@ namespace se2_planning {
     publishMap();
   }
 
-  void GridMapGenerator::nanCallback(geometry_msgs::Point position) {
-    double x = position.x;
-    double y = position.y;
+  void GridMapGenerator::nanCallback(se2_grid_map_generator_msgs::Position2D position) {
+    double x = position.x.data;
+    double y = position.y.data;
 
     // Reset elevation layer
     map_[elevationLayerName_].setConstant(0.0);
@@ -114,10 +114,10 @@ namespace se2_planning {
     publishMap();
   }
 
-  void GridMapGenerator::positionCallback(geometry_msgs::Point position) {
+  void GridMapGenerator::positionCallback(se2_grid_map_generator_msgs::Position2D position) {
     grid_map::Position mapPosition;
-    mapPosition.x() = position.x;
-    mapPosition.y() = position.y;
+    mapPosition.x() = position.x.data;
+    mapPosition.y() = position.y.data;
     map_.setPosition(mapPosition);
     publishMap();
   }

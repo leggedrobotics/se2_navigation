@@ -10,6 +10,7 @@
 #include <ros/ros.h>
 #include <grid_map_ros/grid_map_ros.hpp>
 #include <se2_grid_map_generator_msgs/Obstacle.h>
+#include <se2_grid_map_generator_msgs/Position2D.h>
 
 namespace se2_planning {
 
@@ -26,8 +27,8 @@ public:
 
 protected:
   void obstacleCallback(se2_grid_map_generator_msgs::Obstacle obstacle);
-  void nanCallback(geometry_msgs::Point position);
-  void positionCallback(geometry_msgs::Point position);
+  void nanCallback(se2_grid_map_generator_msgs::Position2D position);
+  void positionCallback(se2_grid_map_generator_msgs::Position2D position);
   void setRectangleInMap(const std::string layerName, const double x, const double y, const double length,
                          const double width, const double value);
 
