@@ -79,8 +79,8 @@ namespace se2_planning {
   }
 
   void GridMapGenerator::obstacleCallback(se2_grid_map_generator_msgs::Obstacle obstacle) {
-    double x = obstacle.position.x;
-    double y = obstacle.position.y;
+    double x = obstacle.x.data;
+    double y = obstacle.y.data;
     double obstacleElevation = std::min(1.0, std::max(obstacle.value.data, 0.0)); // limit to range 0 to 1
     double obstacleTraversability = 1.0 - obstacleElevation; // limited to range 0 to 1
 
