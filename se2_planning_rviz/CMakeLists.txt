@@ -13,6 +13,7 @@ set(CATKIN_PACKAGE_DEPENDENCIES
   rviz
   se2_visualization_ros
   se2_navigation_msgs
+  approach_pose_planner_msgs
 )
 
 find_package(catkin REQUIRED

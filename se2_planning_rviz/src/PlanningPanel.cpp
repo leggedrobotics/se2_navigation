@@ -60,6 +60,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #include "se2_navigation_msgs/ControllerCommand.hpp"
 #include "se2_navigation_msgs/SendControllerCommandSrv.h"
 
+#include "approach_pose_planner_msgs/ApproachPoseRequestMsg.h"
+#include "approach_pose_planner_msgs/RequestApproachPoseSrv.h"
+
 #include <thread>
 
 namespace se2_planning_rviz {
@@ -142,6 +145,7 @@ void PlanningPanel::createLayout()
   registerEditButton(goal_edit_button);
 
   currentStateAsStartCheckBox_ = new QCheckBox();
+  approachPosePlanningCheckBox_ = new QCheckBox();
 
   start_goal_layout->addWidget(new QLabel("Start:"), 0, 0, Qt::AlignTop);
   start_goal_layout->addWidget(start_pose_widget_, 0, 1);
@@ -151,6 +155,8 @@ void PlanningPanel::createLayout()
   start_goal_layout->addWidget(goal_edit_button, 1, 2);
   start_goal_layout->addWidget(currentStateAsStartCheckBox_, 2, 0);
   start_goal_layout->addWidget(new QLabel("Start == current position"), 2, 1);
+  start_goal_layout->addWidget(approachPosePlanningCheckBox_, 2, 2);
+  start_goal_layout->addWidget(new QLabel("Plan approach pose"), 2, 3);
 
   // Planner services and publications.
   QHBoxLayout* service_layout = new QHBoxLayout;
@@ -170,6 +176,7 @@ void PlanningPanel::createLayout()
 
   //set the default parameters
   currentStateAsStartCheckBox_->setChecked(false);
+  approachPosePlanningCheckBox_->setChecked(false);
 
   // Hook up connections.
   connect(controllerCommandTopicEditor_, SIGNAL(editingFinished()), this,
@@ -341,28 +348,39 @@ void PlanningPanel::callPlanningService()
 
 std::thread t([this] {
 
-se2_navigation_msgs::PathRequestMsg pathRequest;
 
 const bool useCurrentStateAsStartingPose = currentStateAsStartCheckBox_->isChecked();
-
+geometry_msgs::Pose startingPose, goalPose;
 if (useCurrentStateAsStartingPose) {
-  getStartPoseFromService(&(pathRequest.startingPose));
-  lastPose_ = pathRequest.startingPose;  //update last state
+  getStartPoseFromService(&startingPose);
+  lastPose_ = startingPose;  //update last state
   pose_widget_map_["start"]->setPose(lastPose_);
   this->widgetPoseUpdated("start", lastPose_);
   finishEditing("start");
 } else {
-  getStartPoseFromWidget(&(pathRequest.startingPose));
+  getStartPoseFromWidget(&startingPose);
 }
 
-goal_pose_widget_->getPose(&(pathRequest.goalPose));
-
+goal_pose_widget_->getPose(&goalPose);
 std::string service_name = planningServiceName_.toStdString();
-se2_navigation_msgs::RequestPathSrv::Request req;
-req.pathRequest = pathRequest;
-se2_navigation_msgs::RequestPathSrv::Response res;
 
-callService(req,res,service_name);
+const bool isPlanAnApproachPose = approachPosePlanningCheckBox_->isChecked();
+
+if (isPlanAnApproachPose){
+  approach_pose_planner_msgs::RequestApproachPoseSrv::Request req;
+  approach_pose_planner_msgs::RequestApproachPoseSrv::Response res;
+  req.approachPoseRequest.goalPoint = goalPose.position;
+  req.approachPoseRequest.startingPose = startingPose;
+  callService(req,res,service_name);
+} else { // else do just regular planning
+  se2_navigation_msgs::RequestPathSrv::Request req;
+  req.pathRequest.goalPose = goalPose;
+  req.pathRequest.startingPose = startingPose;
+  se2_navigation_msgs::RequestPathSrv::Response res;
+  callService(req,res,service_name);
+}
+
+
 
 });
 
