@@ -16,8 +16,13 @@ find_package(catkin REQUIRED COMPONENTS
 
 add_message_files( 
    FILES
-     Obstacle.msg
+     RectangularObstacle.msg
      Position2D.msg
+)
+
+add_service_files(
+    DIRECTORY
+      srv
 )
 
 generate_messages(
@@ -26,8 +31,8 @@ generate_messages(
 )
 
 catkin_package(
-        INCLUDE_DIRS
-        CATKIN_DEPENDS
-        ${CATKIN_PACKAGE_DEPENDENCIES}
-        message_runtime
+    INCLUDE_DIRS
+    CATKIN_DEPENDS
+    ${CATKIN_PACKAGE_DEPENDENCIES}
+    message_runtime
 )

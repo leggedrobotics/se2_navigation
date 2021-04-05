@@ -114,11 +114,3 @@ config/
 * **`map/width`** (float, default: 20.0)
 
 	Size of map.
-	
-* **`obstacle/length`** (float, default: 0.5)
-
-	Length of standard obstacle.
-	
-* **`obstacle/width`** (float, default: 0.5)
-
-	Width of standard obstacle.

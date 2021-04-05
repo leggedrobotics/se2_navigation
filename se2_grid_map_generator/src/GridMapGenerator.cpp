@@ -22,9 +22,11 @@ namespace se2_planning {
 
   void GridMapGenerator::initRos() {
     mapPub_ = nh_->advertise<grid_map_msgs::GridMap>("grid_map", 1, true);
-    obstacleSub_ = nh_->subscribe("obstacle", 1, &GridMapGenerator::obstacleCallback, this);
-    nanSub_ = nh_->subscribe("nan", 1, &GridMapGenerator::nanCallback, this);
-    positionSub_ = nh_->subscribe("position", 1, &GridMapGenerator::positionCallback, this);
+    obstacleService_ = nh_->advertiseService("addObstacle", &GridMapGenerator::addObstacleService, this);
+    nanService_ = nh_->advertiseService("addNan", &GridMapGenerator::addNanService, this);
+    positionService_ = nh_->advertiseService("updateMapPosition", &GridMapGenerator::updateMapPositionService, this);
+    setUniformValueService_ = nh_->advertiseService("setUniformValue", &GridMapGenerator::setUniformValueService, this);
+    resetMapService_ = nh_->advertiseService("resetMap", &GridMapGenerator::resetMapService, this);
   }
 
   bool GridMapGenerator::loadParameters() {
@@ -36,18 +38,6 @@ namespace se2_planning {
     if (!nh_->getParam("map/position/y", mapPositionY_)) return false;
     if (!nh_->getParam("map/length", mapLength_)) return false;
     if (!nh_->getParam("map/width", mapWidth_)) return false;
-    if (!nh_->getParam("obstacle/length", obstacleLength_)) return false;
-    if (!nh_->getParam("obstacle/width", obstacleWidth_)) return false;
-    if (obstacleLength_ / 2.0 < mapResolution_) {
-      ROS_ERROR_STREAM("obstacle_length " << obstacleLength_ << " is too small for chosen map_resolution "
-                                          << mapResolution_ << ". Minimum is two times the map_resolution.");
-      return false;
-    }
-    if (obstacleWidth_ / 2.0 < mapResolution_) {
-      ROS_ERROR_STREAM("obstacle_width " << obstacleWidth_ << " is too small for chosen map_resolution "
-                                         << mapResolution_ << ". Minimum is two times the map_resolution.");
-      return false;
-    }
     return true;
   }
 
@@ -66,8 +56,9 @@ namespace se2_planning {
     mapPub_.publish(msg);
   }
 
-  void GridMapGenerator::setRectangleInMap(const std::string layerName, const double x, const double y, const double length,
-                                           const double width, const double value) {
+  void
+  GridMapGenerator::setRectangleInMap(const std::string layerName, const double x, const double y, const double length,
+                                      const double width, const double value) {
     for (grid_map::GridMapIterator iterator(map_); !iterator.isPastEnd(); ++iterator) {
       grid_map::Position position;
       map_.getPosition(*iterator, position);
@@ -78,48 +69,105 @@ namespace se2_planning {
     }
   }
 
-  void GridMapGenerator::obstacleCallback(se2_grid_map_generator_msgs::Obstacle obstacle) {
-    double x = obstacle.position.x.data;
-    double y = obstacle.position.y.data;
-    double obstacleElevation = std::min(1.0, std::max(obstacle.value.data, 0.0)); // limit to range 0 to 1
+  bool GridMapGenerator::addObstacleService(se2_grid_map_generator_msgs::AddObstacle::Request &req,
+                                            se2_grid_map_generator_msgs::AddObstacle::Response &res) {
+    double x = req.obstacle.center.x.data;
+    double y = req.obstacle.center.y.data;
+    double obstacleElevation = std::min(1.0, std::max(req.obstacle.value.data, 0.0)); // limit to range 0 to 1
     double obstacleTraversability = 1.0 - obstacleElevation; // limited to range 0 to 1
+    double length = req.obstacle.length.data;
+    double width = req.obstacle.width.data;
 
-    // Reset elevation layer
-    map_[elevationLayerName_].setConstant(0.0);
-    // Add obstacle to elevation layer
-    setRectangleInMap(elevationLayerName_, x, y, obstacleLength_, obstacleWidth_, obstacleElevation);
+    if (length < (2.0 * mapResolution_) || width < (2.0 * mapResolution_)) {
+      ROS_ERROR_STREAM("length " << length << " or width " << width << " is too small for chosen map_resolution "
+                                          << mapResolution_ << ". Minimum is two times the map_resolution.");
+      res.success = false;
+    } else {
+      // Add obstacle to elevation layer
+      setRectangleInMap(elevationLayerName_, x, y, length, width, obstacleElevation);
 
-    // Reset traversability layer
-    map_[traversabilityLayerName_].setConstant(1.0);
-    // Add obstacle to traversability layer
-    setRectangleInMap(traversabilityLayerName_, x, y, obstacleLength_, obstacleWidth_, obstacleTraversability);
+      // Add obstacle to traversability layer
+      setRectangleInMap(traversabilityLayerName_, x, y, length, width, obstacleTraversability);
 
-    publishMap();
+      publishMap();
+
+      res.success = true;
+    }
+    return true;
   }
 
-  void GridMapGenerator::nanCallback(se2_grid_map_generator_msgs::Position2D position) {
-    double x = position.x.data;
-    double y = position.y.data;
+  bool GridMapGenerator::addNanService(se2_grid_map_generator_msgs::AddNan::Request &req,
+                                       se2_grid_map_generator_msgs::AddNan::Response &res) {
+    double x = req.center.x.data;
+    double y = req.center.y.data;
+    double length = req.length.data;
+    double width = req.width.data;
 
-    // Reset elevation layer
-    map_[elevationLayerName_].setConstant(0.0);
-    // Add nans to elevation layer
-    setRectangleInMap(elevationLayerName_, x, y, obstacleLength_, obstacleWidth_, std::nanf(""));
+    if (length < (2.0 * mapResolution_) || width < (2.0 * mapResolution_)) {
+      ROS_ERROR_STREAM("length " << length << " or width " << width << " is too small for chosen map_resolution "
+                                 << mapResolution_ << ". Minimum is two times the map_resolution.");
+      res.success = false;
+    } else {
+      // Add nans to elevation layer
+      setRectangleInMap(elevationLayerName_, x, y, length, width, std::nanf(""));
 
-    // Reset traversability layer
-    map_[traversabilityLayerName_].setConstant(1.0);
-    // Add nans to traversability layer
-    setRectangleInMap(traversabilityLayerName_, x, y, obstacleLength_, obstacleWidth_, std::nanf(""));
+      // Add nans to traversability layer
+      setRectangleInMap(traversabilityLayerName_, x, y, length, width, std::nanf(""));
 
-    publishMap();
+      publishMap();
+
+      res.success = true;
+    }
+    return true;
   }
 
-  void GridMapGenerator::positionCallback(se2_grid_map_generator_msgs::Position2D position) {
+  bool GridMapGenerator::updateMapPositionService(se2_grid_map_generator_msgs::UpdateMapPosition::Request &req,
+                                                  se2_grid_map_generator_msgs::UpdateMapPosition::Response &res) {
     grid_map::Position mapPosition;
-    mapPosition.x() = position.x.data;
-    mapPosition.y() = position.y.data;
+    mapPosition.x() = req.position.x.data;
+    mapPosition.y() = req.position.y.data;
     map_.setPosition(mapPosition);
+
     publishMap();
+
+    res.success = true;
+    return true;
+  }
+
+  bool GridMapGenerator::setUniformValueService(se2_grid_map_generator_msgs::SetUniformValue::Request &req,
+                                                se2_grid_map_generator_msgs::SetUniformValue::Response &res) {
+    double value = req.value.data;
+
+    double elevation = std::min(1.0, std::max(value, 0.0)); // limit to range 0 to 1
+    double traversability = 1.0 - elevation; // limited to range 0 to 1
+
+    // Set elevation layer
+    map_[elevationLayerName_].setConstant(elevation);
+    // Set traversability layer
+    map_[traversabilityLayerName_].setConstant(traversability);
+
+    publishMap();
+
+    res.success = true;
+    return true;
+  }
+
+  bool GridMapGenerator::resetMapService(se2_grid_map_generator_msgs::ResetMap::Request &req,
+                                         se2_grid_map_generator_msgs::ResetMap::Response &res) {
+    (void) req; // not used, no inputs
+
+    // Reset map position
+    grid_map::Position mapPosition{0, 0};
+    map_.setPosition(mapPosition);
+    // Reset elevation layer
+    map_[elevationLayerName_].setConstant(0.0);
+    // Reset traversability layer
+    map_[traversabilityLayerName_].setConstant(1.0);
+
+    publishMap();
+
+    res.success = true;
+    return true;
   }
 
 } /* namespace se2_planning */

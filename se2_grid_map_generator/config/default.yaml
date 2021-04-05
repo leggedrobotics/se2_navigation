@@ -8,6 +8,3 @@ map:
     y:                          0.0
   length:                       20.0  # x dimension
   width:                        20.0  # y dimension
-obstacle:
-  length:                       0.50  # x dimension
-  width:                        0.50  # y dimension
