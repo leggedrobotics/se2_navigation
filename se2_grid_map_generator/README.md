@@ -14,9 +14,8 @@ The source code is released under a [BSD 3-Clause license](ros_package_template/
 **Maintainer:** Edo Jelavic, [jelavice@ethz.ch](jelavice@ethz.ch)
 Affiliation: Robotic Systems Lab, ETH Zurich**
 
-The se2_grid_map_generator package has been tested under [ROS] Melodic and Ubuntu 18.04. This is research code, expect 
+The se2_grid_map_generator package has been tested under [ROS] Melodic and Ubuntu 18.04. This is research code, expect
 that it changes often and any fitness for a particular purpose is disclaimed.
-
 
 ## Installation
 
@@ -28,89 +27,150 @@ that it changes often and any fitness for a particular purpose is disclaimed.
 
 #### Building
 
-To build from source, clone the latest version from this repository into your catkin workspace and compile the package using
+To build from source, clone the latest version from this repository into your catkin workspace and compile the package
+using
 
 	cd catkin_ws/src
 	git clone git@bitbucket.org:leggedrobotics/se2_navigation.git	
 	cd ../
 	catkin build se2_grid_map_generator
 
-
 ## Usage
 
 Run the main node with
 
 	roslaunch se2_grid_map_generator se2_grid_map_generator.launch
-	
-By publishing a message to the `obstacle`, `nan` or `position` topic the map can be manipulated.
- 
-    rostopic pub /se2_grid_map_generator_node/obstacle geometry_msgs/Point "{x: 2.0, y: 0.0, z: 1.0}" -1
 
-The z value defines the height of the obstacle (can only vary between 0 and 1).
-    
+The node publishes the default map at the beginning. The map can be manipulated e.g. obstacles added using service
+calls. The map is republished every time a service call changes the map. So far there is no functionality to publish the
+map at a fixed rate. This could be easily added.
+
 ## Config files
 
-config/
+config
+
+* **default.yaml :** Rosparams for the node.
+
+config/rviz
 
 * **default.rviz:** RViz config.
 
 ## Launch files
 
 * **se2_grid_map_generator.launch:** Standard launch file for simulation and real system.
-    
-     - **`launch_rviz`** Enable RViz visualization. Default: `False`.
-     
+
+    - **`launch_rviz`** Enable RViz visualization. Default: `False`.
+
 ## Nodes
 
 * **se2_grid_map_generator_node:**  Publishes a grid map with the desired size and obstacles.
 
-#### Subscribed Topics 
+#### Services
 
-* **`obstacle`** ([se2_grid_map_generator_msgs/Obstacle] )
+* **`addPolygonObstacle`** ([se2_grid_map_generator_msgs/AddPolygonObstacle])
 
-	Desired position and value of the layer in this area of a new obstacle in the map. The elevation layer directly uses 
-    the value (limited from 0 to 1), the traversability layer uses the "inverted value" (1 - value).
+  Sets the values in a given polygon to the given values for the given layers. For example, you can trigger a map update
+  with
 
-* **`nan`** ([geometry_msgs/Point] )
+  	 rosservice call /se2_grid_map_generator_node/addPolygonObstacle "obstacle:
+      polygon:
+        vertices:
+        - x:
+          data: 0.0
+          y:
+          data: 0.0
+        - x:
+          data: 1.0
+          y:
+          data: 0.0
+        - x:
+          data: 1.0
+          y:
+          data: 1.0
+        - x:
+          data: 0.0
+          y:
+          data: 1.0
+        layers:
+        - data: 'elevation'
+          values:
+        - data: 4.0"
 
-  Desired position of a path with nan values in the map (uses x and y component for position and z is ignored).
 
-* **`position`** ([geometry_msgs/Point] )
+* **`addCircularObstacle`** ([se2_grid_map_generator_msgs/AddCircularObstacle])
 
-	Desired position of the map.
-	
+  Sets the values in a given circle to the given values for the given layers. For example, you can trigger a map update
+  with
+  
+      rosservice call /se2_grid_map_generator_node/addCircularObstacle "obstacle:
+        circle:
+          center:
+            x:
+              data: 0.0
+            y:
+              data: 0.0
+            radius:
+              data: 0.0
+            layers:
+              - data: 'elevation'
+            values:
+              - data: 0.0"
+
+* **`addNan`** ([se2_grid_map_generator_msgs/AddNan])
+
+  Sets a certain polygon region to Nan.
+
+* **`setUniformValue`** ([se2_grid_map_generator_msgs/setUniformValue] )
+
+  Sets values of a given layer to a value. Can pass multiple layers and values.
+
+* **`updateMapPosition`** ([se2_grid_map_generator_msgs/updateMapPosition] )
+
+  Sets the position of the map.
+
+* **`resetMap`** ([se2_grid_map_generator_msgs/resetMap] )
+
+  Resets map to initial values.
+
 #### Published Topics
 
 * **`grid_map`** ([grid_map_msgs/GridMap] )
 
-	Grid map message. 
+  Grid map message.
 
 #### Parameters
 
 * **`map/frame_id`** (string, default: "world")
 
-    Frame id of grid map layer.
-    
-* **`map/layer_name`** (string, default: "traversability")
+  Frame id of grid map layer.
 
-    Layer name of grid map layer.
-    	
+* **`map/layers`** (vector of strings, default: "elevation, traversability")
+
+  Layer names of grid map layers.
+
+* **`map/default_values`** (vector of floats, default: "0.0, 1.0")
+
+  Default values of grid map layers.
+
 * **`map/resolution`** (float, default: 0.1)
 
-	Topic for pose/odometry input data.
-	
+  Topic for pose/odometry input data.
+
 * **`map/position/x`** (float, default: 5.0)
 
-	Position in reference frame frame_id.
+  Position in reference frame frame_id.
 
 * **`map/position/y`** (float, default: 0.0)
 
-    Position in reference frame frame_id.
-	
+  Position in reference frame frame_id.
+
 * **`map/length`** (float, default: 20.0)
 
-	Size of map.
+  Size of map.
 
 * **`map/width`** (float, default: 20.0)
 
-	Size of map.
+  Size of map.
+
+
+[ROS]: http://www.ros.org
