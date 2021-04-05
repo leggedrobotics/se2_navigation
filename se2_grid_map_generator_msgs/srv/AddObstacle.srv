@@ -1,5 +1,0 @@
-# Request
-se2_grid_map_generator_msgs/RectangularObstacle obstacle
----
-# Response
-bool success

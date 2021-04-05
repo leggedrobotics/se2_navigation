@@ -1,7 +1,7 @@
 map:
   frame_id:                     odom
-  elevation_layer_name:         elevation
-  traversability_layer_name:    traversability
+  layers:                       [elevation, traversability]
+  default_values:               [0.0, 1.0]
   resolution:                   0.1
   position:
     x:                          5.0

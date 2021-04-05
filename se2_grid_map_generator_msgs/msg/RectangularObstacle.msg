@@ -1,4 +1,0 @@
-se2_grid_map_generator_msgs/Position2D center
-std_msgs/Float64 length # along x-axis
-std_msgs/Float64 width  # along y-axis
-std_msgs/Float64 value

@@ -5,34 +5,33 @@ add_definitions(-std=c++11)
 
 
 set(CATKIN_PACKAGE_DEPENDENCIES
-    std_msgs
-)
+        std_msgs
+        )
 
 find_package(catkin REQUIRED COMPONENTS
-  ${CATKIN_PACKAGE_DEPENDENCIES}
-  message_generation
-)
+        ${CATKIN_PACKAGE_DEPENDENCIES}
+        message_generation
+        )
 
 
-add_message_files( 
-   FILES
-     RectangularObstacle.msg
-     Position2D.msg
+add_message_files(
+        DIRECTORY
+        msg
 )
 
 add_service_files(
-    DIRECTORY
-      srv
+        DIRECTORY
+        srv
 )
 
 generate_messages(
-    DEPENDENCIES
-      ${CATKIN_PACKAGE_DEPENDENCIES}
+        DEPENDENCIES
+        ${CATKIN_PACKAGE_DEPENDENCIES}
 )
 
 catkin_package(
-    INCLUDE_DIRS
-    CATKIN_DEPENDS
-    ${CATKIN_PACKAGE_DEPENDENCIES}
-    message_runtime
+        INCLUDE_DIRS
+        CATKIN_DEPENDS
+        ${CATKIN_PACKAGE_DEPENDENCIES}
+        message_runtime
 )
