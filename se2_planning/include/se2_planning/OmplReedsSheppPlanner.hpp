@@ -56,6 +56,12 @@ class OmplReedsSheppPlanner final : public OmplPlanner {
   void setParameters(const OmplReedsSheppPlannerParameters& parameters);
   void setStateValidator(std::unique_ptr<StateValidator> stateValidator);
   const StateValidator& getStateValidator() const;
+  void lockStateValidator();
+  void unlockStateValidator();
+  bool isLocked() const;
+  void updateStateSpaceBounds(const ompl::base::RealVectorBounds& bounds) override;
+  bool satisfiesStateSpaceBounds(const se2_planning::ReedsSheppState& state);
+  const ompl::base::RealVectorBounds& getStateSpaceBoundaries();
 
  private:
   void createDefaultStateSpace();

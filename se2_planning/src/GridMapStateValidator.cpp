@@ -30,6 +30,15 @@ void GridMapStateValidator::setGridMap(const grid_map::GridMap& gridMap) {
     throw std::runtime_error("Grid map has no layers");
   }
   gridMap_ = gridMap;
+  // TODO does not work correctly, boundaries of traversability layer get set to nan!? Problem because elevation_mapping_cupy
+  //  has strange resolution?!
+  // Convert resolution, optionally only copy relevant layer
+  //  gridMap_.setFrameId(gridMap.getFrameId());
+  //  gridMap_.setTimestamp(gridMap.getTimestamp());
+  //  gridMap_.setGeometry(gridMap.getLength(), gridMap.getResolution(), gridMap.getPosition());
+  //  if (!gridMap_.addDataFrom(gridMap, true, true, true)) {
+  //    throw std::runtime_error("Grid map add data failed.");
+  //  }
   isGridMapInitialized_ = true;
 }
 bool GridMapStateValidator::isInitialized() const {

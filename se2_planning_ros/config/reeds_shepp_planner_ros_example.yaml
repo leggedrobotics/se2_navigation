@@ -5,17 +5,40 @@ state_space:
   y_lower: -1000.0
   y_upper: 1000.0
   turning_radius: 10.0
-  
+
+state_validator_ros:
+  grid_map_frame:                   odom
+  grid_map_msg_sub_topic:           /se2_grid_map_generator_node/grid_map
+  grid_map_msg_pub_topic:           state_validator/grid_map
+  grid_map_obstacle_layer_name:     obstacle
+  grid_map_state_validity_checking_method: collision
+  grid_map_state_validity_threshold: 0.1
+  grid_map_unsafe_state_validity_threshold: 0.1
+  grid_map_max_number_of_unsafe_cells: 0
+  # grid map dimensions/geometry
+  grid_map_resolution:              0.1
+  grid_map_length:                  20.0
+  grid_map_width:                   20.0
+  grid_map_position_x:              5.0
+  grid_map_position_y:              0.0
+  grid_map_default_value:           0.0
+  # Robot footprint for collision checking
+  robot_footprint_length_forward:   0.75
+  robot_footprint_length_backward:  0.75
+  robot_footprint_width_left:       0.50
+  robot_footprint_width_right:      0.50
+
 planner_ros:
   nav_msgs_path_topic: ompl_rs_planner_ros/nav_msgs_path
   planning_service_name: ompl_rs_planner_ros/planning_service
-  path_msg_topic: ompl_rs_planner_ros/nav_msgs_path
-  path_frame: map
+  path_msg_topic: ompl_rs_planner_ros/path_msgs_path
+  path_frame: odom
   nav_msg_path_spatial_resolution: 1.5
+  state_space_bounds_margin: 0.5
 
 planner:
   path_spatial_resolution: 0.05
-  ompl_planner: RRTstar # see ompl_planner_creators.hpp for list of available planners
+  ompl_planner: RRTstar               # see ompl_planner_creators.hpp for list of available planners, not implemented yet
   max_planning_time: 1.0
   
 ompl_planners:

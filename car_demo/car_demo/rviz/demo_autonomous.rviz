@@ -1,12 +1,13 @@
 Panels:
   - Class: rviz/Displays
-    Help Height: 78
+    Help Height: 85
     Name: Displays
     Property Tree Widget:
       Expanded:
         - /Global Options1
         - /Status1
         - /RobotModel1
+        - /Marker1
       Splitter Ratio: 0.5
     Tree Height: 341
   - Class: rviz/Selection
@@ -567,6 +568,35 @@ Visualization Manager:
       Topic: /se2_planner_node/ompl_rs_planner_ros/nav_msgs_path
       Unreliable: false
       Value: true
+    - Class: rviz/Marker
+      Enabled: true
+      Marker Topic: /se2_planner_node/state_space
+      Name: Marker
+      Namespaces:
+        state_space: true
+      Queue Size: 100
+      Value: true
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Class: grid_map_rviz_plugin/GridMap
+      Color: 200; 200; 200
+      Color Layer: elevation
+      Color Transformer: GridMapLayer
+      Enabled: true
+      Height Layer: elevation
+      Height Transformer: GridMapLayer
+      History Length: 1
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Max Intensity: 10
+      Min Color: 0; 0; 0
+      Min Intensity: 0
+      Name: GridMap
+      Show Grid Lines: true
+      Topic: /se2_planner_node/state_validator/grid_map
+      Unreliable: false
+      Use Rainbow: true
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 186; 189; 182
@@ -602,18 +632,18 @@ Visualization Manager:
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -0.24793481826782227
-        Y: 1.0106052160263062
-        Z: -0.06408524513244629
+        X: 4.376317977905273
+        Y: -2.549678325653076
+        Z: 5.444847106933594
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.1503983736038208
+      Pitch: 0.4153985381126404
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 2.2054100036621094
+      Yaw: 2.095402956008911
     Saved: ~
 Window Geometry:
   Displays:
@@ -634,7 +664,7 @@ Window Geometry:
     collapsed: true
   Width: 1853
   X: 1987
-  Y: 27
+  Y: 34
   back_camera:
     collapsed: false
   front_camera:

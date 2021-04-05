@@ -35,6 +35,10 @@ void OmplPlanner::getPath(Path* path) const {
 bool OmplPlanner::plan() {
   simpleSetup_->clear();
   simpleSetup_->setStartAndGoalStates(*startState_, *goalState_);
+  // TODO see https://ompl.kavrakilab.org/genericPlanning.html for continue planning
+  //   The ompl::base::Planner::solve() method can be called repeatedly with different
+  //   allowed time durations until a solution is found. The planning process continues
+  //   with the available data structures when sequential calls to ompl::base::Planner::solve() are made.
   if (!simpleSetup_->solve(maxPlanningDuration_)) {
     std::cout << "OmplPlanner: Solve failed" << std::endl;
     return false;
@@ -64,6 +68,10 @@ bool OmplPlanner::initialize() {
   path_ = std::make_unique<ompl::geometric::PathGeometric>(si);
   interpolatedPath_ = std::make_unique<ompl::geometric::PathGeometric>(si);
   return true;
+}
+
+void OmplPlanner::updateStateSpaceBounds(const ompl::base::RealVectorBounds& bounds) {
+  throw std::runtime_error("Not implemented");
 }
 
 void OmplPlanner::setMaxPlanningDuration(double T) {

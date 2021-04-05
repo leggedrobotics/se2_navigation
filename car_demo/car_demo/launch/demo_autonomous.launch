@@ -28,7 +28,8 @@
 	</include>
 
 	<include file="$(find gazebo_ros)/launch/empty_world.launch">
-		<arg name="verbose" value="true" />
+		<arg name="verbose" value="false" />
+		<arg name="gui" value="false" />
 		<arg name="world_name" value="$(find car_demo)/worlds/empty.world" />
 	</include>
 

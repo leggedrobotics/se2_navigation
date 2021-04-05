@@ -26,6 +26,7 @@
 
 #pragma once
 
+#include <geometry_msgs/Polygon.h>
 #include <std_msgs/ColorRGBA.h>
 #include <visualization_msgs/MarkerArray.h>
 #include <Eigen/Dense>
@@ -73,6 +74,9 @@ void drawSphere(const Eigen::Vector3d& p, const Color& color, double diameter, v
 
 void drawSphereList(const std::vector<geometry_msgs::Point>& points, const Color& color, double diameter,
                     visualization_msgs::Marker* marker);
+
+void drawFootprint(const Eigen::Vector3d& center, const Eigen::Vector4d& orientation, const geometry_msgs::Polygon& footprint,
+                   const Color& color, const double& scale, visualization_msgs::Marker* marker);
 
 geometry_msgs::Quaternion toQuaternion(double roll, double pitch, double yaw);
 

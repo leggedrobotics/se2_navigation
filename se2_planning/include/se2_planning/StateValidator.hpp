@@ -17,6 +17,10 @@ class StateValidator {
   virtual bool isStateValid(const State& state) const = 0;
   virtual void initialize();
   virtual bool isInitialized() const;
+  virtual bool isLocked() const;
+  virtual void lock();
+  virtual void unlock();
+  bool isLocked_ = false;
 };
 
 class SE2stateValidator : public StateValidator {

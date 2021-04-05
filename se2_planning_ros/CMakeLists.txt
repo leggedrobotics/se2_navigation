@@ -7,6 +7,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(SRC_FILES
   src/OmplReedsSheppPlannerRos.cpp
+  src/GridMapLazyStateValidatorRos.cpp
   src/loaders.cpp
   src/PlannerRos.cpp
   src/common.cpp
@@ -18,6 +19,8 @@ set(CATKIN_PACKAGE_DEPENDENCIES
   nav_msgs
   tf2
   se2_navigation_msgs
+  grid_map_ros
+  visualization_msgs
 )
 
 find_package(catkin REQUIRED

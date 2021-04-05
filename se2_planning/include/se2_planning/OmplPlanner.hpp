@@ -33,6 +33,7 @@ class OmplPlanner : public Planner {
   void getInterpolatedPath(Path* interpolatedPath, unsigned int numPoints) const;
   ompl::geometric::SimpleSetupPtr getSimpleSetup() const;
   void setOmplPlanner(ompl::base::PlannerPtr planner);
+  virtual void updateStateSpaceBounds(const ompl::base::RealVectorBounds& bounds);
 
  protected:
   virtual void initializeStateSpace() = 0;

@@ -217,7 +217,7 @@ void PriusControllerRos::initRos()
   controllerCommandService_ = nh_->advertiseService("/prius/controller_command_service",
                                                     &PriusControllerRos::controllerCommandService,
                                                     this);
-  pathSub_ = nh_->subscribe("/se2_planner_node/ompl_rs_planner_ros/path", 1,
+  pathSub_ = nh_->subscribe("/se2_planner_node/ompl_rs_planner_ros/path_msgs_path", 1,
                             &PriusControllerRos::pathCallback, this);
 }
 

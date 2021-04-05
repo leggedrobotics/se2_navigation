@@ -18,6 +18,10 @@
 
 const int numTestCases = 500;
 const std::string benchmarkLayer = "occupancy";
+const se2_planning::StateValidityCheckingMethod stateValidityCheckingMethod = se2_planning::StateValidityCheckingMethod::COLLISION;
+const double collisionThreshold = 0.1;
+const double unsafeTraversabilityThreshold = 0.1;
+const int maxNumberOfUnsafeCells = 10;
 
 void setCostThreshold(se2_planning::OmplReedsSheppPlanner* planner) {
   auto si = planner->getSimpleSetup()->getSpaceInformation();
@@ -64,8 +68,9 @@ void runNormalValidator(se2_planning::OmplReedsSheppPlanner& planner, const grid
 
 void runLazyValidator(se2_planning::OmplReedsSheppPlanner& planner, const grid_map::GridMap& gridMap) {
   // create state validator
-  auto plannerStateValidator =
-      se2_planning::createGridMapLazyStateValidator(gridMap, se2_planning::computeFootprint(1.0, 0.0, 0.5, 0.5), benchmarkLayer);
+  auto plannerStateValidator = se2_planning::createGridMapLazyStateValidator(
+      gridMap, se2_planning::computeFootprint(1.0, 0.0, 0.5, 0.5), benchmarkLayer, stateValidityCheckingMethod, collisionThreshold,
+      unsafeTraversabilityThreshold, maxNumberOfUnsafeCells);
   planner.setStateValidator(std::move(plannerStateValidator));
   std::cout << "benchmarking lazy validator " << std::endl;
   runPlanner(planner);
@@ -73,8 +78,9 @@ void runLazyValidator(se2_planning::OmplReedsSheppPlanner& planner, const grid_m
 
 void runLazyRandomValidator(se2_planning::OmplReedsSheppPlanner& planner, const grid_map::GridMap& gridMap) {
   // create state validator
-  auto plannerStateValidator =
-      se2_planning::createGridMapLazyStateValidator(gridMap, se2_planning::computeFootprint(1.0, 0.0, 0.5, 0.5), benchmarkLayer);
+  auto plannerStateValidator = se2_planning::createGridMapLazyStateValidator(
+      gridMap, se2_planning::computeFootprint(1.0, 0.0, 0.5, 0.5), benchmarkLayer, stateValidityCheckingMethod, collisionThreshold,
+      unsafeTraversabilityThreshold, maxNumberOfUnsafeCells);
   plannerStateValidator->setIsUseRandomizedStrategy(true);
   planner.setStateValidator(std::move(plannerStateValidator));
   std::cout << "benchmarking lazy random validator " << std::endl;
@@ -83,8 +89,9 @@ void runLazyRandomValidator(se2_planning::OmplReedsSheppPlanner& planner, const 
 
 void runLazyRandomEarlyStoppingValidator(se2_planning::OmplReedsSheppPlanner& planner, const grid_map::GridMap& gridMap) {
   // create state validator
-  auto plannerStateValidator =
-      se2_planning::createGridMapLazyStateValidator(gridMap, se2_planning::computeFootprint(1.0, 0.0, 0.5, 0.5), benchmarkLayer);
+  auto plannerStateValidator = se2_planning::createGridMapLazyStateValidator(
+      gridMap, se2_planning::computeFootprint(1.0, 0.0, 0.5, 0.5), benchmarkLayer, stateValidityCheckingMethod, collisionThreshold,
+      unsafeTraversabilityThreshold, maxNumberOfUnsafeCells);
   plannerStateValidator->setIsUseRandomizedStrategy(true);
   plannerStateValidator->setIsUseEarlyStoppingHeuristic(true);
   planner.setStateValidator(std::move(plannerStateValidator));

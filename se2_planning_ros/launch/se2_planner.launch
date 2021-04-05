@@ -14,10 +14,13 @@
 
 
 	<!-- Nodes -->
+	<!-- Main node -->
 	<node name="se2_planner_node" pkg="se2_planning_ros"
 		type="se2_planner_node" output="screen" launch-prefix="">
+<!--		type="se2_planner_node" output="screen" launch-prefix="xterm -e gdb &#45;&#45;args">-->
 	</node>
 
+	<!-- RViz -->
 	<node name="rviz" pkg="rviz" type="rviz"
 		args="-d $(arg rviz_config_file)" required="true"
 		if="$(arg launch_rviz)" />
