@@ -5,24 +5,28 @@ add_definitions(-std=c++11)
 
 
 set(CATKIN_PACKAGE_DEPENDENCIES
-    std_msgs
-    geometry_msgs
-)
+        std_msgs
+        )
 
 find_package(catkin REQUIRED COMPONENTS
-  ${CATKIN_PACKAGE_DEPENDENCIES}
-  message_generation
+        ${CATKIN_PACKAGE_DEPENDENCIES}
+        message_generation
+        )
+
+
+add_message_files(
+        DIRECTORY
+        msg
 )
 
-
-add_message_files( 
-   FILES
-     Obstacle.msg
+add_service_files(
+        DIRECTORY
+        srv
 )
 
 generate_messages(
-    DEPENDENCIES
-      ${CATKIN_PACKAGE_DEPENDENCIES}
+        DEPENDENCIES
+        ${CATKIN_PACKAGE_DEPENDENCIES}
 )
 
 catkin_package(
