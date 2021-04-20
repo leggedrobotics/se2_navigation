@@ -1,0 +1,6 @@
+# Request
+string filepath
+---
+# Response
+bool success
+string filepath

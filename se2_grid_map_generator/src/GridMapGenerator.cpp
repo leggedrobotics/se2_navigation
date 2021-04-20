@@ -6,10 +6,21 @@
  */
 
 #include "se2_grid_map_generator/GridMapGenerator.hpp"
+#include "grid_map_ros/GridMapRosConverter.hpp"
+#include <ros/package.h>
 
 namespace se2_planning {
 
-  GridMapGenerator::GridMapGenerator(ros::NodeHandlePtr nh) : nh_(nh) {}
+GridMapGenerator::GridMapGenerator(ros::NodeHandlePtr nh)
+    : nh_(nh),
+      gridMapTopic_("grid_map"),
+      mapResolution_(0.0),
+      mapPositionX_(0.0),
+      mapPositionY_(0.0),
+      mapLength_(20.0),
+      mapWidth_(20.0)
+{
+}
 
   void GridMapGenerator::initialize() {
     if (!loadParameters()) {
@@ -21,7 +32,7 @@ namespace se2_planning {
   }
 
   void GridMapGenerator::initRos() {
-    mapPub_ = nh_->advertise<grid_map_msgs::GridMap>("grid_map", 1, true);
+    mapPub_ = nh_->advertise<grid_map_msgs::GridMap>(gridMapTopic_, 1, true);
     polygonObstacleService_ = nh_->advertiseService("addPolygonObstacle",
                                                         &GridMapGenerator::addPolygonObstacleService, this);
     circularObstacleService_ = nh_->advertiseService("addCircularObstacle",
@@ -30,6 +41,7 @@ namespace se2_planning {
     positionService_ = nh_->advertiseService("updateMapPosition", &GridMapGenerator::updateMapPositionService, this);
     setUniformValueService_ = nh_->advertiseService("setUniformValue", &GridMapGenerator::setUniformValueService, this);
     resetMapService_ = nh_->advertiseService("resetMap", &GridMapGenerator::resetMapService, this);
+    saveMapService_ = nh_->advertiseService("saveMap", &GridMapGenerator::saveMapService, this);
   }
 
   bool GridMapGenerator::loadParameters() {
@@ -41,6 +53,7 @@ namespace se2_planning {
     if (!nh_->getParam("map/position/y", mapPositionY_)) return false;
     if (!nh_->getParam("map/length", mapLength_)) return false;
     if (!nh_->getParam("map/width", mapWidth_)) return false;
+    if (!nh_->getParam("map/topic", gridMapTopic_)) return false;
 
     if (layers_.size() != default_values_.size()) {
       ROS_ERROR_STREAM("layers and default_values do not have the same number of entries!");
@@ -259,5 +272,29 @@ namespace se2_planning {
     res.success = true;
     return true;
   }
+
+  bool GridMapGenerator::saveMapToRosbagFile(const std::string &filename) const{
+    return grid_map::GridMapRosConverter::saveToBag(map_, filename, gridMapTopic_);
+  }
+
+  bool GridMapGenerator::saveMapService(se2_grid_map_generator_msgs::SaveMap::Request &req,
+                       se2_grid_map_generator_msgs::SaveMap::Response &res){
+
+    std::string requestedFilepath = req.filepath;
+
+    if (requestedFilepath.empty()){
+      const std::string defaultFilepath = ros::package::getPath("se2_grid_map_generator") + "/data/generated_grid_map.bag";
+      requestedFilepath = defaultFilepath;
+    }
+
+    res.filepath = requestedFilepath;
+    res.success = saveMapToRosbagFile(requestedFilepath);
+
+    std::cout << "Grid map saved to: " << requestedFilepath << std::endl;
+
+    return true;
+
+  }
+
 
 } /* namespace se2_planning */

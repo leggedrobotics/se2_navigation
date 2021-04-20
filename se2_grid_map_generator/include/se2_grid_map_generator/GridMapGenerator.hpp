@@ -20,6 +20,7 @@
 #include <se2_grid_map_generator_msgs/UpdateMapPosition.h>
 #include <se2_grid_map_generator_msgs/SetUniformValue.h>
 #include <se2_grid_map_generator_msgs/ResetMap.h>
+#include <se2_grid_map_generator_msgs/SaveMap.h>
 
 namespace se2_planning {
 
@@ -38,6 +39,8 @@ namespace se2_planning {
     void publishMap();
 
     bool loadParameters();
+
+    bool saveMapToRosbagFile(const std::string &filename) const;
 
   protected:
     bool addPolygonObstacleService(se2_grid_map_generator_msgs::AddPolygonObstacle::Request &req,
@@ -58,6 +61,9 @@ namespace se2_planning {
     bool resetMapService(se2_grid_map_generator_msgs::ResetMap::Request &req,
                          se2_grid_map_generator_msgs::ResetMap::Response &res);
 
+    bool saveMapService(se2_grid_map_generator_msgs::SaveMap::Request &req,
+                         se2_grid_map_generator_msgs::SaveMap::Response &res);
+
     void setPolygonInMap(const std::string layerName, const grid_map::Polygon polygon, const double value);
 
     void setCircleInMap(const std::string layerName, const grid_map::Position center, const double radius,
@@ -74,6 +80,7 @@ namespace se2_planning {
     ros::ServiceServer positionService_;
     ros::ServiceServer setUniformValueService_;
     ros::ServiceServer resetMapService_;
+    ros::ServiceServer saveMapService_;
     ros::Publisher mapPub_;
     grid_map::GridMap map_;
 
@@ -86,6 +93,7 @@ namespace se2_planning {
     double mapPositionY_;
     double mapLength_;
     double mapWidth_;
+    std::string gridMapTopic_;
   };
 
 } /* namespace se2_planning */
