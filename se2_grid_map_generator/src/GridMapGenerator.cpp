@@ -6,10 +6,16 @@
  */
 
 #include "se2_grid_map_generator/GridMapGenerator.hpp"
+#include "grid_map_ros/GridMapRosConverter.hpp"
 
 namespace se2_planning {
 
-  GridMapGenerator::GridMapGenerator(ros::NodeHandlePtr nh) : nh_(nh) {}
+  GridMapGenerator::GridMapGenerator(ros::NodeHandlePtr nh) : nh_(nh), gridMapTopic_("grid_map") {}
+
+  GridMapGenerator::~GridMapGenerator() {
+
+  }
+
 
   void GridMapGenerator::initialize() {
     if (!loadParameters()) {
@@ -21,7 +27,7 @@ namespace se2_planning {
   }
 
   void GridMapGenerator::initRos() {
-    mapPub_ = nh_->advertise<grid_map_msgs::GridMap>("grid_map", 1, true);
+    mapPub_ = nh_->advertise<grid_map_msgs::GridMap>(gridMapTopic_, 1, true);
     polygonObstacleService_ = nh_->advertiseService("addPolygonObstacle",
                                                         &GridMapGenerator::addPolygonObstacleService, this);
     circularObstacleService_ = nh_->advertiseService("addCircularObstacle",
@@ -258,6 +264,10 @@ namespace se2_planning {
     publishMap();
     res.success = true;
     return true;
+  }
+
+  bool GridMapGenerator::saveMapToRosbagFile(const std::string &filename) const{
+    return grid_map::GridMapRosConverter::saveToBag(map_, filename, gridMapTopic_);
   }
 
 } /* namespace se2_planning */

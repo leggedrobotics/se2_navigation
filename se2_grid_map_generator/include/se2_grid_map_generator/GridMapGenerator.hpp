@@ -27,7 +27,7 @@ namespace se2_planning {
   public:
     GridMapGenerator(ros::NodeHandlePtr nh);
 
-    ~GridMapGenerator() = default;
+    ~GridMapGenerator();
 
     void initialize();
 
@@ -38,6 +38,8 @@ namespace se2_planning {
     void publishMap();
 
     bool loadParameters();
+
+    bool saveMapToRosbagFile(const std::string &filename) const;
 
   protected:
     bool addPolygonObstacleService(se2_grid_map_generator_msgs::AddPolygonObstacle::Request &req,
@@ -78,6 +80,7 @@ namespace se2_planning {
     grid_map::GridMap map_;
 
   private:
+    bool isSaveMapToFile_ = false;
     std::string mapFrameId_;
     std::vector<std::string> layers_;
     std::vector<double> default_values_;
@@ -86,6 +89,7 @@ namespace se2_planning {
     double mapPositionY_;
     double mapLength_;
     double mapWidth_;
+    std::string gridMapTopic_;
   };
 
 } /* namespace se2_planning */
