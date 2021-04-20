@@ -132,6 +132,10 @@ config/rviz
 
   Resets map to initial values.
 
+* **`saveMap`** ([se2_grid_map_generator_msgs/resetMap] )
+
+  Saves the map to file provided in the field 'filepath'. If the string 'filepath' is left empy the map will be saved in the default path se2_grid_map_generator/data/generated_grid_map.bag.
+
 #### Published Topics
 
 * **`grid_map`** ([grid_map_msgs/GridMap] )
@@ -156,7 +160,7 @@ config/rviz
 
   Topic for pose/odometry input data.
 
-* **`map/position/x`** (float, default: 5.0)
+* **`map/position/x`** (float, default: 0.0)
 
   Position in reference frame frame_id.
 
@@ -172,5 +176,8 @@ config/rviz
 
   Size of map.
 
+* **`map/topic`** (vector of floats, default: "grid_map")
+
+  Ros topic on which the map is published.
 
 [ROS]: http://www.ros.org

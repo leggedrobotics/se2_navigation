@@ -17,8 +17,8 @@ GridMapGenerator::GridMapGenerator(ros::NodeHandlePtr nh)
       mapResolution_(0.0),
       mapPositionX_(0.0),
       mapPositionY_(0.0),
-      mapLength_(10.0),
-      mapWidth_(10.0)
+      mapLength_(20.0),
+      mapWidth_(20.0)
 {
 }
 
