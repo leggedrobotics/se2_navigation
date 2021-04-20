@@ -1,0 +1,5 @@
+# Request
+se2_grid_map_generator_msgs/Position2D position
+---
+# Response
+bool success
