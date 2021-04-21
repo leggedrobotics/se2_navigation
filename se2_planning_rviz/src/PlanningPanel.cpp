@@ -273,15 +273,19 @@ void PlanningPanel::finishEditing(const std::string& id)
   search->second->getPose(&pose);
 
   const bool isPlanAnApproachPose = approachPosePlanningCheckBox_->isChecked();
-  if (isPlanAnApproachPose) {
+  setShapeOfGoalMarker(isPlanAnApproachPose);
+
+  interactive_markers_.enableMarker(id, pose);
+}
+
+void PlanningPanel::setShapeOfGoalMarker(const bool isPlanningApproachPose){
+  if (isPlanningApproachPose) {
     interactive_markers_.setMarkerShape(PlanningInteractiveMarkers::MarkerType::GOAL,
                                         PlanningInteractiveMarkers::MarkerShape::CYLINDER);
   } else {
     interactive_markers_.setMarkerShape(PlanningInteractiveMarkers::MarkerType::GOAL,
                                         PlanningInteractiveMarkers::MarkerShape::ARROW);
   }
-
-  interactive_markers_.enableMarker(id, pose);
 }
 
 void PlanningPanel::registerPoseWidget(PoseWidget* widget)
@@ -311,13 +315,25 @@ rviz::Panel::save(config);
 config.mapSetValue("path_request_topic", planningServiceName_);
 config.mapSetValue("get_current_state_service", currentStateServiceName_);
 config.mapSetValue("controller_command_topic", controllerCommandTopicName_);
+
+
+
+auto getCheckedStatusAsString = [](QCheckBox *checkBox){
+  const std::string checkStatus = checkBox->isChecked() ? "checked" : "not_checked";
+  return QString::fromStdString(checkStatus);;
+};
+QString checkedStatus = getCheckedStatusAsString(approachPosePlanningCheckBox_);
+config.mapSetValue("plan_approach_pose",checkedStatus);
+checkedStatus = getCheckedStatusAsString(currentStateAsStartCheckBox_);
+config.mapSetValue("use_current_pose_as_start", checkedStatus);
+
 }
 
 // Load all configuration data for this panel from the given Config object.
 void PlanningPanel::load(const rviz::Config& config)
 {
 rviz::Panel::load(config);
-QString topic;
+
 if (config.mapGetString("path_request_topic", &planningServiceName_)) {
 planningServiceNameEditor_->setText(planningServiceName_);
 }
@@ -328,6 +344,29 @@ currStateServiceEditor_->setText(currentStateServiceName_);
 
 if (config.mapGetString("controller_command_topic", &controllerCommandTopicName_)) {
 controllerCommandTopicEditor_->setText(controllerCommandTopicName_);
+}
+
+auto isChecked = [](const QString &qString){
+  const std::string str = qString.toStdString();
+  return str == "checked";
+};
+
+QString checkedStatus;
+if (config.mapGetString("use_current_pose_as_start", &checkedStatus)){
+  currentStateAsStartCheckBox_->setChecked(isChecked(checkedStatus));
+}
+
+//bool isUseCurrentStateAsStart ;
+if (config.mapGetString("plan_approach_pose",&checkedStatus)){
+  bool checkedValue = isChecked(checkedStatus);
+  approachPosePlanningCheckBox_->setChecked(checkedValue);
+  setShapeOfGoalMarker(checkedValue);
+  geometry_msgs::Pose pose;
+  pose.position.x = pose.position.y = pose.position.z = 0.0;
+  pose.orientation.w = 1.0;
+  pose.orientation.x = pose.orientation.y = pose.orientation.z = 0.0;
+
+  interactive_markers_.enableMarker("goal", pose);
 }
 
 }

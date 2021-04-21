@@ -114,6 +114,8 @@ class PlanningPanel : public rviz::Panel {
   void getStartPoseFromService(geometry_msgs::Pose *startPoint);
   void callSendControllerCommandService(se2_navigation_msgs::ControllerCommand &command) const;
 
+  void setShapeOfGoalMarker(const bool isPlanningApproachPose);
+
   // ROS Stuff:
   ros::NodeHandle nh_;
 
