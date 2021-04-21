@@ -30,4 +30,8 @@ void HeightMap::setGridMap(const grid_map::GridMap& gm, const std::string& heigh
   isInitialized_ = true;
 }
 
+const grid_map::GridMap& HeightMap::getGridMap() const {
+  return impl_;
+}
+
 } /* namespace se2_planning*/

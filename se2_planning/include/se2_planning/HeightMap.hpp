@@ -21,6 +21,8 @@ class HeightMap {
 
   void setGridMap(const grid_map::GridMap& gm, const std::string& heightLayer);
 
+  const grid_map::GridMap& getGridMap() const;
+
  private:
   grid_map::GridMap impl_;
   std::string heightLayer_ = "";
