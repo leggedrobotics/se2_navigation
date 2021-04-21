@@ -1,0 +1,11 @@
+map:
+  frame_id:                     map
+  layers:                       [elevation, obstacle]
+  default_values:               [0.0, 0.0]
+  resolution:                   0.1
+  position:
+    x:                          0.0
+    y:                          0.0
+  length:                       40.0  # x dimension
+  width:                        40.0  # y dimension
+  topic:                        grid_map

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+	<!-- Parameters -->
+	<arg name="config_filename"
+		default="$(find approach_pose_planner_ros)/config/grid_map_generation.yaml" />
+	<arg name="rviz_config_file"
+		 default="$(find approach_pose_planner_ros)/rviz/generate_grid_map.rviz" />
+	<include
+		file="$(find se2_grid_map_generator)/launch/se2_grid_map_generator.launch">
+		<arg name="launch_rviz" value="true" />
+		<arg name="config_filename" value="$(arg config_filename)" />
+		<arg name="rviz_config_file" value="$(arg rviz_config_file)" />
+	</include>
+
+	<node pkg="approach_pose_planner_ros" type="generate_grid_map_node.py"
+		name="generate_grid_map_node" output="screen">
+	</node>
+
+</launch>

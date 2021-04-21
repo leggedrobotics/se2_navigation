@@ -1,0 +1,2 @@
+geometry_msgs/Pose startingPose
+geometry_msgs/Point goalPoint
