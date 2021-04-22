@@ -64,6 +64,8 @@ See se2_planning.
 ### Planner
 See se2_planning.
 
+* obstacle_layer - grid map layer that contains the layer with obstacles. Obstacle layer is used for collision checking.
+
 ### Height Map
 * height_layer - Name of the height map layer in the grid map.
 * topic - grid map topic in case you a publishing it or loading from a ros bag.
