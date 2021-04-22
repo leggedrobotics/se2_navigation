@@ -1,6 +1,6 @@
 # approach\_pose\_planner
 
-This package provides an approach pose planner that jointly plans an approach pose and a path. The use case is motivated by an autonomous tree harvesting mission where we know the tree locations (x,y) however it us unclear from which direction should we approach them in the unstructured environment.
+This package provides an approach pose planner that jointly plans an approach pose and a path. The use case is motivated by an autonomous tree harvesting mission where we know the tree locations (x,y) however it us unclear from which direction should we approach them in the unstructured environment. The tree location is merely an approaximate location for the endeffector of the tree harvester.
 
 Below you will find a short summary of the algorithmics, for more detailed explanation, please refer to the following [paper](https://arxiv.org/abs/2104.10110).
 
@@ -71,7 +71,7 @@ See se2_planning.
 * topic - grid map topic in case you a publishing it or loading from a ros bag.
 
 ### Robot footprint
-* See sketch [here](../se2_planning/README.md);
+* See sketch [here](../../se2_planning/README.md).
 
 ### Line of Sight Validator
 * is_assume_target_always_reachable - bool flag whether to perform reachability checking as described above.

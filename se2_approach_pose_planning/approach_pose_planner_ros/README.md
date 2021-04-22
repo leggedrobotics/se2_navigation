@@ -24,22 +24,24 @@ if you can succesfully build the approach_pose_planner package, the ros integrat
 
 ## Usage
 
-If you would like to try the planner on an example map, make sure that you compile the [se2_grid_map_generator](../se2_grid_map_generator/RADME.md) package with:  
+If you would like to try the planner on an example map, make sure that you compile the [se2_grid_map_generator](../../se2_grid_map_generator/README.md) package with:  
 
 `catkin build se2_grid_map_generator`
 
  You can create an example map with:  
 `roslaunch approach_pose_planner_ros generate_grid_map.launch`  
 
-If you did not modify the python node, the map will be saved to the default location (see [se2_grid_map_generator](../se2_grid_map_generator/RADME.md)). In case you don't generate the map, the planner just assumes that everyhing is free space. Now you can run the approach pose planner node with:   
+If you did not modify the python node, the map will be saved to the default location (see [se2_grid_map_generator](../../se2_grid_map_generator/README.md)). In case you don't generate the map, the planner just assumes that everyhing is free space. Now you can run the approach pose planner node with:   
 
 `roslaunch approach_pose_planner_ros approach_pose_planner_ros.launch`
 
-This should open up a planning panel as in image below. For instructions on how to add the planning panel, refer to [se2_planning_rviz](../se2_planning_rviz/README.md). In case the map is not shown correctly make sure that you have compiled the grid map rviz plugin (in case you are compiling from source).
+This should open up a planning panel as in image below. For instructions on how to add the planning panel, refer to [se2_planning_rviz](../../se2_planning_rviz/README.md). In case the map is not shown correctly make sure that you have compiled the grid map rviz plugin (in case you are compiling from source).
 
 [<img src="doc/rviz_vis.png" width="741" height="458">]()
 
-To use the approach pose planner, you have to have *Plan approach pose* box checked. The goal target is shown with an orange cylinder. The path is shown with a purple color and blue arrows show a subset of candidate approach poses. Thick red and blue arrows are the final approach pose and the starting pose, respectively.
+To use the approach pose planner, you have to have *Plan approach pose* box checked. The goal target is shown with an orange cylinder and there is an orange sphere howering above the target point. The path is shown with a purple color and blue arrows show a subset of candidate approach poses. Thick red and blue arrows are the final approach pose and the starting pose, respectively.
+
+Note that when planning an approach pose the yaw nagle given in the goal pose is ignored.
 
 
 ## Parameters
@@ -47,7 +49,7 @@ To use the approach pose planner, you have to have *Plan approach pose* box chec
 The approach pose planner reuses some of the algorithms inside the se2_planning package and hece shares some of the parameters
 
 ### Approach pose planner ros
-Some parameters are shared with se2_planning_ros package, please refer to the respective [README](../se2_planning_ros/README.md)
+Some parameters are shared with se2_planning_ros package, please refer to the respective [README](../../se2_planning_ros/README.md)
 
 *  approach_poses_visualization_decimation_factor - decimation factor for the set of candidate approach poses. E.g. if 100, only every 100th candidate approach pose will be published.
 *  pose_arrow_radius - parameter for the pose visualization marker
