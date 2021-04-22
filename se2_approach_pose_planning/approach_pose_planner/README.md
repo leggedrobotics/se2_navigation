@@ -7,22 +7,33 @@ Below you will find a short summary of the algorithmics, for more detailed expla
 
 ## Conventions
 
+### Approach pose generation
+
 The algorithm generates M * N * K approach poses by cominging M distances from the target, with N polar angles to generate positions around the target. Lastly the M * N positions are combined with K yaw angles to generate M * N * K approach poses. The minimal distances increaase with step s where d0 is the minimal distance and dM maximal distance. THe polar angles are denoted with theta and yaw angles with gamma.
 
-[<img src="doc/Approach_pose_conventions.png" width="317" height="327">](Approach_pose_conventions.pdf)
+[<img src="doc/Approach_pose_conventions.png" width="317" height="327">]((Approach_pose_conventions.pdf))
 
 
-### Collision checking
-Rectangular collision footprint is shown in an image below. We allow for arbitrary polygons to be used as a collision footprint, as long as the vertices are ordered counter-clockwise. Rectangular fooprints can be created using conveniece functions provided. The footprint is defined by four points:   
+### Feasibility checking
+Each approach pose is checked for collisions with the environment. Note that the collision footprint for approach pose collision checking can in general be different than the one for driving (typically a rectangle). Hence we can use the smaller footprint for driving and larger one for approach pose generation. Using a larger footprint is useful if we have a mobile manipulator that needs to swing the arm. See image below:
 
-* Right Hind (RH)
-* Right Front (RF)
-* Left Front (LF)
-* Left Hind (LH)
+[<img src="doc/driving_footprint.png" width="344" height="276">]
+[<img src="doc/approach_planning_footprint.png" width="344" height="276">]  
 
-User can either specify those point manually, of define 4 measures shown in the image below. The points will then be calculated automatically. All distances are marked with `d` and measured from the origin of the coordinate system.
 
-[<img src="doc/collision_footprint_conventions.png" width="235" height="327">](collision_footprint_conventions.pdf)
+In addition to collision checking, we introduce a reachability criterion to test whether we can reach the target from the candidate approach pose. This can be useful for mobile manipulators that need to grab the target from the planned approach pose. Reachability footprint always extends from the base frame to the target in a straight line as shown below. Reachability footprint's width can be specified as a parameter, as well as length of the red portion of the rectangle. Obstacles inside the red are ignored for feasibility checking.
+
+[<img src="doc/feasiblity_checking_convention.png">](feasiblity_checking_convention.pdf)
+
+
+### Approach pose generation example
+
+Below is an example that illustrates the feasibility checking procedure. On the left are all the approach poses generated, middle are the ones where the reachability criterion is satisfied and on the right there is both no collision and the reachability criterion is satisfied.
+
+[<img src="doc/all_approach_poses.png" width="370" height="361">]
+[<img src="doc/reachability_criterion_only.png" width="370" height="361">]
+[<img src="doc/both_criterions.png" width="370" height="361">]
+
 
 ## Dependencies
 
