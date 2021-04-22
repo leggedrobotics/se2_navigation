@@ -2,10 +2,15 @@
 
 This package provides an approach pose planner that jointly plans an approach pose and a path. The use case is motivated by an autonomous tree harvesting mission where we know the tree locations (x,y) however it us unclear from which direction should we approach them as the environment gets more unstructured.
 
-
+Below you will find a short summary of the algorithmics, for more detailed explanation, please refer to the following [paper](https://arxiv.org/abs/2104.10110);
 
 
 ## Conventions
+
+The algorithm generates M * N * K approach poses by cominging M distances from the target, with N polar angles to generate positions around the target. Lastly the M * N positions are combined with K yaw angles to generate M * N * K approach poses. The minimal distances increaase with step s where d0 is the minimal distance and dM maximal distance. THe polar angles are denoted with theta and yaw angles with gamma.
+
+[<img src="doc/Approach_pose_conventions.png" width="317" height="327">](Approach_pose_conventions.pdf)
+
 
 ### Collision checking
 Rectangular collision footprint is shown in an image below. We allow for arbitrary polygons to be used as a collision footprint, as long as the vertices are ordered counter-clockwise. Rectangular fooprints can be created using conveniece functions provided. The footprint is defined by four points:   
@@ -17,7 +22,7 @@ Rectangular collision footprint is shown in an image below. We allow for arbitra
 
 User can either specify those point manually, of define 4 measures shown in the image below. The points will then be calculated automatically. All distances are marked with `d` and measured from the origin of the coordinate system.
 
-[<img src="doc/collision_footprint_conventions.png" width="235" height="300">](collision_footprint_conventions.pdf)
+[<img src="doc/collision_footprint_conventions.png" width="235" height="327">](collision_footprint_conventions.pdf)
 
 ## Dependencies
 
@@ -55,4 +60,13 @@ See se2_planning.
 ### Line of Sight Validator
 * is_assume_target_always_reachable - bool flag whether to perform reachability analysis as described above.
 * collision_checking_area_width - width of the rectangle that is constructed to check the reachability criterion.
-* line_of_signt_length_allowed_to_be_in_collision - length of the area that is allowed to be in collision with the target (e.g. if you want to grab stuff).
+* line_of_sight_length_allowed_to_be_in_collision - length of the area that is allowed to be in collision with the target (e.g. if you want to grab stuff).
+
+### Approach Pose Planner
+
+*  polar_angle_spacing_around_goal - increments in polar angle steps areound the goal, e.g. 10 deg will result in 36 polar angles
+*  candiate_pose_yaw_spacing - increments in yaw angle for generated approach positions, e.g. 20 deg will create 13 different orientation for each position given
+*  min_goal_distance - min distance to the target
+*  max_goal_distance - maximal distance to the target
+*  distance_step - increment between minimal and maximal distance
+

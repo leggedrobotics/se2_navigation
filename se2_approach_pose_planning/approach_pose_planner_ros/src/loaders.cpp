@@ -77,7 +77,7 @@ void loadParameters(const std::string& filename, LineOfSightApproachStateValidat
 
   auto n = node["line_of_sight_validator"];
   p->collisionCheckingAreaWidth_ = n["collision_checking_area_width"].as<double>();
-  p->lengthOfLineOfSightPortionAllowedToBeInCollisisonWithTarget_ = n["line_of_signt_length_allowed_to_be_in_collision"].as<double>();
+  p->lengthOfLineOfSightPortionAllowedToBeInCollisisonWithTarget_ = n["line_of_sight_length_allowed_to_be_in_collision"].as<double>();
   p->isAssumeTargetAlwaysReachable_ = n["is_assume_target_always_reachable"].as<bool>();
 }
 

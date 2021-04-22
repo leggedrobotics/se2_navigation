@@ -13,7 +13,7 @@ obstacle_layer: obstacle
 line_of_sight_validator:
   is_assume_target_always_reachable: true
   collision_checking_area_width: 1.2
-  line_of_signt_length_allowed_to_be_in_collision: 0.5
+  line_of_sight_length_allowed_to_be_in_collision: 0.5
 
 robot_footprint:
   length_forward: 3.0
