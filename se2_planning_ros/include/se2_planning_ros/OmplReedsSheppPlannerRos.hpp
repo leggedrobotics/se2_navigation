@@ -49,9 +49,4 @@ class OmplReedsSheppPlannerRos : public PlannerRos {
   int planSeqNumber_ = -1;
 };
 
-nav_msgs::Path copyAllPoints(const ReedsSheppPath& path);
-geometry_msgs::Pose convert(const ReedsSheppState& state, double z = 0.0);
-ReedsSheppState convert(const geometry_msgs::Pose& state);
-se2_navigation_msgs::Path convert(const ReedsSheppPath& path);
-
 } /* namespace se2_planning */

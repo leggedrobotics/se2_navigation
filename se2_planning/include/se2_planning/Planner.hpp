@@ -24,9 +24,8 @@ class Planner {
 
   virtual bool reset() { throw std::runtime_error("Planner: reset() not implemented"); }
   virtual bool initialize() { throw std::runtime_error("Planner: initialize() not implemented"); }
-  virtual void getStartingState(State* startingState) { throw std::runtime_error("Planner: getStartingState() not implemented"); }
-
-  virtual void getGoalState(State* goalState) { throw std::runtime_error("Planner: getGoalState() not implemented"); }
+  virtual void getStartingState(State* startingState) const { throw std::runtime_error("Planner: getStartingState() not implemented"); }
+  virtual void getGoalState(State* goalState) const { throw std::runtime_error("Planner: getGoalState() not implemented"); }
 
   template <class T>
   const T* as() const {

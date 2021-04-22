@@ -41,5 +41,5 @@ All services and messages are defined in [se2_navigation_msgs](../se2_navigation
 * `Request Plan Button` - call planning service advertised by the planner
 * `Start Tracking Button` - send start tracking command to the controller (calls `controller command` service)
 * `Stop Tracking Button` - send stop tracking command to the controller (calls `controller command` service)
-* `Start == current positino` - if enabled, the GUI will call `get current pose` service advetised by the controller to get the current pose of the robot. This will be used as a starting pose for the planner. Starting pose in the GUI will be ignored.
-
+* `Start == current position` - if enabled, the GUI will call `get current pose` service advetised by the controller to get the current pose of the robot. This will be used as a starting pose for the planner. Starting pose in the GUI will be ignored.
+* `Plan approach pose` - if checked the planning panel tries to call the approach pose planning service. This means that you should have the approach pose planner running in another node. Furthermore you need to specify the correct service name in the *Planning service* field. When you are trying to plan an approach pose to some target only (x,y) position are extracted from the goal marker. The yaw angle is ignored. The marker changes from the arrow to a cylinder, to indicate that only (x,y) position is sent to the approach pose planner.

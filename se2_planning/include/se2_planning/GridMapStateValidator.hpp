@@ -16,6 +16,8 @@
 namespace se2_planning {
 
 struct Vertex {
+  Vertex();
+  Vertex(double x, double y);
   double x_;
   double y_;
 };

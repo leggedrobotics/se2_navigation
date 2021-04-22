@@ -9,6 +9,7 @@ set(SRC_FILES
   src/OmplReedsSheppPlannerRos.cpp
   src/loaders.cpp
   src/PlannerRos.cpp
+  src/common.cpp
 )
 
 set(CATKIN_PACKAGE_DEPENDENCIES 

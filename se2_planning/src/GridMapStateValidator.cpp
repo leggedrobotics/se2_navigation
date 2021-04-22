@@ -11,6 +11,9 @@
 
 namespace se2_planning {
 
+Vertex::Vertex() : Vertex(0, 0) {}
+Vertex::Vertex(double x, double y) : x_(x), y_(y) {}
+
 bool GridMapStateValidator::isStateValid(const State& state) const {
   if (!isInitialized()) {
     return true;

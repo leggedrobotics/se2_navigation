@@ -21,8 +21,8 @@ class PlannerRos : public Planner {
   void getPath(Path* path) const override;
   bool reset() override;
   bool initialize() override;
-  void getStartingState(State* startingState) override;
-  void getGoalState(State* goalState) override;
+  void getStartingState(State* startingState) const override;
+  void getGoalState(State* goalState) const override;
 
   void setPlanningStrategy(std::shared_ptr<Planner> planner);
   virtual void publishPath() const;

@@ -78,17 +78,14 @@ bool OmplReedsSheppPlanner::isStateValid(const ompl::base::SpaceInformation* si,
   return stateValidator_->isStateValid(rsState);
 }
 ompl::base::ScopedStatePtr OmplReedsSheppPlanner::convert(const State& state) const {
-  ompl::base::ScopedStatePtr stateOmpl(std::make_shared<ompl::base::ScopedState<> >(stateSpace_));
-  auto s = ((*stateOmpl)())->as<ompl::base::SE2StateSpace::StateType>();
-  auto rsState = state.as<ReedsSheppState>();
-  s->setX(rsState->x_);
-  s->setY(rsState->y_);
-  s->setYaw(rsState->yaw_);
-
-  return stateOmpl;
+  return se2_planning::convert(*(state.as<ReedsSheppState>()), simpleSetup_->getSpaceInformation());
 }
 
 void OmplReedsSheppPlanner::convert(const ompl::geometric::PathGeometric& pathOmpl, Path* path) const {
+  se2_planning::convert(pathOmpl, stateSpace_, path);
+}
+
+void convert(const ompl::geometric::PathGeometric& pathOmpl, const ompl::base::StateSpacePtr& stateSpace, Path* path) {
   using Direction = ReedsSheppPathSegment::Direction;
   const int nPoints = pathOmpl.getStateCount();
 
@@ -107,7 +104,7 @@ void OmplReedsSheppPlanner::convert(const ompl::geometric::PathGeometric& pathOm
   int idStart = 0;
   Direction prevDirection = Direction::FWD;
   for (; idStart < nPoints - 1; ++idStart) {
-    const int sign = getDistanceSignAt(pathOmpl, idStart);
+    const int sign = getDistanceSignAt(pathOmpl, stateSpace, idStart);
     if (sign != 0) {
       switch (sign) {
         case 1: {
@@ -134,7 +131,7 @@ void OmplReedsSheppPlanner::convert(const ompl::geometric::PathGeometric& pathOm
 
   // iterate from the first state onwards
   for (int i = idStart + 1; i < lastElemId; i++) {
-    const int sign = getDistanceSignAt(pathOmpl, i);
+    const int sign = getDistanceSignAt(pathOmpl, stateSpace, i);
     switch (sign) {
       case 0: {
         continue;  // NOP state ignored
@@ -172,9 +169,13 @@ void OmplReedsSheppPlanner::convert(const ompl::geometric::PathGeometric& pathOm
 }
 
 int OmplReedsSheppPlanner::getDistanceSignAt(const ompl::geometric::PathGeometric& path, unsigned int id) const {
+  return se2_planning::getDistanceSignAt(path, stateSpace_, id);
+}
+
+int getDistanceSignAt(const ompl::geometric::PathGeometric& path, const ompl::base::StateSpacePtr& stateSpace, unsigned int id) {
   const ompl::base::State* currState = path.getState(id);
   const ompl::base::State* stateNext = path.getState(id + 1);
-  const auto rsPath = stateSpace_->as<ompl::base::ReedsSheppStateSpace>()->reedsShepp(currState, stateNext);
+  const auto rsPath = stateSpace->as<ompl::base::ReedsSheppStateSpace>()->reedsShepp(currState, stateNext);
   const int numElemInRsPathLength = 5;
   std::vector<double> signedLengths(numElemInRsPathLength), lengths(numElemInRsPathLength);
   signedLengths.assign(rsPath.length_, rsPath.length_ + numElemInRsPathLength);
@@ -244,6 +245,15 @@ bool operator==(const ReedsSheppState& s1, const ReedsSheppState& s2) {
   const bool isPositionEqual = isEqual(s1.x_, s2.x_, tolerance) && isEqual(s1.y_, s2.y_, tolerance);
   const bool isYawEqual = isEqual(s1.yaw_, s2.yaw_, tolerance);
   return isPositionEqual && isYawEqual;
+}
+
+ompl::base::ScopedStatePtr convert(const ReedsSheppState& state, const ompl::base::SpaceInformationPtr& si) {
+  ompl::base::ScopedStatePtr stateOmpl(std::make_shared<ompl::base::ScopedState<> >(si));
+  auto s = ((*stateOmpl)())->as<ompl::base::SE2StateSpace::StateType>();
+  s->setX(state.x_);
+  s->setY(state.y_);
+  s->setYaw(state.yaw_);
+  return stateOmpl;
 }
 
 } /* namespace se2_planning */

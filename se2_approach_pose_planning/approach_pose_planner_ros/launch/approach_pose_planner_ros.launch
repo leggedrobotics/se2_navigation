@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<launch>
+
+	<arg name="launch_rviz" default="true" />
+	
+	<arg name="config_file_path"
+		default="$(find approach_pose_planner_ros)/config/approach_pose_planner.yaml" />
+	<arg name="grid_map_file_path"
+		default="$(find se2_grid_map_generator)/data/generated_grid_map.bag" />
+
+	<!-- Nodes -->
+	<node name="approach_pose_planner_node" pkg="approach_pose_planner_ros"
+		type="approach_pose_planner_node" output="screen" launch-prefix="">
+		<param name="config_file_path" value="$(arg config_file_path)"/>
+		<param name="grid_map_file_path" value="$(arg grid_map_file_path)"/>
+	</node>
+
+	<node name="rviz" pkg="rviz" type="rviz"
+		args="-d $(find approach_pose_planner_ros)/rviz/default.rviz" required="true"
+		if="$(arg launch_rviz)" />
+
+
+</launch>

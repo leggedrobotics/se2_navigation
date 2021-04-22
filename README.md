@@ -2,12 +2,13 @@
 
 ## Overview
 
-Pure pursuit controller and Reeds-Shepp sampling based planner for navigation in SE(2) space. This package has been mainly intended for car-like vehicles, although it can be used with mobile bases too (in that case you might want to check out move_base from ROS).
+Pure pursuit controller and Reeds-Shepp sampling based planner for navigation in SE(2) space. This package has been mainly intended for car-like vehicles, although it can be used with mobile bases too.
 
 How is this package different from other SE(2) planning/control packages? 
 
 * Provides planning and control for car like vehicles which are non-holonomic
 * Correctly handles both forward and reverse driving
+* Allows joint path and approach pose planning when we only know approximate target location
 * Comes with a minimal set of dependencies
 * Core algorithmics is separated from ros dependent code
 * Tested on real-hardware
@@ -49,9 +50,12 @@ This package is split into smaller units each of which features it's own README.
 * [se2_planning_ros](se2_planning_ros/README.md)
 * [se2_planning_rviz](se2_planning_rviz/README.md)
 * [se2_visualization_ros](se2_visualization_ros/README.md)
+* [approch_pose_planner](se2_approach_pose_planning/approach_pose_planner/README.md)
+* [approach_pose_planner_ros](se2_approach_pose_planning/approach_pose_planner_ros/README.md)
 
 ## Installation
 Refer to [car_demo](car_demo/README.md) for the details.
+Refer to [approach_pose_planner](se2_approach_pose_planning/approach_pose_planner_ros/README.md) if you are interested in approach pose planning.
 
 ## Usage
 Run the main demo with:   

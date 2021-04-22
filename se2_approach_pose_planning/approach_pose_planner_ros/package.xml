@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package format="2">
+	<name>approach_pose_planner_ros</name>
+	<version>0.1.0</version>
+	<description>Approach pose planner in 2D space.</description>
+	<maintainer email="jelavice@ethz.ch">EJ</maintainer>
+	<license>BSD-3</license>
+	<author email="jelavice@ethz.ch">EJ</author>
+
+	<buildtool_depend>catkin</buildtool_depend>
+
+
+	<depend>roscpp</depend>
+	<depend>nav_msgs</depend>
+	<depend>approach_pose_planner</depend>
+	<depend>se2_planning_ros</depend>
+	<depend>yaml-cpp</depend>
+	<depend>approach_pose_planner_msgs</depend>
+	<depend>se2_visualization_ros</depend>
+	<depend>grid_map_ros</depend>
+	
+
+	
+
+</package>

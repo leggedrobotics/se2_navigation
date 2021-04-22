@@ -13,6 +13,7 @@ set(SRC_FILES
   src/OmplReedsSheppPlanner.cpp
   src/State.cpp
   src/StateValidator.cpp
+  src/HeightMap.cpp
 )
 
 set(CATKIN_PACKAGE_DEPENDENCIES

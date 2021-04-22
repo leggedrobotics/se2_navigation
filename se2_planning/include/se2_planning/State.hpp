@@ -50,12 +50,18 @@ struct Path {
   virtual ~Path() = default;
 };
 
-struct SE2state : public State {
+struct XYstate : public State {
+  XYstate() = default;
+  XYstate(double x, double y);
+  ~XYstate() override = default;
+  double x_ = 0.0;
+  double y_ = 0.0;
+};
+
+struct SE2state : public XYstate {
   SE2state() = default;
   SE2state(double x, double y, double yaw);
   ~SE2state() override = default;
-  double x_ = 0.0;
-  double y_ = 0.0;
   double yaw_ = 0.0;
   friend std::ostream& operator<<(std::ostream& out, const SE2state& rsState);
   friend bool operator==(const SE2state& s1, const SE2state& s2);

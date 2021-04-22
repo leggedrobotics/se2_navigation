@@ -16,6 +16,7 @@
   <depend>rviz</depend>
   <depend>se2_visualization_ros</depend>
   <depend>se2_navigation_msgs</depend>
+  <depend>approach_pose_planner_msgs</depend>
 
   <export>
       <rviz plugin="${prefix}/plugin_description.xml"/>

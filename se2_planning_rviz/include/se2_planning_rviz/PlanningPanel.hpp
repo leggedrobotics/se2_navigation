@@ -114,6 +114,8 @@ class PlanningPanel : public rviz::Panel {
   void getStartPoseFromService(geometry_msgs::Pose *startPoint);
   void callSendControllerCommandService(se2_navigation_msgs::ControllerCommand &command) const;
 
+  void setShapeOfGoalMarker(const bool isPlanningApproachPose);
+
   // ROS Stuff:
   ros::NodeHandle nh_;
 
@@ -127,7 +129,7 @@ class PlanningPanel : public rviz::Panel {
   QPushButton* tracking_command_button_;
   QPushButton* stop_command_button_;
   QCheckBox *currentStateAsStartCheckBox_;
-
+  QCheckBox *approachPosePlanningCheckBox_;
 
   // Keep track of all the pose <-> button widgets as they're related:
   std::map<std::string, PoseWidget*> pose_widget_map_;

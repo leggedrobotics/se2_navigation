@@ -1,0 +1,57 @@
+approach_pose_planner:
+  polar_angle_spacing_around_goal: 15.0 #degrees
+  candiate_pose_yaw_spacing: 15.0 #degrees
+  min_goal_distance: 2.0
+  max_goal_distance: 5.0
+  distance_step: 0.25
+  is_print_info: false
+  is_approach_pose_planner_print_info: false
+  is_print_approach_pose_statistics: false
+
+obstacle_layer: obstacle
+
+line_of_sight_validator:
+  is_assume_target_always_reachable: true
+  collision_checking_area_width: 1.2
+  line_of_sight_length_allowed_to_be_in_collision: 0.5
+
+robot_footprint:
+  length_forward: 3.0
+  length_backwards: 3.0
+  width_left: 1.2
+  width_right: 1.2
+
+height_map:
+  height_layer: elevation
+  topic: grid_map
+
+state_space:
+  x_lower: -1000.0
+  x_upper: 1000.0
+  y_lower: -1000.0
+  y_upper: 1000.0
+  turning_radius: 8.0
+  
+approach_planner_ros:
+  nav_msgs_path_topic: nav_msgs_path
+  planning_service_name: approach_pose_planning_service
+  path_msg_topic: nav_msgs_path
+  path_frame: map
+  nav_msg_path_spatial_resolution: 1.5
+  is_publish_path_automatically: true
+  is_publish_poses_and_target_automatically: true
+  approach_poses_visualization_decimation_factor: 100
+  pose_arrow_radius: 0.2
+  pose_arrow_length: 2.0
+  target_location_sphere_radius: 0.5
+
+planner:
+  path_spatial_resolution: 0.05
+  ompl_planner: RRTstar # see ompl_planner_creators.hpp for list of available planners
+  max_planning_time: 1.0
+  
+ompl_planners:
+  rrt_star:
+    planner_range: 15.0
+  rrt_sharp:
+    planner_range: 15.0

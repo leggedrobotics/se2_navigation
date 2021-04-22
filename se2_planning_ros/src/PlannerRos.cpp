@@ -37,10 +37,10 @@ bool PlannerRos::reset() {
 bool PlannerRos::initialize() {
   return planner_->initialize();
 }
-void PlannerRos::getStartingState(State* startingState) {
+void PlannerRos::getStartingState(State* startingState) const {
   planner_->getStartingState(startingState);
 }
-void PlannerRos::getGoalState(State* goalState) {
+void PlannerRos::getGoalState(State* goalState) const {
   planner_->getGoalState(goalState);
 }
 

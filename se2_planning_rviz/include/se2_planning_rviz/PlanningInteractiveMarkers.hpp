@@ -3,42 +3,39 @@
  *  Institute: ETH Zurich, Robotic Systems Lab
  */
 
-
-
 /*
-Original by:
+ Original by:
 
-BSD 3-Clause License
+ BSD 3-Clause License
 
-Copyright (c) 2018, ETHZ ASL
-All rights reserved.
+ Copyright (c) 2018, ETHZ ASL
+ All rights reserved.
 
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
 
-* Redistributions of source code must retain the above copyright notice, this
-  list of conditions and the following disclaimer.
+ * Redistributions of source code must retain the above copyright notice, this
+ list of conditions and the following disclaimer.
 
-* Redistributions in binary form must reproduce the above copyright notice,
-  this list of conditions and the following disclaimer in the documentation
-  and/or other materials provided with the distribution.
+ * Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution.
 
-* Neither the name of the copyright holder nor the names of its
-  contributors may be used to endorse or promote products derived from
-  this software without specific prior written permission.
+ * Neither the name of the copyright holder nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
-
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 
 #pragma once
 
@@ -52,6 +49,19 @@ namespace se2_planning_rviz {
 class PlanningInteractiveMarkers
 {
  public:
+
+  enum class MarkerType : int
+  {
+    START,
+    GOAL
+  };
+
+  enum class MarkerShape : int
+  {
+    ARROW,
+    CYLINDER
+  };
+
   typedef std::function<void(const geometry_msgs::Pose& pose)> PoseUpdatedFunctionType;
 
   PlanningInteractiveMarkers(const ros::NodeHandle& nh);
@@ -80,7 +90,8 @@ class PlanningInteractiveMarkers
   void disableMarker(const std::string& id);
 
   visualization_msgs::InteractiveMarker *GetMarker(const std::string &id);
-  visualization_msgs::InteractiveMarker *GetMarkerPrototype();
+
+  void setMarkerShape(MarkerType type, MarkerShape shape);
 
   inline const std::string &getFrameId()
   {
@@ -89,7 +100,8 @@ class PlanningInteractiveMarkers
 
  private:
   // Creates markers without adding them to the marker server.
-  void createMarkers(se2_visualization_ros::Color start_goal_color, const double scale);
+  void createArrowMarkers(se2_visualization_ros::Color start_goal_color, const double scale);
+  void createCylinderMarkers(se2_visualization_ros::Color start_goal_color, const double scale);
 
   // ROS stuff.
   ros::NodeHandle nh_;
@@ -106,8 +118,11 @@ class PlanningInteractiveMarkers
   std::map<std::string, visualization_msgs::InteractiveMarker> marker_map_;
 
   // This determines how the markers in the marker map will look:
-  visualization_msgs::InteractiveMarker marker_prototype_;
+  visualization_msgs::InteractiveMarker marker_prototype_arrow_;
+  visualization_msgs::InteractiveMarker marker_prototype_cylinder_;
 
+  MarkerShape startMarkerShape_ = MarkerShape::ARROW;
+  MarkerShape goalMarkerShape_ = MarkerShape::ARROW;
   // State:
   PoseUpdatedFunctionType pose_updated_function_;
 

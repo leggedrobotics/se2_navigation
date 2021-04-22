@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package format="2">
+	<name>approach_pose_planner</name>
+	<version>0.1.0</version>
+	<description>Approach pose planner in 2D space.</description>
+	<maintainer email="jelavice@ethz.ch">EJ</maintainer>
+	<license>BSD-3</license>
+	<author email="jelavice@ethz.ch">EJ</author>
+
+	<buildtool_depend>catkin</buildtool_depend>
+
+
+	<depend>se2_planning</depend>
+	<depend>ompl</depend>
+	
+
+	
+
+</package>
