@@ -15,35 +15,6 @@
 namespace se2_planning {
 
 namespace {
-template <typename T>
-T loadSingleParam(const ros::NodeHandle& nh, const std::string& key) {
-  const std::string filename = nh.param<std::string>("config_file_path", "");
-  YAML::Node node = YAML::LoadFile(filename);
-  return node[key].as<T>();
-}
-
-template <typename T>
-T loadSingleParam(const ros::NodeHandle& nh, std::initializer_list<std::string> list) {
-  const std::string filename = nh.param<std::string>("config_file_path", "");
-  YAML::Node node = YAML::LoadFile(filename);
-  std::vector<std::string> v(list);
-  switch (v.size()) {
-    case 0: {
-      throw std::runtime_error("init list size 0");
-    }
-    case 1: {
-      return node[v.at(0)].as<T>();
-    }
-    case 2: {
-      return node[v.at(0)][v.at(1)].as<T>();
-    }
-    case 3: {
-      return node[v.at(0)][v.at(1)][v.at(2)].as<T>();
-    }
-  }
-  throw std::runtime_error(" this level of parameter nesting is not supported");
-}
-
 RobotFootprint loadRobotFootprint(const ros::NodeHandle& nh) {
   const double frontLength = loadSingleParam<double>(nh, {"robot_footprint", "length_forward"});
   const double backLength = loadSingleParam<double>(nh, {"robot_footprint", "length_backwards"});
@@ -59,8 +30,7 @@ RobotFootprint createApproachPoseValidatingFootprint(const ros::NodeHandle& nh) 
 RobotFootprint createPlanningFootprint(const ros::NodeHandle& nh) {
   return loadRobotFootprint(nh);
 }
-
-}  // namespace
+} // namespace
 
 bool createGridMap(const ros::NodeHandle& nh, grid_map::GridMap* gm) {
   const std::string gridMapFilename = nh.param<std::string>("grid_map_file_path", "");

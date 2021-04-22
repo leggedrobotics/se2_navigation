@@ -1,5 +1,5 @@
 # Request
-ApproachPoseRequestMsg approachPoseRequest               # Query, maybe useful for the future
+ApproachPoseRequestMsg approachPoseRequest              
 ---
 # Response
 bool status

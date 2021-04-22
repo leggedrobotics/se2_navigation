@@ -1,53 +1,28 @@
-# se2\_navigation_msgs
+# approach\_pose\_planner\_msgs
 
-Collection of messages and services for communication between ros planners and controllers. These messages are also used to communicate to the rviz planning interface.
+Collection of messages that are used to request paths from the approach pose planner. 
 
 ## Messages
 -----------
-#### Path Segment (PathSegmentMsg.msg)   
-+  *int8 FORWARD = 0*   
-+  *int8 BACKWARDS = 1*   
-+  *int8 drivingDirection* - variable holding the driving direction  
-+  *geometry_msgs/Pose[] points* - poses of the robot along the path      
-      
-#### Path (PathMsg.msg)  
-+  *std_msgs/Header header*   
-+  *se2_navigation_msgs/PathSegmentMsg[] segment* - path segments   
 
-#### Path Request (PathRequestMsg.msg)  
-+ *geometry_msgs/Pose startingPose*   
-+ *geometry_msgs/Pose goalPose*   
-
-#### Controller Command (ControllerCommandMsg.msg)   
-
-+ *int8 START_TRACKING=0*   
-+ *int8 STOP_TRACKING=1*  
-+ *int8 command*   
+#### Approach Pose Request (ApproachPoseRequestMsg.msg)  
++ *geometry_msgs/Pose startingPose* - current robot pose   
++ *geometry_msgs/Point goalPoint* - target location (x,y) where the robot should come close to
 
 ## Services
 -----------
 
-#### Request Current State (RequestCurrentStateSrv.srv)  
+#### Request Approach Pose (RequestPathSrv.srv)  
 + **Request**
-    + `-`
+    + *ApproachPoseRequestMsg approachPoseRequest* 
 + **Response**  
-    + *geometry_msgs/Pose* - current pose of the robot  
-    + *geometry_msgs/Twist* - twist of the robot
+    + *bool status* - whether an approach pose has been succesfully has been succesfully found  
 
-#### Request Path (RequestPathSrv.srv)  
-+ **Request**
-    + *PathRequestMsg pathRequest* - starting and goal pose for the planner
-+ **Response**  
-    + *bool status* - whether path has been succesfully found  
-
-#### Send Controller Command (SendControllerCommandSrv.srv)  
-+ **Request**
-    + *ControllerCommandMsg command* - command for the controller
-+ **Response**  
-    + *bool status* - whether controller has done what was asked for 
  
 ## Dependencies
 
-* std_msgs
+* std\_msgs
 
-* geometry_msgs
+* geometry\_msgs
+
+* se2\_navigation\_msgs

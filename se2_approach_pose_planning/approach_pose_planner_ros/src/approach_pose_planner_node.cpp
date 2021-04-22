@@ -7,6 +7,7 @@
 
 #include <ros/ros.h>
 #include "approach_pose_planner_ros/creators.hpp"
+#include "approach_pose_planner_ros/loaders.hpp"
 #include "grid_map_msgs/GridMap.h"
 #include "grid_map_ros/GridMapRosConverter.hpp"
 
@@ -27,12 +28,13 @@ void publishMap(const ros::NodeHandle& nh) {
 int main(int argc, char** argv) {
   using namespace se2_planning;
   ros::init(argc, argv, "approach_pose_planner_node");
-  ros::NodeHandlePtr nh(new ros::NodeHandle("~"));
+  ros::NodeHandle nh("~");
 
-  mapPub = nh->advertise<grid_map_msgs::GridMap>("map", 1, true);
+  const auto gridMapTopic = loadSingleParam<std::string>(nh, {"height_map", "topic"});
+  mapPub = nh.advertise<grid_map_msgs::GridMap>(gridMapTopic, 1, true);
 
-  auto planner = createPlanner(*nh);
-  publishMap(*nh);
+  auto planner = createPlanner(nh);
+  publishMap(nh);
 
   ros::spin();
 
