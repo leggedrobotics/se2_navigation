@@ -30,7 +30,7 @@ RobotFootprint createApproachPoseValidatingFootprint(const ros::NodeHandle& nh) 
 RobotFootprint createPlanningFootprint(const ros::NodeHandle& nh) {
   return loadRobotFootprint(nh);
 }
-} // namespace
+}  // namespace
 
 bool createGridMap(const ros::NodeHandle& nh, grid_map::GridMap* gm) {
   const std::string gridMapFilename = nh.param<std::string>("grid_map_file_path", "");

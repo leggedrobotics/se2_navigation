@@ -5,7 +5,9 @@ This package provides an approach pose planner that jointly plans an approach po
 Below you will find a short summary of the algorithmics, for more detailed explanation, please refer to the following [paper](https://arxiv.org/abs/2104.10110).
 
 
-## Conventions
+## Algorithm
+
+The planner is solves two subproblems. First we generate feasible approach poses (neccesary criterion, not sufficient) and then we try to grow a random tree to connect to each of them. The first step ensures that candidate approach poses are collision free while the second step finds the ones that can actually be driven to.
 
 ### Approach pose generation
 

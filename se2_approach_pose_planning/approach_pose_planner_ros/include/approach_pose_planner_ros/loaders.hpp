@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <ros/ros.h>
+#include <yaml-cpp/yaml.h>
 #include "approach_pose_planner_ros/Parameters.hpp"
 #include "grid_map_core/GridMap.hpp"
 
@@ -17,10 +19,10 @@ void loadParameters(const std::string& filename, ApproachPosePlannerParameters* 
 bool loadGridMap(const std::string& filename, const std::string& topic, grid_map::GridMap* gm);
 void loadParameters(const std::string& filename, LineOfSightApproachStateValidatorParameters* p);
 
-template<typename T>
+template <typename T>
 T loadSingleParam(const ros::NodeHandle& nh, const std::string& key);
 
-template<typename T>
+template <typename T>
 T loadSingleParam(const ros::NodeHandle& nh, std::initializer_list<std::string> list);
 
 /*
@@ -29,11 +31,10 @@ T loadSingleParam(const ros::NodeHandle& nh, std::initializer_list<std::string> 
  * ********************
  * ********************
  */
-template<typename T>
-T loadSingleParam(const ros::NodeHandle& nh, const std::string& key)
-{
+template <typename T>
+T loadSingleParam(const ros::NodeHandle& nh, const std::string& key) {
   std::string filename;
-  if (!nh.param < std::string > ("config_file_path", filename, "")) {
+  if (!nh.param<std::string>("config_file_path", filename, "")) {
     throw std::runtime_error(
         "LOADING FAILED! Could not load config_file_path from the parameter server!!! Did you upload this parameter??");
   }
@@ -41,11 +42,10 @@ T loadSingleParam(const ros::NodeHandle& nh, const std::string& key)
   return node[key].as<T>();
 }
 
-template<typename T>
-T loadSingleParam(const ros::NodeHandle& nh, std::initializer_list<std::string> list)
-{
+template <typename T>
+T loadSingleParam(const ros::NodeHandle& nh, std::initializer_list<std::string> list) {
   std::string filename;
-  if (!nh.param < std::string > ("config_file_path", filename, "")) {
+  if (!nh.param<std::string>("config_file_path", filename, "")) {
     throw std::runtime_error(
         "LOADING FAILED! Could not load config_file_path from the parameter server!!! Did you upload this parameter??");
   }
@@ -66,5 +66,6 @@ T loadSingleParam(const ros::NodeHandle& nh, std::initializer_list<std::string> 
     }
   }
   throw std::runtime_error(" this level of parameter nesting is not supported");
+}
 
 } /* namespace se2_planning */

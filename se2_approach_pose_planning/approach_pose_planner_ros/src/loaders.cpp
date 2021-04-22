@@ -7,7 +7,6 @@
 
 #include "approach_pose_planner_ros/loaders.hpp"
 #include <sys/stat.h>
-#include <yaml-cpp/yaml.h>
 #include <string>
 #include "grid_map_ros/GridMapRosConverter.hpp"
 #include "se2_planning_ros/loaders.hpp"
