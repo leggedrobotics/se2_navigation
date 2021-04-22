@@ -55,6 +55,7 @@ This package is split into smaller units each of which features it's own README.
 
 ## Installation
 Refer to [car_demo](car_demo/README.md) for the details.
+Refer to [approach_pose_planner](se2_approach_pose_planning/approach_pose_planner_ros/README.md) if you are interested in approach pose planning.
 
 ## Usage
 Run the main demo with:   
