@@ -36,7 +36,17 @@ Released under [BSD 3-Clause license](LICENSE).
 
 
 ## Publications
- Coming soon
+The code inside this repo has been developed as a part of our research on autonomous precision harvesting. The paper can be found [here](https://arxiv.org/abs/2104.10110). If you are using packages from se2_navigation, please add the following citation to your publication:
+
+Jelavic, E., Jud, D., Egli, P. and Hutter, M., 2021. Towards Autonomous Robotic Precision Harvesting. arXiv preprint arXiv:2104.10110.
+ 
+    @article{jelavic2021towards,  
+       title   = {Towards Autonomous Robotic Precision Harvesting},  
+       author  = {Jelavic, Edo and Jud, Dominic and Egli, Pascal and Hutter, Marco},  
+       journal = {arXiv preprint arXiv:2104.10110},  
+       year    = {2021}
+    }
+   
 
 ## Documentation
 
