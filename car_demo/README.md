@@ -2,16 +2,16 @@
 
 This is a minimal version of Prius car from Open Source Robotics Foundation (Demo of Prius in ROS/GAZEBO). The original code is available available at: https://github.com/osrf/car_demo . This slightly modified version, can be run with `se2_navigation` planning and control pipeline. 
 
-This demo has been tested on Ubuntu Bionic (18.04). 
+This demo has been tested on Ubuntu Focal Fossa (20.04). 
 
 [<img src="doc/car.gif" width="435" height="320">](doc/car.gif)
 
 ## Dependencies
-To build `car_demo` package you need to build the whole `se2_navigation` stack. You will need the full ros melodic install with Gazebo 9 to run this demo. The instructions to do so, you can find here: http://wiki.ros.org/melodic/Installation 
+To build `car_demo` package you need to build the whole `se2_navigation` stack. You will need the full ros noetic install with Gazebo 11 to run this demo. The instructions to do so, you can find here: http://wiki.ros.org/noetic/Installation 
 
 1. Make sure that you have installed [OMPL](https://github.com/ompl/ompl). You can find some instructions [here](../se2_planning/README.md)
 2. Install `yaml-cpp` library. [Instructions](../pure_pursuit_ros/README.md)
-3. Install `fake_localization` package with `sudo apt install ros-melodic-fake-localization`
+3. Install `fake_localization` package with `sudo apt install ros-noetic-fake-localization`
 
 Assuming that the ros has installed correctly this should be enough to get you started. In case you cannot build the package refer to individual package README.
 

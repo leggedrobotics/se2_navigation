@@ -43,7 +43,7 @@ Ompl can be also build using pure CMake, plese refer to https://ompl.kavrakilab.
 
 In case this does not work for you refere to the OMPL [website](https://github.com/ompl/ompl/blob/master/doc/markdown/installation.md) for installation instructions. If you're using the ROS interface, installation can also be done through PPA.
 
-`sudo apt install ros-melodic-ompl ros-melodic-grid-map-core`
+`sudo apt install ros-noetic-ompl ros-noetic-grid-map-core`
 
 Build with:
 
