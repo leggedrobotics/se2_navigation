@@ -53,12 +53,13 @@ class OmplReedsSheppPlannerRos : public PlannerRos {
   ros::Publisher goalPublisher_;
   ros::Publisher stateSpacePublisher_;
 
-  visualization_msgs::Marker stateSpaceBoundaryMarker_;
-  OmplReedsSheppPlannerRosParameters parameters_;
   ros::ServiceServer planningService_;
-  int planSeqNumber_ = -1;
-  ros::Time planTimeStamp_;
+
   const int reedsSheppStateSpaceDim_ = 2;
+  int planSeqNumber_ = -1;
+  ros::Time planTimeStamp_{0.0};
+  OmplReedsSheppPlannerRosParameters parameters_;
+  visualization_msgs::Marker stateSpaceBoundaryMarker_;
 };
 
 } /* namespace se2_planning */
