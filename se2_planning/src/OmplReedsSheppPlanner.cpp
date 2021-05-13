@@ -72,7 +72,7 @@ void OmplReedsSheppPlanner::setStateSpaceBoundaries() {
   //  std::cout << "OmplReedsSheppPlanner: Set state space bounds: x = [" << bounds_->low[0] << ", " << bounds_->high[0] << "], y=["
   //            << bounds_->low[1] << ", " << bounds_->high[1] << "]" << std::endl;
 }
-const ompl::base::RealVectorBounds& OmplReedsSheppPlanner::getStateSpaceBoundaries() {
+const ompl::base::RealVectorBounds& OmplReedsSheppPlanner::getStateSpaceBoundaries() const {
   return stateSpace_->as<ompl::base::SE2StateSpace>()->getBounds();
 }
 
@@ -90,7 +90,7 @@ void OmplReedsSheppPlanner::updateStateSpaceBounds(const ompl::base::RealVectorB
   //            << bounds_->low[1] << ", " << bounds_->high[1] << "]" << std::endl;
 }
 
-bool OmplReedsSheppPlanner::satisfiesStateSpaceBounds(const se2_planning::ReedsSheppState& state) {
+bool OmplReedsSheppPlanner::satisfiesStateSpaceBounds(const se2_planning::ReedsSheppState& state) const {
   ompl::base::ScopedStatePtr stateOmpl(std::make_shared<ompl::base::ScopedState<> >(stateSpace_));
   auto s = ((*stateOmpl)())->as<ompl::base::SE2StateSpace::StateType>();
   auto rsState = state.as<ReedsSheppState>();
