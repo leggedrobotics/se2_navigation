@@ -70,7 +70,7 @@ bool OmplPlanner::initialize() {
   return true;
 }
 
-void OmplPlanner::updateStateSpaceBounds(const ompl::base::RealVectorBounds& bounds) {
+void OmplPlanner::updateStateSpaceBoundaries(const ompl::base::RealVectorBounds& bounds) {
   throw std::runtime_error("Not implemented");
 }
 

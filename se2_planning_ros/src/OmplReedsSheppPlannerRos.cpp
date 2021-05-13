@@ -23,7 +23,7 @@ void OmplReedsSheppPlannerRos::setParameters(const OmplReedsSheppPlannerRosParam
 bool OmplReedsSheppPlannerRos::initialize() {
   bool result = BASE::initialize();
   initRos();
-  initializeStateSpaceMarker();
+  initializeStateSpaceBoundaryMarker();
   return result;
 }
 bool OmplReedsSheppPlannerRos::plan() {
@@ -65,7 +65,7 @@ bool OmplReedsSheppPlannerRos::planningService(PlanningService::Request& req, Pl
   // TODO expose stateSpaceBoundsMargin_ as param => depends on footprint size?
   // TODO move to OMPLReedsSheppPlanner.cpp?
   const double stateSpaceBoundsMargin_ = parameters_.stateSpaceBoundsMargin_;
-  if (!planner_->as<OmplReedsSheppPlanner>()->satisfiesStateSpaceBounds(start)) {
+  if (!planner_->as<OmplReedsSheppPlanner>()->satisfiesStateSpaceBoundaries(start)) {
     ROS_DEBUG("Initial state not in grid map. Enlarge state space boundaries.");
     const auto bounds = planner_->as<OmplReedsSheppPlanner>()->getStateSpaceBoundaries();
     ompl::base::RealVectorBounds newBounds(reedsSheppStateSpaceDim_);
@@ -73,9 +73,9 @@ bool OmplReedsSheppPlannerRos::planningService(PlanningService::Request& req, Pl
     newBounds.high[1] = std::max(bounds.high[1], start.y_ + stateSpaceBoundsMargin_);
     newBounds.low[0] = std::min(bounds.low[0], start.x_ - stateSpaceBoundsMargin_);
     newBounds.low[1] = std::min(bounds.low[1], start.y_ - stateSpaceBoundsMargin_);
-    planner_->as<OmplReedsSheppPlanner>()->updateStateSpaceBounds(newBounds);
+    planner_->as<OmplReedsSheppPlanner>()->updateStateSpaceBoundaries(newBounds);
   }
-  if (!planner_->as<OmplReedsSheppPlanner>()->satisfiesStateSpaceBounds(goal)) {
+  if (!planner_->as<OmplReedsSheppPlanner>()->satisfiesStateSpaceBoundaries(goal)) {
     ROS_DEBUG("Goal state not in grid map. Enlarge state space boundaries.");
     const auto bounds = planner_->as<OmplReedsSheppPlanner>()->getStateSpaceBoundaries();
     ompl::base::RealVectorBounds newBounds(reedsSheppStateSpaceDim_);
@@ -83,12 +83,12 @@ bool OmplReedsSheppPlannerRos::planningService(PlanningService::Request& req, Pl
     newBounds.high[1] = std::max(bounds.high[1], goal.y_ + stateSpaceBoundsMargin_);
     newBounds.low[0] = std::min(bounds.low[0], goal.x_ - stateSpaceBoundsMargin_);
     newBounds.low[1] = std::min(bounds.low[1], goal.y_ - stateSpaceBoundsMargin_);
-    planner_->as<OmplReedsSheppPlanner>()->updateStateSpaceBounds(newBounds);
+    planner_->as<OmplReedsSheppPlanner>()->updateStateSpaceBoundaries(newBounds);
   }
 
   // TODO move to detach? Better to publish this info for debugging before checking validity of states.
   publishStartGoalMsgs(start, goal);
-  publishStateSpaceMarker();
+  publishStateSpaceBoundaryMarker();
 
   //  Use state validator only after lock mutex is active and state space is updated
   //  Checks only for non-traversable terrain not for state space bounds
@@ -157,47 +157,46 @@ void OmplReedsSheppPlannerRos::publishStartGoalMsgs(const ReedsSheppState& start
   goalPublisher_.publish(goalPose);
 }
 
-void OmplReedsSheppPlannerRos::initializeStateSpaceMarker() {
-  // TODO expose as params?
-  double lineWidth_ = 0.01;
-  std_msgs::ColorRGBA color_;
+void OmplReedsSheppPlannerRos::initializeStateSpaceBoundaryMarker() {
+  double lineWidth = 0.01;
+  std_msgs::ColorRGBA color;
   // No transparency
-  color_.a = 1;
+  color.a = 1;
   // Black
-  color_.r = 0;
-  color_.g = 0;
-  color_.b = 0;
+  color.r = 0;
+  color.g = 0;
+  color.b = 0;
   // Init marker
-  int nVertices_ = 5;
-  stateSpaceMarker_.ns = "state_space";
-  stateSpaceMarker_.lifetime = ros::Duration();
-  stateSpaceMarker_.action = visualization_msgs::Marker::ADD;
-  stateSpaceMarker_.type = visualization_msgs::Marker::LINE_STRIP;
-  stateSpaceMarker_.scale.x = lineWidth_;
-  stateSpaceMarker_.points.resize(nVertices_);  // Initialized to [0.0, 0.0, 0.0]
-  stateSpaceMarker_.colors.resize(nVertices_, color_);
+  int nVertices = 5;
+  stateSpaceBoundaryMarker_.ns = "state_space";
+  stateSpaceBoundaryMarker_.lifetime = ros::Duration();
+  stateSpaceBoundaryMarker_.action = visualization_msgs::Marker::ADD;
+  stateSpaceBoundaryMarker_.type = visualization_msgs::Marker::LINE_STRIP;
+  stateSpaceBoundaryMarker_.scale.x = lineWidth;
+  stateSpaceBoundaryMarker_.points.resize(nVertices);  // Initialized to [0.0, 0.0, 0.0]
+  stateSpaceBoundaryMarker_.colors.resize(nVertices, color);
 }
 
-void OmplReedsSheppPlannerRos::publishStateSpaceMarker() {
+void OmplReedsSheppPlannerRos::publishStateSpaceBoundaryMarker() {
   // Set marker info.
-  stateSpaceMarker_.header.frame_id = parameters_.pathFrame_;
-  stateSpaceMarker_.header.stamp = planTimeStamp_;
+  stateSpaceBoundaryMarker_.header.frame_id = parameters_.pathFrame_;
+  stateSpaceBoundaryMarker_.header.stamp = planTimeStamp_;
 
   // Set positions of markers.
   const auto bounds = planner_->as<OmplReedsSheppPlanner>()->getStateSpaceBoundaries();
-  stateSpaceMarker_.points[0].x = bounds.low[0];
-  stateSpaceMarker_.points[0].y = bounds.low[1];
-  stateSpaceMarker_.points[1].x = bounds.high[0];
-  stateSpaceMarker_.points[1].y = bounds.low[1];
-  stateSpaceMarker_.points[2].x = bounds.high[0];
-  stateSpaceMarker_.points[2].y = bounds.high[1];
-  stateSpaceMarker_.points[3].x = bounds.low[0];
-  stateSpaceMarker_.points[3].y = bounds.high[1];
+  stateSpaceBoundaryMarker_.points[0].x = bounds.low[0];
+  stateSpaceBoundaryMarker_.points[0].y = bounds.low[1];
+  stateSpaceBoundaryMarker_.points[1].x = bounds.high[0];
+  stateSpaceBoundaryMarker_.points[1].y = bounds.low[1];
+  stateSpaceBoundaryMarker_.points[2].x = bounds.high[0];
+  stateSpaceBoundaryMarker_.points[2].y = bounds.high[1];
+  stateSpaceBoundaryMarker_.points[3].x = bounds.low[0];
+  stateSpaceBoundaryMarker_.points[3].y = bounds.high[1];
   // Close the rectangle with the fifth point
-  stateSpaceMarker_.points[4].x = stateSpaceMarker_.points[0].x;
-  stateSpaceMarker_.points[4].y = stateSpaceMarker_.points[0].y;
+  stateSpaceBoundaryMarker_.points[4].x = stateSpaceBoundaryMarker_.points[0].x;
+  stateSpaceBoundaryMarker_.points[4].y = stateSpaceBoundaryMarker_.points[0].y;
 
-  stateSpacePublisher_.publish(stateSpaceMarker_);
+  stateSpacePublisher_.publish(stateSpaceBoundaryMarker_);
 }
 
 } /* namespace se2_planning */

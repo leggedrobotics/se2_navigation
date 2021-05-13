@@ -34,7 +34,7 @@ void gridMapCallback(const grid_map_msgs::GridMap& msg) {
   bounds.high[1] = mapPosition.y() + mapLength.y() / 2.0;
 
   if (!planner->isLocked()) {
-    planner->updateStateSpaceBounds(bounds);
+    planner->updateStateSpaceBoundaries(bounds);
     ROS_DEBUG_STREAM("OMPL State Space Update: pos: " << mapPosition.x() << ", " << mapPosition.y() << ", length: " << mapLength.x() << ", "
                                                       << mapLength.y());
   } else {

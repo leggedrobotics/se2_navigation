@@ -43,8 +43,8 @@ class OmplReedsSheppPlannerRos : public PlannerRos {
   void initRos();
   void publishPathNavMsgs() const;
   void publishStartGoalMsgs(const ReedsSheppState& start, const ReedsSheppState& goal) const;
-  void initializeStateSpaceMarker();
-  void publishStateSpaceMarker();
+  void initializeStateSpaceBoundaryMarker();
+  void publishStateSpaceBoundaryMarker();
   bool planningService(PlanningService::Request& req, PlanningService::Response& res) override;
 
   ros::Publisher pathNavMsgsPublisher_;
@@ -52,7 +52,8 @@ class OmplReedsSheppPlannerRos : public PlannerRos {
   ros::Publisher startPublisher_;
   ros::Publisher goalPublisher_;
   ros::Publisher stateSpacePublisher_;
-  visualization_msgs::Marker stateSpaceMarker_;
+
+  visualization_msgs::Marker stateSpaceBoundaryMarker_;
   OmplReedsSheppPlannerRosParameters parameters_;
   ros::ServiceServer planningService_;
   int planSeqNumber_ = -1;
