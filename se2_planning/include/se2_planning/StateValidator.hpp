@@ -20,6 +20,8 @@ class StateValidator {
   virtual bool isLocked() const;
   virtual void lock();
   virtual void unlock();
+
+ private:
   bool isLocked_ = false;
 };
 
