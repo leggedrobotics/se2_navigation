@@ -67,7 +67,7 @@ class OmplReedsSheppPlanner final : public OmplPlanner {
   void createDefaultStateSpace();
   void initializeStateSpace() final;
   void setStateSpaceBoundaries();
-  bool isStateValid(const ompl::base::SpaceInformation* si, const ompl::base::State* state) final;
+  bool isStateValid(const ompl::base::SpaceInformation* si, const ompl::base::State* state) const final;
   ompl::base::ScopedStatePtr convert(const State& state) const final;
   void convert(const ompl::base::ScopedStatePtr omplState, State* state) const final;
   void convert(const ompl::geometric::PathGeometric& pathOmpl, Path* path) const final;

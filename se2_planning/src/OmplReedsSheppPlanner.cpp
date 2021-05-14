@@ -120,7 +120,7 @@ bool OmplReedsSheppPlanner::isLocked() const {
   return stateValidator_->isLocked();
 }
 
-bool OmplReedsSheppPlanner::isStateValid(const ompl::base::SpaceInformation* si, const ompl::base::State* state) {
+bool OmplReedsSheppPlanner::isStateValid(const ompl::base::SpaceInformation* si, const ompl::base::State* state) const {
   const ReedsSheppState rsState = se2_planning::convert(state);
   return stateValidator_->isStateValid(rsState);
 }
