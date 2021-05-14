@@ -15,6 +15,22 @@ void PlannerRos::publishPath() const {
   throw std::runtime_error("Publish path not implemented");
 }
 
+void PlannerRos::publishPathNavMsgs() const {
+  throw std::runtime_error("Publish path nav msgs not implemented");
+}
+
+void PlannerRos::publishStartState() const {
+  throw std::runtime_error("Publish start state not implemented");
+}
+
+void PlannerRos::publishGoalState() const {
+  throw std::runtime_error("Publish goal state not implemented");
+}
+
+void PlannerRos::publishStateSpaceBoundaryMarker() {
+  throw std::runtime_error("Publish state space boundary marker not implemented");
+}
+
 void PlannerRos::setPlanningStrategy(std::shared_ptr<Planner> planner) {
   planner_ = planner;
 }
@@ -22,24 +38,31 @@ void PlannerRos::setPlanningStrategy(std::shared_ptr<Planner> planner) {
 void PlannerRos::setStartingState(const State& startingState) {
   planner_->setStartingState(startingState);
 }
+
 void PlannerRos::setGoalState(const State& goalState) {
   planner_->setGoalState(goalState);
 }
+
 bool PlannerRos::plan() {
   return planner_->plan();
 }
+
 void PlannerRos::getPath(Path* path) const {
   planner_->getPath(path);
 }
+
 bool PlannerRos::reset() {
   return planner_->reset();
 }
+
 bool PlannerRos::initialize() {
   return planner_->initialize();
 }
+
 void PlannerRos::getStartingState(State* startingState) const {
   planner_->getStartingState(startingState);
 }
+
 void PlannerRos::getGoalState(State* goalState) const {
   planner_->getGoalState(goalState);
 }

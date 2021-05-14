@@ -87,7 +87,8 @@ bool OmplReedsSheppPlannerRos::planningService(PlanningService::Request& req, Pl
   }
 
   // TODO move to detach? Better to publish this info for debugging before checking validity of states.
-  publishStartGoalMsgs(start, goal);
+  publishStartState();
+  publishGoalState();
   publishStateSpaceBoundaryMarker();
 
   //  Use state validator only after lock mutex is active and state space is updated
@@ -114,47 +115,12 @@ bool OmplReedsSheppPlannerRos::planningService(PlanningService::Request& req, Pl
 }
 
 void OmplReedsSheppPlannerRos::initRos() {
-  pathNavMsgsPublisher_ = nh_->advertise<nav_msgs::Path>(parameters_.pathNavMsgTopic_, 1, true);
   planningService_ = nh_->advertiseService(parameters_.planningSerivceName_, &OmplReedsSheppPlannerRos::planningService, this);
+  pathNavMsgsPublisher_ = nh_->advertise<nav_msgs::Path>(parameters_.pathNavMsgTopic_, 1, true);
   pathPublisher_ = nh_->advertise<se2_navigation_msgs::PathMsg>(parameters_.pathMsgTopic_, 1);
   startPublisher_ = nh_->advertise<geometry_msgs::PoseStamped>("start", 1);
   goalPublisher_ = nh_->advertise<geometry_msgs::PoseStamped>("goal", 1);
   stateSpacePublisher_ = nh_->advertise<visualization_msgs::Marker>("state_space", 1);
-}
-
-void OmplReedsSheppPlannerRos::publishPathNavMsgs() const {
-  ReedsSheppPath rsPath;
-  planner_->as<OmplPlanner>()->getInterpolatedPath(&rsPath, parameters_.pathNavMsgResolution_);
-  nav_msgs::Path msg = se2_planning::copyAllPoints(rsPath);
-  msg.header.frame_id = parameters_.pathFrame_;
-  msg.header.stamp = planTimeStamp_;
-  msg.header.seq = planSeqNumber_;
-  pathNavMsgsPublisher_.publish(msg);
-  ROS_INFO_STREAM("Publishing ReedsShepp path nav msg, num states: " << msg.poses.size());
-}
-
-void OmplReedsSheppPlannerRos::publishPath() const {
-  ReedsSheppPath rsPath;
-  planner_->getPath(&rsPath);
-  se2_navigation_msgs::Path msg = se2_planning::convert(rsPath);
-  msg.header_.frame_id = parameters_.pathFrame_;
-  msg.header_.stamp = planTimeStamp_;
-  msg.header_.seq = planSeqNumber_;
-  pathPublisher_.publish(se2_navigation_msgs::convert(msg));
-  ROS_INFO_STREAM("Publishing ReedsShepp path, num states: " << rsPath.numPoints());
-}
-
-void OmplReedsSheppPlannerRos::publishStartGoalMsgs(const ReedsSheppState& start, const ReedsSheppState& goal) const {
-  geometry_msgs::PoseStamped startPose;
-  startPose.header.frame_id = parameters_.pathFrame_;
-  startPose.header.stamp = planTimeStamp_;
-  startPose.pose = se2_planning::convert(start);
-  startPublisher_.publish(startPose);
-  geometry_msgs::PoseStamped goalPose;
-  goalPose.header.frame_id = parameters_.pathFrame_;
-  goalPose.header.stamp = planTimeStamp_;
-  goalPose.pose = se2_planning::convert(goal);
-  goalPublisher_.publish(goalPose);
 }
 
 void OmplReedsSheppPlannerRos::initializeStateSpaceBoundaryMarker() {
@@ -175,6 +141,48 @@ void OmplReedsSheppPlannerRos::initializeStateSpaceBoundaryMarker() {
   stateSpaceBoundaryMarker_.scale.x = lineWidth;
   stateSpaceBoundaryMarker_.points.resize(nVertices);  // Initialized to [0.0, 0.0, 0.0]
   stateSpaceBoundaryMarker_.colors.resize(nVertices, color);
+}
+
+void OmplReedsSheppPlannerRos::publishPath() const {
+  ReedsSheppPath rsPath;
+  planner_->getPath(&rsPath);
+  se2_navigation_msgs::Path msg = se2_planning::convert(rsPath);
+  msg.header_.frame_id = parameters_.pathFrame_;
+  msg.header_.stamp = planTimeStamp_;
+  msg.header_.seq = planSeqNumber_;
+  pathPublisher_.publish(se2_navigation_msgs::convert(msg));
+  ROS_INFO_STREAM("Publishing ReedsShepp path, num states: " << rsPath.numPoints());
+}
+
+void OmplReedsSheppPlannerRos::publishPathNavMsgs() const {
+  ReedsSheppPath rsPath;
+  planner_->as<OmplPlanner>()->getInterpolatedPath(&rsPath, parameters_.pathNavMsgResolution_);
+  nav_msgs::Path msg = se2_planning::copyAllPoints(rsPath);
+  msg.header.frame_id = parameters_.pathFrame_;
+  msg.header.stamp = planTimeStamp_;
+  msg.header.seq = planSeqNumber_;
+  pathNavMsgsPublisher_.publish(msg);
+  ROS_INFO_STREAM("Publishing ReedsShepp path nav msg, num states: " << msg.poses.size());
+}
+
+void OmplReedsSheppPlannerRos::publishStartState() const {
+  geometry_msgs::PoseStamped startPose;
+  startPose.header.frame_id = parameters_.pathFrame_;
+  startPose.header.stamp = planTimeStamp_;
+  ReedsSheppState startState{};
+  getStartingState(&startState);
+  startPose.pose = se2_planning::convert(startState);
+  startPublisher_.publish(startPose);
+}
+
+void OmplReedsSheppPlannerRos::publishGoalState() const {
+  geometry_msgs::PoseStamped startPose;
+  startPose.header.frame_id = parameters_.pathFrame_;
+  startPose.header.stamp = planTimeStamp_;
+  ReedsSheppState goalState{};
+  getStartingState(&goalState);
+  startPose.pose = se2_planning::convert(goalState);
+  startPublisher_.publish(startPose);
 }
 
 void OmplReedsSheppPlannerRos::publishStateSpaceBoundaryMarker() {

@@ -26,6 +26,10 @@ class PlannerRos : public Planner {
 
   void setPlanningStrategy(std::shared_ptr<Planner> planner);
   virtual void publishPath() const;
+  virtual void publishPathNavMsgs() const;
+  virtual void publishStartState() const;
+  virtual void publishGoalState() const;
+  virtual void publishStateSpaceBoundaryMarker();
 
  protected:
   using PlanningService = se2_navigation_msgs::RequestPathSrv;
@@ -36,6 +40,13 @@ class PlannerRos : public Planner {
 
   ros::NodeHandlePtr nh_;
   std::shared_ptr<Planner> planner_;
+  ros::ServiceServer planningService_;
+
+  ros::Publisher pathNavMsgsPublisher_;
+  ros::Publisher pathPublisher_;
+  ros::Publisher startPublisher_;
+  ros::Publisher goalPublisher_;
+  ros::Publisher stateSpacePublisher_;
 };
 
 } /* namespace se2_planning*/
