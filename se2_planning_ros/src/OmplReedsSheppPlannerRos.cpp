@@ -41,7 +41,7 @@ bool OmplReedsSheppPlannerRos::plan() {
 
 bool OmplReedsSheppPlannerRos::planningService(PlanningService::Request& req, PlanningService::Response& res) {
   // TODO Grid map in state validator is currently initialized to some default values, this check is therefore useless
-  if (!planner_->as<OmplReedsSheppPlanner>()->getStateValidator().isInitialized()) {
+  if (!planner_->getStateValidator().isInitialized()) {
     ROS_WARN_STREAM("State validator has not been initialized yet. Abort planning.");
     res.status = false;
     return true;
@@ -55,10 +55,10 @@ bool OmplReedsSheppPlannerRos::planningService(PlanningService::Request& req, Pl
   setGoalState(goal);
 
   // Block update of state validator obstacle map during planning
-  planner_->as<OmplReedsSheppPlanner>()->lockStateValidator();
+  planner_->lockStateValidator();
   // TODO move from se2_planner_node here (introduces dependency but makes state space update more consistent:
   //  adapt state space boundaries from grid map
-  // planner_->as<OmplReedsSheppPlanner>()->getStateValidator().as<GridMapLazyStateValidator>
+  // planner_->getStateValidator().as<GridMapLazyStateValidator>
 
   // Adapt state space boundaries (larger than grid map, state validity checking assumes area out of bounds to be
   // traversable) to contain initial and goal state otherwise RRTstar fails
@@ -93,19 +93,16 @@ bool OmplReedsSheppPlannerRos::planningService(PlanningService::Request& req, Pl
 
   //  Use state validator only after lock mutex is active and state space is updated
   //  Checks only for non-traversable terrain not for state space bounds
-  if (!planner_->as<OmplReedsSheppPlanner>()->getStateValidator().isStateValid(start)) {
+  if (!planner_->getStateValidator().isStateValid(start)) {
     ROS_WARN_STREAM("Start state (x: " << start.x_ << ", y: " << start.y_ << ", yaw: " << start.yaw_
                                        << ") not valid. Start planning anyway.");
   }
-  if (!planner_->as<OmplReedsSheppPlanner>()->getStateValidator().isStateValid(goal)) {
+  if (!planner_->getStateValidator().isStateValid(goal)) {
     ROS_WARN_STREAM("Goal state (x: " << goal.x_ << ", y: " << goal.y_ << ", yaw: " << goal.yaw_ << ") not valid. Start planning anyway.");
-    //    ROS_WARN_STREAM("Goal state (x: " << goal.x_ << ", y: " << goal.y_ << ", yaw: " << goal.yaw_ << ") not valid. Abort planning.");
-    //    planner_->as<OmplReedsSheppPlanner>()->unlockStateValidator();
-    //    return false;
   }
 
   bool result = plan();
-  planner_->as<OmplReedsSheppPlanner>()->unlockStateValidator();
+  planner_->unlockStateValidator();
 
   res.status = result;
 

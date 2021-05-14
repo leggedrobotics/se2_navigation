@@ -40,10 +40,30 @@ void OmplPlanner::getGoalState(State* goalState) const {
   convert(goalState_, goalState);
 }
 
+void OmplPlanner::setStateValidator(std::unique_ptr<StateValidator> stateValidator) {
+  stateValidator_ = std::move(stateValidator);
+}
+
+const StateValidator& OmplPlanner::getStateValidator() const {
+  return *stateValidator_;
+}
+
+void OmplPlanner::lockStateValidator() {
+  stateValidator_->lock();
+}
+
+void OmplPlanner::unlockStateValidator() {
+  stateValidator_->unlock();
+}
+
+bool OmplPlanner::isLocked() const {
+  return stateValidator_->isLocked();
+}
+
 bool OmplPlanner::plan() {
   simpleSetup_->clear();
   simpleSetup_->setStartAndGoalStates(*startState_, *goalState_);
-  // TODO see https://ompl.kavrakilab.org/genericPlanning.html for continue planning
+  // TODO see https://ompl.kavrakilab.org/genericPlanning.html on how to continue planning
   //   The ompl::base::Planner::solve() method can be called repeatedly with different
   //   allowed time durations until a solution is found. The planning process continues
   //   with the available data structures when sequential calls to ompl::base::Planner::solve() are made.

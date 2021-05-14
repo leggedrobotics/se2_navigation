@@ -24,6 +24,12 @@ class PlannerRos : public Planner {
   void getStartingState(State* startingState) const override;
   void getGoalState(State* goalState) const override;
 
+  void setStateValidator(std::unique_ptr<StateValidator> stateValidator) override;
+  const StateValidator& getStateValidator() const override;
+  void lockStateValidator() override;
+  void unlockStateValidator() override;
+  bool isLocked() const override;
+
   void setPlanningStrategy(std::shared_ptr<Planner> planner);
   virtual void publishPath() const;
   virtual void publishPathNavMsgs() const;

@@ -67,4 +67,24 @@ void PlannerRos::getGoalState(State* goalState) const {
   planner_->getGoalState(goalState);
 }
 
+void PlannerRos::setStateValidator(std::unique_ptr<StateValidator> stateValidator) {
+  planner_->setStateValidator(std::move(stateValidator));
+}
+
+const StateValidator& PlannerRos::getStateValidator() const {
+  return planner_->getStateValidator();
+}
+
+void PlannerRos::lockStateValidator() {
+  planner_->lockStateValidator();
+}
+
+void PlannerRos::unlockStateValidator() {
+  planner_->unlockStateValidator();
+}
+
+bool PlannerRos::isLocked() const {
+  return planner_->isLocked();
+}
+
 }  // namespace se2_planning

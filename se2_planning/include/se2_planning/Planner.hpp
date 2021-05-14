@@ -8,6 +8,7 @@
 #pragma once
 
 #include "se2_planning/State.hpp"
+#include "se2_planning/StateValidator.hpp"
 
 #include <boost/concept_check.hpp>
 namespace se2_planning {
@@ -26,6 +27,12 @@ class Planner {
   virtual bool initialize() { throw std::runtime_error("Planner: initialize() not implemented"); }
   virtual void getStartingState(State* startingState) const { throw std::runtime_error("Planner: getStartingState() not implemented"); }
   virtual void getGoalState(State* goalState) const { throw std::runtime_error("Planner: getGoalState() not implemented"); }
+
+  virtual void setStateValidator(std::unique_ptr<StateValidator> stateValidator) = 0;
+  virtual const StateValidator& getStateValidator() const { throw std::runtime_error("Planner: getStateValidator() not implemented"); };
+  virtual void lockStateValidator() = 0;
+  virtual void unlockStateValidator() = 0;
+  virtual bool isLocked() const = 0;
 
   template <class T>
   const T* as() const {

@@ -54,11 +54,6 @@ class OmplReedsSheppPlanner final : public OmplPlanner {
   bool initialize() final;
   bool plan() final;
   void setParameters(const OmplReedsSheppPlannerParameters& parameters);
-  void setStateValidator(std::unique_ptr<StateValidator> stateValidator);
-  const StateValidator& getStateValidator() const;
-  void lockStateValidator();
-  void unlockStateValidator();
-  bool isLocked() const;
   void updateStateSpaceBoundaries(const ompl::base::RealVectorBounds& bounds) override;
   bool satisfiesStateSpaceBoundaries(const se2_planning::ReedsSheppState& state) const;
   const ompl::base::RealVectorBounds& getStateSpaceBoundaries() const;
@@ -76,7 +71,6 @@ class OmplReedsSheppPlanner final : public OmplPlanner {
   std::unique_ptr<ompl::base::RealVectorBounds> bounds_;
   const int reedsSheppStateSpaceDim_ = 2;
   OmplReedsSheppPlannerParameters parameters_;
-  std::unique_ptr<StateValidator> stateValidator_;
 };
 
 std::string toString(ReedsSheppPathSegment::Direction direction);

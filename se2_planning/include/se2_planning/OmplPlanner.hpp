@@ -27,6 +27,12 @@ class OmplPlanner : public Planner {
   void getStartingState(State* startingState) const final;
   void getGoalState(State* goalState) const final;
 
+  void setStateValidator(std::unique_ptr<StateValidator> stateValidator) final;
+  const StateValidator& getStateValidator() const final;
+  void lockStateValidator() final;
+  void unlockStateValidator() final;
+  bool isLocked() const final;
+
   void setMaxPlanningDuration(double T);
   void getOmplPath(ompl::geometric::PathGeometric* omplPath) const;
   void getOmplInterpolatedPath(ompl::geometric::PathGeometric* omplPath, double spatialResolution) const;
@@ -48,6 +54,7 @@ class OmplPlanner : public Planner {
   ompl::geometric::SimpleSetupPtr simpleSetup_;
   ompl::base::ScopedStatePtr startState_, goalState_;
   std::unique_ptr<ompl::geometric::PathGeometric> path_, interpolatedPath_;
+  std::unique_ptr<StateValidator> stateValidator_;
 
  private:
   double maxPlanningDuration_ = 1.0;
