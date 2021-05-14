@@ -124,8 +124,14 @@ bool OmplReedsSheppPlanner::isStateValid(const ompl::base::SpaceInformation* si,
   const ReedsSheppState rsState = se2_planning::convert(state);
   return stateValidator_->isStateValid(rsState);
 }
+
 ompl::base::ScopedStatePtr OmplReedsSheppPlanner::convert(const State& state) const {
   return se2_planning::convert(*(state.as<ReedsSheppState>()), simpleSetup_->getSpaceInformation());
+}
+
+void OmplReedsSheppPlanner::convert(const ompl::base::ScopedStatePtr omplState, State* state) const {
+  auto reedsSheppState = state->as<ReedsSheppState>();
+  *reedsSheppState = se2_planning::convert(omplState->get());
 }
 
 void OmplReedsSheppPlanner::convert(const ompl::geometric::PathGeometric& pathOmpl, Path* path) const {
@@ -238,7 +244,6 @@ ReedsSheppState convert(const ompl::base::State* s) {
   retState.x_ = rsState->getX();
   retState.y_ = rsState->getY();
   retState.yaw_ = rsState->getYaw();
-
   return retState;
 }
 

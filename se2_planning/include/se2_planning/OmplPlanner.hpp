@@ -24,6 +24,8 @@ class OmplPlanner : public Planner {
   void setStartingState(const State& startingState) final;
   void setGoalState(const State& goalState) final;
   void getPath(Path* path) const final;
+  void getStartingState(State* startingState) const final;
+  void getGoalState(State* goalState) const final;
 
   void setMaxPlanningDuration(double T);
   void getOmplPath(ompl::geometric::PathGeometric* omplPath) const;
@@ -39,6 +41,7 @@ class OmplPlanner : public Planner {
   virtual void initializeStateSpace() = 0;
   virtual bool isStateValid(const ompl::base::SpaceInformation* si, const ompl::base::State* state) = 0;
   virtual ompl::base::ScopedStatePtr convert(const State& state) const = 0;
+  virtual void convert(const ompl::base::ScopedStatePtr omplState, State* state) const = 0;
   virtual void convert(const ompl::geometric::PathGeometric& pathOmpl, Path* path) const = 0;
 
   ompl::base::StateSpacePtr stateSpace_;

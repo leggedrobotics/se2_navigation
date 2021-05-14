@@ -32,6 +32,14 @@ void OmplPlanner::getPath(Path* path) const {
   convert(*interpolatedPath_, path);
 }
 
+void OmplPlanner::getStartingState(State* startingState) const {
+  convert(startState_, startingState);
+}
+
+void OmplPlanner::getGoalState(State* goalState) const {
+  convert(goalState_, goalState);
+}
+
 bool OmplPlanner::plan() {
   simpleSetup_->clear();
   simpleSetup_->setStartAndGoalStates(*startState_, *goalState_);
@@ -51,10 +59,12 @@ bool OmplPlanner::plan() {
 
   return true;
 }
+
 bool OmplPlanner::reset() {
   simpleSetup_->clear();
   return true;
 }
+
 bool OmplPlanner::initialize() {
   initializeStateSpace();
   if (stateSpace_ == nullptr) {

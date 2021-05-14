@@ -69,6 +69,7 @@ class OmplReedsSheppPlanner final : public OmplPlanner {
   void setStateSpaceBoundaries();
   bool isStateValid(const ompl::base::SpaceInformation* si, const ompl::base::State* state) final;
   ompl::base::ScopedStatePtr convert(const State& state) const final;
+  void convert(const ompl::base::ScopedStatePtr omplState, State* state) const final;
   void convert(const ompl::geometric::PathGeometric& pathOmpl, Path* path) const final;
   int getDistanceSignAt(const ompl::geometric::PathGeometric& path, unsigned int id) const;
 
