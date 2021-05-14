@@ -115,7 +115,7 @@ bool OmplReedsSheppPlannerRos::planningService(PlanningService::Request& req, Pl
 }
 
 void OmplReedsSheppPlannerRos::initRos() {
-  planningService_ = nh_->advertiseService(parameters_.planningSerivceName_, &OmplReedsSheppPlannerRos::planningService, this);
+  planningService_ = nh_->advertiseService(parameters_.planningServiceName_, &OmplReedsSheppPlannerRos::planningService, this);
   pathNavMsgsPublisher_ = nh_->advertise<nav_msgs::Path>(parameters_.pathNavMsgTopic_, 1, true);
   pathPublisher_ = nh_->advertise<se2_navigation_msgs::PathMsg>(parameters_.pathMsgTopic_, 1);
   startPublisher_ = nh_->advertise<geometry_msgs::PoseStamped>("start", 1);
