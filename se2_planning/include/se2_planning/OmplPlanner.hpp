@@ -34,6 +34,7 @@ class OmplPlanner : public Planner {
   bool isLocked() const final;
 
   virtual void setStateSpaceBoundaries(const ompl::base::RealVectorBounds& bounds);
+  virtual const ompl::base::RealVectorBounds& getStateSpaceBoundaries() const;
 
   void setMaxPlanningDuration(double T);
   void getOmplPath(ompl::geometric::PathGeometric* omplPath) const;

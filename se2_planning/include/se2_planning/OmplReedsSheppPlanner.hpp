@@ -59,8 +59,8 @@ class OmplReedsSheppPlanner final : public OmplPlanner {
   bool plan() final;
   void setParameters(const OmplReedsSheppPlannerParameters& parameters);
   void setStateSpaceBoundaries(const ompl::base::RealVectorBounds& bounds) override;
+  const ompl::base::RealVectorBounds& getStateSpaceBoundaries() const override;
   bool satisfiesStateSpaceBoundaries(const se2_planning::ReedsSheppState& state) const;
-  const ompl::base::RealVectorBounds& getStateSpaceBoundaries() const;
 
  private:
   void createDefaultStateSpace();

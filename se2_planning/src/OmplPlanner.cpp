@@ -108,6 +108,10 @@ void OmplPlanner::setStateSpaceBoundaries(const ompl::base::RealVectorBounds& bo
   }
 }
 
+const ompl::base::RealVectorBounds& OmplPlanner::getStateSpaceBoundaries() const {
+  return *bounds_;
+}
+
 void OmplPlanner::setMaxPlanningDuration(double T) {
   maxPlanningDuration_ = T;
 }
