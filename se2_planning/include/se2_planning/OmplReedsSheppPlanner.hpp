@@ -70,7 +70,6 @@ class OmplReedsSheppPlanner final : public OmplPlanner {
   void convert(const ompl::geometric::PathGeometric& pathOmpl, Path* path) const final;
   int getDistanceSignAt(const ompl::geometric::PathGeometric& path, unsigned int id) const;
 
-  // TODO(christoph): Can we move bounds_ to OmplPlanner? Can we remove it altogether?
   const int reedsSheppStateSpaceDim_ = 2;
   OmplReedsSheppPlannerParameters parameters_;
 };
