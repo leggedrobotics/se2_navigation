@@ -35,10 +35,14 @@ struct ReedsSheppPath : public Path {
 
 struct OmplReedsSheppPlannerParameters {
   double turningRadius_ = 10.0;
+
+  // TODO(christoph): Do we need these parameters? Should be provided by the map. If no map available, no planning
+  //  possible...?
   double xLowerBound_ = -1000.0;
   double xUpperBound_ = 1000.0;
   double yLowerBound_ = -1000.0;
   double yUpperBound_ = 1000.0;
+
   double pathSpatialResolution_ = 0.05;
   double maxPlanningTime_ = 1.0;
   std::string omplPlannerName_ = "RRTstar";
@@ -54,21 +58,19 @@ class OmplReedsSheppPlanner final : public OmplPlanner {
   bool initialize() final;
   bool plan() final;
   void setParameters(const OmplReedsSheppPlannerParameters& parameters);
-  void updateStateSpaceBoundaries(const ompl::base::RealVectorBounds& bounds) override;
+  void setStateSpaceBoundaries(const ompl::base::RealVectorBounds& bounds) override;
   bool satisfiesStateSpaceBoundaries(const se2_planning::ReedsSheppState& state) const;
   const ompl::base::RealVectorBounds& getStateSpaceBoundaries() const;
 
  private:
   void createDefaultStateSpace();
-  void initializeStateSpace() final;
-  void setStateSpaceBoundaries();
   bool isStateValid(const ompl::base::SpaceInformation* si, const ompl::base::State* state) const final;
   ompl::base::ScopedStatePtr convert(const State& state) const final;
   void convert(const ompl::base::ScopedStatePtr omplState, State* state) const final;
   void convert(const ompl::geometric::PathGeometric& pathOmpl, Path* path) const final;
   int getDistanceSignAt(const ompl::geometric::PathGeometric& path, unsigned int id) const;
 
-  std::unique_ptr<ompl::base::RealVectorBounds> bounds_;
+  // TODO(christoph): Can we move bounds_ to OmplPlanner? Can we remove it altogether?
   const int reedsSheppStateSpaceDim_ = 2;
   OmplReedsSheppPlannerParameters parameters_;
 };

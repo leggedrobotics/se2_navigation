@@ -86,7 +86,6 @@ bool OmplPlanner::reset() {
 }
 
 bool OmplPlanner::initialize() {
-  initializeStateSpace();
   if (stateSpace_ == nullptr) {
     std::cerr << "OmplPlanner:: state space is nullptr" << std::endl;
     return false;
@@ -100,8 +99,13 @@ bool OmplPlanner::initialize() {
   return true;
 }
 
-void OmplPlanner::updateStateSpaceBoundaries(const ompl::base::RealVectorBounds& bounds) {
-  throw std::runtime_error("Not implemented");
+void OmplPlanner::setStateSpaceBoundaries(const ompl::base::RealVectorBounds& bounds) {
+  for (size_t idx = 0; idx < bounds.low.size(); idx++) {
+    bounds_->low[idx] = bounds.low[idx];
+  }
+  for (size_t idx = 0; idx < bounds.high.size(); idx++) {
+    bounds_->high[idx] = bounds.high[idx];
+  }
 }
 
 void OmplPlanner::setMaxPlanningDuration(double T) {

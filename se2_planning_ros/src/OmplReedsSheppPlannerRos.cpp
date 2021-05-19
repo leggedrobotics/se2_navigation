@@ -57,13 +57,13 @@ bool OmplReedsSheppPlannerRos::planningService(PlanningService::Request& req, Pl
 
   // Block update of state validator obstacle map during planning
   planner_->lockStateValidator();
+  
   // TODO move from se2_planner_node here (introduces dependency but makes state space update more consistent:
   //  adapt state space boundaries from grid map
   // planner_->getStateValidator().as<GridMapLazyStateValidator>
 
   // Adapt state space boundaries (larger than grid map, state validity checking assumes area out of bounds to be
   // traversable) to contain initial and goal state otherwise RRTstar fails
-  // TODO expose stateSpaceBoundsMargin_ as param => depends on footprint size?
   // TODO move to OMPLReedsSheppPlanner.cpp?
   const double stateSpaceBoundsMargin_ = parameters_.stateSpaceBoundsMargin_;
   if (!planner_->as<OmplReedsSheppPlanner>()->satisfiesStateSpaceBoundaries(start)) {
@@ -74,7 +74,7 @@ bool OmplReedsSheppPlannerRos::planningService(PlanningService::Request& req, Pl
     newBounds.high[1] = std::max(bounds.high[1], start.y_ + stateSpaceBoundsMargin_);
     newBounds.low[0] = std::min(bounds.low[0], start.x_ - stateSpaceBoundsMargin_);
     newBounds.low[1] = std::min(bounds.low[1], start.y_ - stateSpaceBoundsMargin_);
-    planner_->as<OmplReedsSheppPlanner>()->updateStateSpaceBoundaries(newBounds);
+    planner_->as<OmplReedsSheppPlanner>()->setStateSpaceBoundaries(newBounds);
   }
   if (!planner_->as<OmplReedsSheppPlanner>()->satisfiesStateSpaceBoundaries(goal)) {
     ROS_DEBUG("Goal state not in grid map. Enlarge state space boundaries.");
@@ -84,10 +84,9 @@ bool OmplReedsSheppPlannerRos::planningService(PlanningService::Request& req, Pl
     newBounds.high[1] = std::max(bounds.high[1], goal.y_ + stateSpaceBoundsMargin_);
     newBounds.low[0] = std::min(bounds.low[0], goal.x_ - stateSpaceBoundsMargin_);
     newBounds.low[1] = std::min(bounds.low[1], goal.y_ - stateSpaceBoundsMargin_);
-    planner_->as<OmplReedsSheppPlanner>()->updateStateSpaceBoundaries(newBounds);
+    planner_->as<OmplReedsSheppPlanner>()->setStateSpaceBoundaries(newBounds);
   }
 
-  // TODO move to detach? Better to publish this info for debugging before checking validity of states.
   publishStartState();
   publishGoalState();
   publishStateSpaceBoundaryMarker();

@@ -42,52 +42,33 @@ bool OmplReedsSheppPlanner::initialize() {
   return true;
 }
 
-void OmplReedsSheppPlanner::initializeStateSpace() {
-  // todo maybe not really needed
-  createDefaultStateSpace();
-}
-
 void OmplReedsSheppPlanner::createDefaultStateSpace() {
+  // Allocate abstracted objects
   stateSpace_.reset(new ompl::base::ReedsSheppStateSpace(parameters_.turningRadius_));
   bounds_ = std::make_unique<ompl::base::RealVectorBounds>(reedsSheppStateSpaceDim_);
-  setStateSpaceBoundaries();
+  // Initialize bounds with parameters
+  ompl::base::RealVectorBounds bounds(reedsSheppStateSpaceDim_);
+  bounds.low[0] = parameters_.xLowerBound_;
+  bounds.low[1] = parameters_.yLowerBound_;
+  bounds.high[0] = parameters_.xUpperBound_;
+  bounds.high[1] = parameters_.yUpperBound_;
+  setStateSpaceBoundaries(bounds);
 }
 bool OmplReedsSheppPlanner::plan() {
-  initialize();
-  ompl::base::StateSpacePtr space = simpleSetup_->getStateSpace();
-  auto bounds = space->as<ompl::base::SE2StateSpace>()->getBounds();
-  //  std::cout << "OmplReedsSheppPlanner: Planner state space bounds: x = [" << bounds.low[0] << ", " << bounds.high[0] << "], y=["
-  //            << bounds.low[1] << ", " << bounds.high[1] << "]" << std::endl;
-
-  bool result = BASE::plan();
+  // Call to initialize is required s.t. OMPL planner is updated with latest state space boundaries
+  //  initialize();
+  const bool result = BASE::plan();
   *interpolatedPath_ = interpolatePath(*path_, parameters_.pathSpatialResolution_);
   return result;
 }
-void OmplReedsSheppPlanner::setStateSpaceBoundaries() {
-  bounds_->low[0] = parameters_.xLowerBound_;
-  bounds_->low[1] = parameters_.yLowerBound_;
-  bounds_->high[0] = parameters_.xUpperBound_;
-  bounds_->high[1] = parameters_.yUpperBound_;
-  stateSpace_->as<ompl::base::SE2StateSpace>()->setBounds(*bounds_);
-  //  std::cout << "OmplReedsSheppPlanner: Set state space bounds: x = [" << bounds_->low[0] << ", " << bounds_->high[0] << "], y=["
-  //            << bounds_->low[1] << ", " << bounds_->high[1] << "]" << std::endl;
-}
+
 const ompl::base::RealVectorBounds& OmplReedsSheppPlanner::getStateSpaceBoundaries() const {
   return stateSpace_->as<ompl::base::SE2StateSpace>()->getBounds();
 }
 
-void OmplReedsSheppPlanner::updateStateSpaceBoundaries(const ompl::base::RealVectorBounds& bounds) {
-  bounds_->low[0] = bounds.low[0];
-  bounds_->low[1] = bounds.low[1];
-  bounds_->high[0] = bounds.high[0];
-  bounds_->high[1] = bounds.high[1];
-  parameters_.xLowerBound_ = bounds_->low[0];
-  parameters_.yLowerBound_ = bounds_->low[1];
-  parameters_.xUpperBound_ = bounds_->high[0];
-  parameters_.yUpperBound_ = bounds_->high[1];
-  stateSpace_->as<ompl::base::SE2StateSpace>()->setBounds(*bounds_);
-  //  std::cout << "OmplReedsSheppPlanner: Update state space bounds: x = [" << bounds_->low[0] << ", " << bounds_->high[0] << "], y=["
-  //            << bounds_->low[1] << ", " << bounds_->high[1] << "]" << std::endl;
+void OmplReedsSheppPlanner::setStateSpaceBoundaries(const ompl::base::RealVectorBounds& bounds) {
+  BASE::setStateSpaceBoundaries(bounds);
+  stateSpace_->as<ompl::base::SE2StateSpace>()->setBounds(bounds);
 }
 
 bool OmplReedsSheppPlanner::satisfiesStateSpaceBoundaries(const se2_planning::ReedsSheppState& state) const {
@@ -101,6 +82,7 @@ bool OmplReedsSheppPlanner::satisfiesStateSpaceBoundaries(const se2_planning::Re
 }
 
 bool OmplReedsSheppPlanner::isStateValid(const ompl::base::SpaceInformation* si, const ompl::base::State* state) const {
+  (void)si;
   const ReedsSheppState rsState = se2_planning::convert(state);
   return stateValidator_->isStateValid(rsState);
 }

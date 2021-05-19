@@ -24,24 +24,20 @@ void gridMapCallback(const grid_map_msgs::GridMap& msg) {
   // Update planner bounds when new map is published, placed here due to class structure
   grid_map::GridMap map;
   grid_map::GridMapRosConverter::fromMessage(msg, map);
+
   // Grid map is symmetric around position
-  grid_map::Position mapPosition;
-  mapPosition = map.getPosition();
-  grid_map::Length mapLength;
-  mapLength = map.getLength();
+  const grid_map::Position mapPosition = map.getPosition();
+  const grid_map::Length mapLength = map.getLength();
   ompl::base::RealVectorBounds bounds(2);
   bounds.low[0] = mapPosition.x() - mapLength.x() / 2.0;
   bounds.low[1] = mapPosition.y() - mapLength.y() / 2.0;
   bounds.high[0] = mapPosition.x() + mapLength.x() / 2.0;
   bounds.high[1] = mapPosition.y() + mapLength.y() / 2.0;
-
-  if (!planner->isLocked()) {
-    planner->updateStateSpaceBoundaries(bounds);
-    ROS_DEBUG_STREAM("OMPL State Space Update: pos: " << mapPosition.x() << ", " << mapPosition.y() << ", length: " << mapLength.x() << ", "
-                                                      << mapLength.y());
-  } else {
-    ROS_DEBUG_STREAM("OMPL State Space Update: Planner is locked. Not updating state space bounds.");
-  }
+  planner->lockStateValidator();
+  planner->setStateSpaceBoundaries(bounds);
+  planner->unlockStateValidator();
+  ROS_DEBUG_STREAM("OMPL State Space Update: pos: " << mapPosition.x() << ", " << mapPosition.y() << ", length: " << mapLength.x() << ", "
+                                                    << mapLength.y());
 }
 
 int main(int argc, char** argv) {
