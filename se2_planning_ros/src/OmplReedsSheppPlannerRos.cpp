@@ -57,7 +57,7 @@ bool OmplReedsSheppPlannerRos::planningService(PlanningService::Request& req, Pl
 
   // Block update of state validator obstacle map during planning
   planner_->lockStateValidator();
-  
+
   // TODO move from se2_planner_node here (introduces dependency but makes state space update more consistent:
   //  adapt state space boundaries from grid map
   // planner_->getStateValidator().as<GridMapLazyStateValidator>
