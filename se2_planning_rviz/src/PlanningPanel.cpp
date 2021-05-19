@@ -399,6 +399,8 @@ std::thread t([this] {
 
 const bool useCurrentStateAsStartingPose = currentStateAsStartCheckBox_->isChecked();
 geometry_msgs::Pose startingPose, goalPose;
+// TODO(christoph): This does not work correctly together (map and getStartPoseFromService) => /prius/get_current_state_service
+//  /prius/base_pose_ground_truth => has to be synced with state input to gridMapStateValidator?
 if (useCurrentStateAsStartingPose) {
   getStartPoseFromService(&startingPose);
   lastPose_ = startingPose;  //update last state

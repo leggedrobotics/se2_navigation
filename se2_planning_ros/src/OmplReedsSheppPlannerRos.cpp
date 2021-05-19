@@ -49,6 +49,7 @@ bool OmplReedsSheppPlannerRos::planningService(PlanningService::Request& req, Pl
 
   planTimeStamp_ = req.pathRequest.header.stamp;
 
+  // TODO(christoph): start and goal state are provided in map frame, grid map position is in odom frame?
   const auto start = se2_planning::convert(req.pathRequest.startingPose);
   const auto goal = se2_planning::convert(req.pathRequest.goalPose);
   setStartingState(start);
@@ -184,6 +185,7 @@ void OmplReedsSheppPlannerRos::publishGoalState() const {
 
 void OmplReedsSheppPlannerRos::publishStateSpaceBoundaryMarker() {
   // Set marker info.
+  // TODO(christoph): This should be extracted from the map reference frame!!!
   stateSpaceBoundaryMarker_.header.frame_id = parameters_.pathFrame_;
   stateSpaceBoundaryMarker_.header.stamp = planTimeStamp_;
 

@@ -19,6 +19,8 @@ using namespace se2_planning;
 auto planner = std::make_shared<OmplReedsSheppPlanner>();
 
 void gridMapCallback(const grid_map_msgs::GridMap& msg) {
+  // TODO(christoph): Have to transform map position in map frame (or start and goal state in odom frame)?
+  //  Start and goal state are provided in map frame?
   // Update planner bounds when new map is published, placed here due to class structure
   grid_map::GridMap map;
   grid_map::GridMapRosConverter::fromMessage(msg, map);
