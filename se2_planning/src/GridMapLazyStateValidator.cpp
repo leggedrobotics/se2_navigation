@@ -91,6 +91,7 @@ bool GridMapLazyStateValidator::isStateValid(const State& state) const {
     return true;
   } /* Optimistic and assumes no obstacles */
 
+  // TODO(christoph): Should we create separate classes for each validator method? => can have different constructors
   const auto se2state = *(state.as<SE2state>());
   switch (stateValidityCheckingMethod_) {
     case StateValidityCheckingMethod::COLLISION:
