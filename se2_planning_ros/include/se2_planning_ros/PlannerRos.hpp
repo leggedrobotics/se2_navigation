@@ -9,6 +9,7 @@
 
 #include <ros/ros.h>
 #include "se2_navigation_msgs/RequestPathSrv.h"
+#include "se2_planning/Map.hpp"
 #include "se2_planning/Planner.hpp"
 
 namespace se2_planning {
@@ -28,7 +29,11 @@ class PlannerRos : public Planner {
   const StateValidator& getStateValidator() const override;
   void lockStateValidator() override;
   void unlockStateValidator() override;
-  bool isLocked() const override;
+
+  void setMap(std::unique_ptr<Map> Map) override;
+  const Map& getMap() const override;
+  void lockMap() override;
+  void unlockMap() override;
 
   void setPlanningStrategy(std::shared_ptr<Planner> planner);
   virtual void publishPath() const;

@@ -60,6 +60,18 @@ se2_planning::SE2state randomState(const grid_map::GridMap &gm, double margin)
   return s;
 }
 
+se2_planning::ReedsSheppState randomReedsSheppState(const grid_map::GridMap &gm, double margin)
+{
+  se2_planning::ReedsSheppState s;
+  const double l = gm.getLength()(0) / 2.0 - margin;
+  const double w = gm.getLength()(1) / 2.0 - margin;
+  s.x_ = randomNumber(-l, l);
+  s.y_ = randomNumber(-w, w);
+  s.yaw_ = randomNumber(-M_PI, M_PI);
+  return s;
+}
+
+
 grid_map::GridMap createGridMap(double length, double width, double resolution,
                                 std::function<bool(double, double)> isAnObstacle)
 {
@@ -93,16 +105,6 @@ bool isStartAndGoalStateOK(const se2_planning::ReedsSheppPath &path,
   return firstState == start && lastState == goal;
 }
 
-se2_planning::ReedsSheppState randomState(
-    const se2_planning::OmplReedsSheppPlannerParameters &parameters)
-{
-  se2_planning::ReedsSheppState s;
-  s.x_ = randomNumber(0.8 * parameters.xLowerBound_, 0.8 * parameters.xUpperBound_);
-  s.y_ = randomNumber(0.8 * parameters.yLowerBound_, 0.8 * parameters.yUpperBound_);
-  s.yaw_ = randomNumber(-M_PI, M_PI);
-  return s;
-}
-
 void setCostThreshold(se2_planning::OmplReedsSheppPlanner *planner)
 {
   auto si = planner->getSimpleSetup()->getSpaceInformation();
@@ -112,17 +114,12 @@ void setCostThreshold(se2_planning::OmplReedsSheppPlanner *planner)
   planner->getSimpleSetup()->setOptimizationObjective(optimizationObjective);
 }
 
-se2_planning::OmplReedsSheppPlannerParameters createRectangularStateSpaceWithDefaultParams(
-    double stateBound)
-{
-  se2_planning::OmplReedsSheppPlannerParameters parameters;
-  parameters.xLowerBound_ = -stateBound;
-  parameters.xUpperBound_ = stateBound;
-  parameters.yLowerBound_ = -stateBound;
-  parameters.yUpperBound_ = stateBound;
-  parameters.maxPlanningTime_ = 10.0;
-  parameters.turningRadius_ = 1.0;
-  return parameters;
+se2_planning::OmplReedsSheppPlannerParameters createDefaultParams(){
+  se2_planning::OmplReedsSheppPlannerParameters params{};
+  params.maxPlanningTime_ = 10.0;
+  params.turningRadius_ = 1.0;
+  params.boundariesMargin_ = 1.0;
+  return params;
 }
 
 void setupPlanner(const se2_planning::OmplReedsSheppPlannerParameters &parameters,
@@ -135,10 +132,10 @@ void setupPlanner(const se2_planning::OmplReedsSheppPlannerParameters &parameter
 
 bool simplePlanBetweenRandomStartAndGoalTest(
     se2_planning::OmplReedsSheppPlanner &planner,
-    const se2_planning::OmplReedsSheppPlannerParameters &parameters)
+    const se2_planning::OmplReedsSheppPlannerParameters &parameters, const grid_map::GridMap &map)
 {
-  const auto start = randomState(parameters);
-  const auto goal = randomState(parameters);
+  const se2_planning::ReedsSheppState start = randomReedsSheppState(map, parameters.boundariesMargin_);
+  const se2_planning::ReedsSheppState goal = randomReedsSheppState(map, parameters.boundariesMargin_);
   planner.setStartingState(start);
   planner.setGoalState(goal);
   const bool status = planner.plan();

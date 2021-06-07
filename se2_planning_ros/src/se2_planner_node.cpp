@@ -10,35 +10,11 @@
 #include <grid_map_ros/grid_map_ros.hpp>
 #include "se2_planning/OmplReedsSheppPlanner.hpp"
 #include "se2_planning_ros/GridMapLazyStateValidatorRos.hpp"
+#include "se2_planning_ros/OccupancyMapRos.hpp"
+#include "se2_planning_ros/OmplReedsSheppPlannerRos.hpp"
 #include "se2_planning_ros/loaders.hpp"
 
 using namespace se2_planning;
-
-// Make planner global to have access to it in the gridMapCallback,
-// required to update planner bounds in dependence of grid map
-auto planner = std::make_shared<OmplReedsSheppPlanner>();
-
-void gridMapCallback(const grid_map_msgs::GridMap& msg) {
-  // TODO(christoph): Have to transform map position in map frame (or start and goal state in odom frame)?
-  //  Start and goal state are provided in map frame?
-  // Update planner bounds when new map is published, placed here due to class structure
-  grid_map::GridMap map;
-  grid_map::GridMapRosConverter::fromMessage(msg, map);
-
-  // Grid map is symmetric around position
-  const grid_map::Position mapPosition = map.getPosition();
-  const grid_map::Length mapLength = map.getLength();
-  ompl::base::RealVectorBounds bounds(2);
-  bounds.low[0] = mapPosition.x() - mapLength.x() / 2.0;
-  bounds.low[1] = mapPosition.y() - mapLength.y() / 2.0;
-  bounds.high[0] = mapPosition.x() + mapLength.x() / 2.0;
-  bounds.high[1] = mapPosition.y() + mapLength.y() / 2.0;
-  planner->lockStateValidator();
-  planner->setStateSpaceBoundaries(bounds);
-  planner->unlockStateValidator();
-  ROS_DEBUG_STREAM("OMPL State Space Update: pos: " << mapPosition.x() << ", " << mapPosition.y() << ", length: " << mapLength.x() << ", "
-                                                    << mapLength.y());
-}
 
 int main(int argc, char** argv) {
   ros::init(argc, argv, "se2_planner_node");
@@ -49,9 +25,11 @@ int main(int argc, char** argv) {
   const auto plannerParameters = loadOmplReedsSheppPlannerParameters(filename);
   const auto plannerRosParameters = loadOmplReedsSheppPlannerRosParameters(filename);
   const auto stateValidatorRosParameters = loadGridMapLazyStateValidatorRosParameters(filename);
-  planner->setParameters(plannerParameters);
+  const auto mapRosParameters = loadOccupancyMapRosParameters(filename);
 
-  // Create initial grid map
+  // Create initial grid map for state validator in planner
+  // TODO(christoph): Currently necessary because GridMapLazyStateValidator expects that a grid map is set when calling
+  //  initialize function (precomputes footprint points based on grid map size)
   grid_map::GridMap gridMap;
   gridMap.setFrameId(stateValidatorRosParameters.gridMapFrame_);
   gridMap.setGeometry(grid_map::Length(stateValidatorRosParameters.gridMapLength_, stateValidatorRosParameters.gridMapWidth_),
@@ -59,22 +37,27 @@ int main(int argc, char** argv) {
                       grid_map::Position(stateValidatorRosParameters.gridMapPositionX_, stateValidatorRosParameters.gridMapPositionY_));
   gridMap.add(stateValidatorRosParameters.gridMapObstacleLayerName_, stateValidatorRosParameters.gridMapDefaultValue_);
 
-  // Set grid map state validator
+  // Setup state validator
   auto validator = se2_planning::createGridMapLazyStateValidatorRos(
       nh, stateValidatorRosParameters, gridMap,
       se2_planning::computeFootprint(
           stateValidatorRosParameters.robotFootPrintLengthForward_, stateValidatorRosParameters.robotFootPrintLengthBackward_,
           stateValidatorRosParameters.robotFootPrintWidthLeft_, stateValidatorRosParameters.robotFootPrintWidthRight_));
+
+  // Setup map for state space boundaries in planner
+  auto map = se2_planning::createOccupancyMapRos(nh, mapRosParameters);
+
+  // Setup planner
+  auto planner = std::make_shared<OmplReedsSheppPlanner>();
+  planner->setParameters(plannerParameters);
   planner->setStateValidator(std::move(validator));
+  planner->setMap(std::move(map));
 
   // Setup ROS interface and start node
   se2_planning::OmplReedsSheppPlannerRos plannerRos(nh);
   plannerRos.setPlanningStrategy(planner);
   plannerRos.setParameters(plannerRosParameters);
   plannerRos.initialize();
-
-  // Callback to update OMPL planner bounds when map changes
-  ros::Subscriber mapSub = nh->subscribe(stateValidatorRosParameters.gridMapMsgSubTopic_, 1, gridMapCallback);
 
   ros::spin();
 

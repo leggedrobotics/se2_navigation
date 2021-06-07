@@ -11,6 +11,7 @@
 #include "grid_map_core/iterators/GridMapIterator.hpp"
 #include "ompl/base/objectives/PathLengthOptimizationObjective.h"
 #include "se2_planning/GridMapLazyStateValidator.hpp"
+#include "se2_planning/OccupancyMap.hpp"
 #include "se2_planning/OmplReedsSheppPlanner.hpp"
 #include "test_helpers.hpp"
 
@@ -28,13 +29,6 @@ void setCostThreshold(se2_planning::OmplReedsSheppPlanner* planner) {
   ompl::base::OptimizationObjectivePtr optimizationObjective(std::make_shared<ompl::base::PathLengthOptimizationObjective>(si));
   optimizationObjective->setCostThreshold(ompl::base::Cost(1e10));
   planner->getSimpleSetup()->setOptimizationObjective(optimizationObjective);
-}
-
-void createRectangularStateSpace(double stateBound, se2_planning::OmplReedsSheppPlannerParameters* parameters) {
-  parameters->xLowerBound_ = -stateBound;
-  parameters->xUpperBound_ = stateBound;
-  parameters->yLowerBound_ = -stateBound;
-  parameters->yUpperBound_ = stateBound;
 }
 
 void runPlanner(se2_planning::OmplReedsSheppPlanner& planner) {
@@ -99,27 +93,26 @@ void runLazyRandomEarlyStoppingValidator(se2_planning::OmplReedsSheppPlanner& pl
   runPlanner(planner);
 }
 
-int main(int argc, char** argv) {
+int main() {
   namespace test = se2_planning_test;
   ompl::msg::setLogLevel(ompl::msg::LogLevel::LOG_NONE);
-  const std::string testLayer = "occupancy";
   // create environment
   grid_map::GridMap gridMap;
   gridMap.setGeometry(grid_map::Length(40.0, 40.0), 0.1);
-  gridMap.add(testLayer, 0.0);
+  gridMap.add(benchmarkLayer, 0.0);
   std::function<bool(double, double)> isAnObstacle = [](double x, double y) {
     return test::isInsideRectangle(x, y, -10.0, 0.0, 40.0, 2.0) || test::isInsideRectangle(x, y, 5.0, 5.0, 5.0, 5.0);
   };
-  test::addObstacles(isAnObstacle, testLayer, &gridMap);
+  test::addObstacles(isAnObstacle, benchmarkLayer, &gridMap);
 
   // setup planner
-  se2_planning::OmplReedsSheppPlannerParameters parameters;
-  parameters.maxPlanningTime_ = 10.0;
-  parameters.turningRadius_ = 1.0;
-  createRectangularStateSpace(20.0, &parameters);
+  se2_planning::OmplReedsSheppPlannerParameters parameters = se2_planning_test::createDefaultParams();
   se2_planning::OmplReedsSheppPlanner planner;
   planner.setParameters(parameters);
   planner.initialize();
+  auto map = std::make_unique<se2_planning::OccupancyMap>();
+  map->setGridMap(gridMap, benchmarkLayer);
+  planner.setMap(std::move(map));
   setCostThreshold(&planner);
 
   runNormalValidator(planner, gridMap);

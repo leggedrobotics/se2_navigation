@@ -1,9 +1,6 @@
 
 state_space:
-  x_lower: -1000.0
-  x_upper: 1000.0
-  y_lower: -1000.0
-  y_upper: 1000.0
+  boundaries_margin: 1.0
   turning_radius: 10.0
 
 state_validator_ros:

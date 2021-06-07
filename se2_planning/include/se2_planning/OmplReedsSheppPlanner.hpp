@@ -34,15 +34,8 @@ struct ReedsSheppPath : public Path {
 };
 
 struct OmplReedsSheppPlannerParameters {
+  double boundariesMargin_ = 1.0;
   double turningRadius_ = 10.0;
-
-  // TODO(christoph): Do we need these parameters? Should be provided by the map. If no map available, no planning
-  //  possible...?
-  double xLowerBound_ = -1000.0;
-  double xUpperBound_ = 1000.0;
-  double yLowerBound_ = -1000.0;
-  double yUpperBound_ = 1000.0;
-
   double pathSpatialResolution_ = 0.05;
   double maxPlanningTime_ = 1.0;
   std::string omplPlannerName_ = "RRTstar";
@@ -61,6 +54,7 @@ class OmplReedsSheppPlanner final : public OmplPlanner {
   void setStateSpaceBoundaries(const ompl::base::RealVectorBounds& bounds) override;
   const ompl::base::RealVectorBounds& getStateSpaceBoundaries() const override;
   bool satisfiesStateSpaceBoundaries(const se2_planning::ReedsSheppState& state) const;
+  void extendStateSpaceBoundaries(const se2_planning::ReedsSheppState& state, const double margin);
 
  private:
   void createDefaultStateSpace();

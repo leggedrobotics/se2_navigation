@@ -83,8 +83,20 @@ void PlannerRos::unlockStateValidator() {
   planner_->unlockStateValidator();
 }
 
-bool PlannerRos::isLocked() const {
-  return planner_->isLocked();
+void PlannerRos::setMap(std::unique_ptr<Map> Map) {
+  planner_->setMap(std::move(Map));
+}
+
+const Map& PlannerRos::getMap() const {
+  return planner_->getMap();
+}
+
+void PlannerRos::lockMap() {
+  planner_->lockMap();
+}
+
+void PlannerRos::unlockMap() {
+  planner_->unlockMap();
 }
 
 }  // namespace se2_planning

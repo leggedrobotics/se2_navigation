@@ -26,8 +26,12 @@ TEST(Planning, OmplReedsSheppPlanner)
   ompl::RNG::setSeed(seed);
   ompl::msg::setLogLevel(ompl::msg::LogLevel::LOG_NONE);
 
-  se2_planning::OmplReedsSheppPlannerParameters parameters =
-      createRectangularStateSpaceWithDefaultParams(10.0);
+  se2_planning::OmplReedsSheppPlannerParameters parameters = createDefaultParams();
+
+  std::function<bool(double, double)> noObstacles = [](double x, double y) {
+    return false;
+  };
+  grid_map::GridMap map = createGridMap(20, 20, 0.1, noObstacles)
 
   se2_planning::OmplReedsSheppPlanner planner;
   setupPlanner(parameters, &planner);

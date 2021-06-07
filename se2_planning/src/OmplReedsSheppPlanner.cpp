@@ -46,17 +46,38 @@ void OmplReedsSheppPlanner::createDefaultStateSpace() {
   // Allocate abstracted objects
   stateSpace_.reset(new ompl::base::ReedsSheppStateSpace(parameters_.turningRadius_));
   bounds_ = std::make_unique<ompl::base::RealVectorBounds>(reedsSheppStateSpaceDim_);
-  // Initialize bounds with parameters
+  // Initialize bounds to zero
   ompl::base::RealVectorBounds bounds(reedsSheppStateSpaceDim_);
-  bounds.low[0] = parameters_.xLowerBound_;
-  bounds.low[1] = parameters_.yLowerBound_;
-  bounds.high[0] = parameters_.xUpperBound_;
-  bounds.high[1] = parameters_.yUpperBound_;
   setStateSpaceBoundaries(bounds);
 }
+
+void OmplReedsSheppPlanner::extendStateSpaceBoundaries(const se2_planning::ReedsSheppState& state, const double margin) {
+  const auto bounds = getStateSpaceBoundaries();
+  ompl::base::RealVectorBounds newBounds(reedsSheppStateSpaceDim_);
+  newBounds.high[0] = std::max(bounds.high[0], state.x_ + margin);
+  newBounds.high[1] = std::max(bounds.high[1], state.y_ + margin);
+  newBounds.low[0] = std::min(bounds.low[0], state.x_ - margin);
+  newBounds.low[1] = std::min(bounds.low[1], state.y_ - margin);
+  setStateSpaceBoundaries(newBounds);
+}
+
 bool OmplReedsSheppPlanner::plan() {
-  // Call to initialize is required s.t. OMPL planner is updated with latest state space boundaries
-  //  initialize();
+  // Update state space boundaries with values from map
+  const auto bounds = map_->getBounds();
+  ompl::base::RealVectorBounds realVectorBounds(reedsSheppStateSpaceDim_);
+  realVectorBounds.low[0] = bounds.low_.x_;
+  realVectorBounds.low[1] = bounds.low_.y_;
+  realVectorBounds.high[0] = bounds.high_.x_;
+  realVectorBounds.high[1] = bounds.high_.y_;
+  setStateSpaceBoundaries(realVectorBounds);
+  // Extend state space boundaries from the map to always include start and goal with an additional margin
+  ReedsSheppState startState{};
+  getStartingState(&startState);
+  extendStateSpaceBoundaries(startState, parameters_.boundariesMargin_);
+  ReedsSheppState goalState{};
+  getGoalState(&goalState);
+  extendStateSpaceBoundaries(goalState, parameters_.boundariesMargin_);
+  // Plan
   const bool result = BASE::plan();
   *interpolatedPath_ = interpolatePath(*path_, parameters_.pathSpatialResolution_);
   return result;

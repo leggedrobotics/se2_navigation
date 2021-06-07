@@ -46,6 +46,11 @@ bool OmplReedsSheppPlannerRos::planningService(PlanningService::Request& req, Pl
     res.status = false;
     return true;
   }
+  if (!planner_->getMap().isInitialized()) {
+    ROS_WARN_STREAM("Map for state space boundaries has not been initialized yet. Abort planning.");
+    res.status = false;
+    return true;
+  }
 
   planTimeStamp_ = req.pathRequest.header.stamp;
 
@@ -57,39 +62,19 @@ bool OmplReedsSheppPlannerRos::planningService(PlanningService::Request& req, Pl
 
   // Block update of state validator obstacle map during planning
   planner_->lockStateValidator();
+  planner_->lockMap();
 
-  // TODO move from se2_planner_node here (introduces dependency but makes state space update more consistent:
-  //  adapt state space boundaries from grid map
-  // planner_->getStateValidator().as<GridMapLazyStateValidator>
+  // Triggers actual planning
+  bool result = plan();
 
   // Adapt state space boundaries (larger than grid map, state validity checking assumes area out of bounds to be
   // traversable) to contain initial and goal state otherwise RRTstar fails
-  // TODO move to OMPLReedsSheppPlanner.cpp?
-  const double stateSpaceBoundsMargin_ = parameters_.stateSpaceBoundsMargin_;
   if (!planner_->as<OmplReedsSheppPlanner>()->satisfiesStateSpaceBoundaries(start)) {
-    ROS_DEBUG("Initial state not in grid map. Enlarge state space boundaries.");
-    const auto bounds = planner_->as<OmplReedsSheppPlanner>()->getStateSpaceBoundaries();
-    ompl::base::RealVectorBounds newBounds(reedsSheppStateSpaceDim_);
-    newBounds.high[0] = std::max(bounds.high[0], start.x_ + stateSpaceBoundsMargin_);
-    newBounds.high[1] = std::max(bounds.high[1], start.y_ + stateSpaceBoundsMargin_);
-    newBounds.low[0] = std::min(bounds.low[0], start.x_ - stateSpaceBoundsMargin_);
-    newBounds.low[1] = std::min(bounds.low[1], start.y_ - stateSpaceBoundsMargin_);
-    planner_->as<OmplReedsSheppPlanner>()->setStateSpaceBoundaries(newBounds);
+    ROS_DEBUG("Initial state not in grid map. Enlarged state space boundaries.");
   }
   if (!planner_->as<OmplReedsSheppPlanner>()->satisfiesStateSpaceBoundaries(goal)) {
-    ROS_DEBUG("Goal state not in grid map. Enlarge state space boundaries.");
-    const auto bounds = planner_->as<OmplReedsSheppPlanner>()->getStateSpaceBoundaries();
-    ompl::base::RealVectorBounds newBounds(reedsSheppStateSpaceDim_);
-    newBounds.high[0] = std::max(bounds.high[0], goal.x_ + stateSpaceBoundsMargin_);
-    newBounds.high[1] = std::max(bounds.high[1], goal.y_ + stateSpaceBoundsMargin_);
-    newBounds.low[0] = std::min(bounds.low[0], goal.x_ - stateSpaceBoundsMargin_);
-    newBounds.low[1] = std::min(bounds.low[1], goal.y_ - stateSpaceBoundsMargin_);
-    planner_->as<OmplReedsSheppPlanner>()->setStateSpaceBoundaries(newBounds);
+    ROS_DEBUG("Goal state not in grid map. Enlarged state space boundaries.");
   }
-
-  publishStartState();
-  publishGoalState();
-  publishStateSpaceBoundaryMarker();
 
   //  Use state validator only after lock mutex is active and state space is updated
   //  Checks only for non-traversable terrain not for state space bounds
@@ -101,7 +86,11 @@ bool OmplReedsSheppPlannerRos::planningService(PlanningService::Request& req, Pl
     ROS_WARN_STREAM("Goal state (x: " << goal.x_ << ", y: " << goal.y_ << ", yaw: " << goal.yaw_ << ") not valid. Start planning anyway.");
   }
 
-  bool result = plan();
+  publishStartState();
+  publishGoalState();
+  publishStateSpaceBoundaryMarker();
+
+  planner_->unlockMap();
   planner_->unlockStateValidator();
 
   res.status = result;

@@ -22,10 +22,7 @@ OmplReedsSheppPlannerParameters loadOmplReedsSheppPlannerParameters(const std::s
   OmplReedsSheppPlannerParameters parameters;
   {
     auto node = basenode["state_space"];
-    parameters.xLowerBound_ = node["x_lower"].as<double>();
-    parameters.xUpperBound_ = node["x_upper"].as<double>();
-    parameters.yLowerBound_ = node["y_lower"].as<double>();
-    parameters.yUpperBound_ = node["y_upper"].as<double>();
+    parameters.boundariesMargin_ = node["boundaries_margin"].as<double>();
     parameters.turningRadius_ = node["turning_radius"].as<double>();
   }
 
@@ -89,11 +86,13 @@ GridMapLazyStateValidatorRosParameters loadGridMapLazyStateValidatorRosParameter
     parameters.gridMapStateValidityCheckingMethod_ = StateValidityCheckingMethod::COLLISION;
   } else if (stateValidityCheckingMethodName == "traversability") {
     parameters.gridMapStateValidityCheckingMethod_ = StateValidityCheckingMethod::TRAVERSABILITY;
+  } else if (stateValidityCheckingMethodName == "traversability_iterator") {
+    parameters.gridMapStateValidityCheckingMethod_ = StateValidityCheckingMethod::TRAVERSABILITY_ITERATOR;
   } else if (stateValidityCheckingMethodName == "robust_traversability") {
     parameters.gridMapStateValidityCheckingMethod_ = StateValidityCheckingMethod::ROBUST_TRAVERSABILITY;
   } else {
     throw std::runtime_error(
-        "Invalid value for StateValidityCheckingMethod. Valid values are 'collision', 'traversability'"
+        "Invalid value for StateValidityCheckingMethod. Valid values are 'collision', 'traversability', 'traversability_iterator"
         "or 'robust_traversability'");
   }
   parameters.gridMapStateValidityThreshold_ = node["grid_map_state_validity_threshold"].as<double>();

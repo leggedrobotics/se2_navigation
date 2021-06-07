@@ -31,7 +31,11 @@ class OmplPlanner : public Planner {
   const StateValidator& getStateValidator() const final;
   void lockStateValidator() final;
   void unlockStateValidator() final;
-  bool isLocked() const final;
+
+  void setMap(std::unique_ptr<Map> Map) final;
+  const Map& getMap() const final;
+  void lockMap() final;
+  void unlockMap() final;
 
   virtual void setStateSpaceBoundaries(const ompl::base::RealVectorBounds& bounds);
   virtual const ompl::base::RealVectorBounds& getStateSpaceBoundaries() const;
@@ -57,6 +61,7 @@ class OmplPlanner : public Planner {
   ompl::base::ScopedStatePtr startState_, goalState_;
   std::unique_ptr<ompl::geometric::PathGeometric> path_, interpolatedPath_;
   std::unique_ptr<StateValidator> stateValidator_;
+  std::unique_ptr<Map> map_;
 
  private:
   double maxPlanningDuration_ = 1.0;

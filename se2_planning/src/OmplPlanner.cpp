@@ -56,8 +56,20 @@ void OmplPlanner::unlockStateValidator() {
   stateValidator_->unlock();
 }
 
-bool OmplPlanner::isLocked() const {
-  return stateValidator_->isLocked();
+void OmplPlanner::setMap(std::unique_ptr<Map> Map) {
+  map_ = std::move(Map);
+}
+
+const Map& OmplPlanner::getMap() const {
+  return *map_;
+}
+
+void OmplPlanner::lockMap() {
+  map_->lock();
+}
+
+void OmplPlanner::unlockMap() {
+  map_->unlock();
 }
 
 bool OmplPlanner::plan() {
