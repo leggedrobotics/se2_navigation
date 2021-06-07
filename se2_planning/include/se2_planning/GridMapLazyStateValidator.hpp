@@ -15,7 +15,7 @@
 
 namespace se2_planning {
 
-enum StateValidityCheckingMethod : int { COLLISION = 0, TRAVERSABILITY = 1, ROBUST_TRAVERSABILITY = 2 };
+enum StateValidityCheckingMethod : int { COLLISION = 0, TRAVERSABILITY = 1, TRAVERSABILITY_ITERATOR = 2, ROBUST_TRAVERSABILITY = 3 };
 
 class GridMapLazyStateValidator : public GridMapStateValidator {
   using BASE = GridMapStateValidator;
@@ -64,8 +64,8 @@ class GridMapLazyStateValidator : public GridMapStateValidator {
 void computeFootprintPoints(const grid_map::GridMap& gridMap, const RobotFootprint& footprint, std::vector<Vertex>* footprintPoints);
 bool isInCollision(const SE2state& state, const std::vector<Vertex>& footprint, const grid_map::GridMap& gridMap,
                    const std::string& obstacleLayer, const double collisionThreshold);
-// bool isTraversable(const SE2state& state, const std::vector<Vertex>& footprint, const grid_map::GridMap& gridMap,
-//                   const std::string& traversabilityLayer, const double traversabilityThreshold);
+bool isTraversable(const SE2state& state, const std::vector<Vertex>& footprint, const grid_map::GridMap& gridMap,
+                   const std::string& traversabilityLayer, const double traversabilityThreshold);
 bool isTraversableIterator(const SE2state& state, const RobotFootprint& footprint, const grid_map::GridMap& gridMap,
                            const std::string& traversabilityLayer, const double traversabilityThreshold);
 bool isTraversableRobustIterator(const SE2state& state, const RobotFootprint& footprint, const grid_map::GridMap& gridMap,

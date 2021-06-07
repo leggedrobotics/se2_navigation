@@ -79,6 +79,7 @@ void GridMapLazyStateValidator::initialize() {
   if (isUseEarlyStoppingHeuristic_) {
     addExtraPointsForEarlyStopping(nominalFootprint_, &nominalFootprintPoints_, seed_);
   }
+
   isInitializeCalled_ = true;
 }
 
@@ -97,6 +98,8 @@ bool GridMapLazyStateValidator::isStateValid(const State& state) const {
     case StateValidityCheckingMethod::COLLISION:
       return !isInCollision(se2state, nominalFootprintPoints_, gridMap_, obstacleLayerName_, minStateValidityThreshold_);
     case StateValidityCheckingMethod::TRAVERSABILITY:
+      return isTraversable(se2state, nominalFootprintPoints_, gridMap_, obstacleLayerName_, minStateValidityThreshold_);
+    case StateValidityCheckingMethod::TRAVERSABILITY_ITERATOR:
       return isTraversableIterator(se2state, nominalFootprint_, gridMap_, obstacleLayerName_, minStateValidityThreshold_);
     case StateValidityCheckingMethod::ROBUST_TRAVERSABILITY:
       return isTraversableRobustIterator(se2state, nominalFootprint_, gridMap_, obstacleLayerName_, minStateValidityThreshold_,
@@ -143,12 +146,10 @@ bool isInCollision(const SE2state& state, const std::vector<Vertex>& footprint, 
     try {
       const auto v = transformOperator(vertex);
       const auto position = grid_map::Position(v.x_, v.y_);
-      if (!gridMap.isInside(position)) {
-        return true;  // treat space outside the map as being in collision
-      }
-      grid_map::Index id;
-      gridMap.getIndex(position, id);
-      occupancy = data(bindToRange(id.x(), 0, nRows), bindToRange(id.y(), 0, nCols));
+      grid_map::Index idx;
+      gridMap.getIndex(position, idx);
+      // TODO(christoph): What is the value for out of the map? Not working correctly for x-direction
+      occupancy = data(bindToRange(idx.x(), 0, nRows), bindToRange(idx.y(), 0, nCols));
     } catch (const std::out_of_range& e) {
       continue;  // TODO at the moment return traversable for out of bounds case
       // return true;  // would assume all points out of bounds to be intraversable
@@ -168,42 +169,47 @@ bool isInCollision(const SE2state& state, const std::vector<Vertex>& footprint, 
   return false;
 }
 
-// TODO Not working with updated state space bounds
-// bool isTraversable(const SE2state& state, const std::vector<Vertex>& footprint, const grid_map::GridMap& gridMap,
-//                   const std::string& traversabilityLayer, const double traversabilityThreshold) {
-//  const double Cos = std::cos(state.yaw_);
-//  const double Sin = std::sin(state.yaw_);
-//  const double dx = state.x_;
-//  const double dy = state.y_;
-//  auto transformOperator = [Cos, Sin, dx, dy](const Vertex& v) -> Vertex {
-//    return Vertex{Cos * v.x_ - Sin * v.y_ + dx, Sin * v.x_ + Cos * v.y_ + dy};
-//  };
-//  const auto& data = gridMap.get(traversabilityLayer);
-//  for (const auto& vertex : footprint) {
-//    double traversability = 1.0;
-//    try {
-//      // Translate and rotate to current state
-//      const auto v = transformOperator(vertex);
-//      grid_map::Index id;
-//      gridMap.getIndex(grid_map::Position(v.x_, v.y_), id);
-//      traversability = data(id.x(), id.y());
-//    } catch (const std::out_of_range& e) {
-//      continue;  // TODO at the moment return traversable for out of bounds case
-//    }
-//
-//    // ignore nans since they might come from faulty
-//    // perception pipeline
-//    if (std::isnan(traversability)) {
-//      continue;
-//    }
-//
-//    if (traversability < traversabilityThreshold) {
-//      return false;
-//    }
-//  }
-//
-//  return true;
-//}
+bool isTraversable(const SE2state& state, const std::vector<Vertex>& footprint, const grid_map::GridMap& gridMap,
+                   const std::string& traversabilityLayer, const double traversabilityThreshold) {
+  const double Cos = std::cos(state.yaw_);
+  const double Sin = std::sin(state.yaw_);
+  const double dx = state.x_;
+  const double dy = state.y_;
+
+  auto transformOperator = [Cos, Sin, dx, dy](const Vertex& v) -> Vertex {
+    return Vertex{Cos * v.x_ - Sin * v.y_ + dx, Sin * v.x_ + Cos * v.y_ + dy};
+  };
+
+  const auto& data = gridMap.get(traversabilityLayer);
+  const int nRows = data.rows();
+  const int nCols = data.cols();
+  for (const auto& vertex : footprint) {
+    double traversability = 1.0;
+    try {
+      // Translate and rotate to current state
+      const auto v = transformOperator(vertex);
+      const auto position = grid_map::Position(v.x_, v.y_);
+      grid_map::Index idx;
+      gridMap.getIndex(position, idx);
+      // TODO(christoph): What is the value for out of the map? Not working correctly.
+      traversability = data(bindToRange(idx.x(), 0, nRows), bindToRange(idx.y(), 0, nCols));
+    } catch (const std::out_of_range& e) {
+      continue;  // TODO at the moment return traversable for out of bounds case
+    }
+
+    // ignore nans since they might come from faulty
+    // perception pipeline
+    if (std::isnan(traversability)) {
+      continue;
+    }
+
+    if (traversability < traversabilityThreshold) {
+      return false;
+    }
+  }
+
+  return true;
+}
 
 bool isTraversableIterator(const SE2state& state, const RobotFootprint& footprint, const grid_map::GridMap& gridMap,
                            const std::string& traversabilityLayer, const double traversabilityThreshold) {
