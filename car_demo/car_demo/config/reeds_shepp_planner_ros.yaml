@@ -20,11 +20,12 @@ state_validator_ros:
   grid_map_position_y: 0.0
   grid_map_default_value: 0.0
   # Robot footprint for collision checking
-  # TODO adapt footprint
-  robot_footprint_length_forward:   0.40
-  robot_footprint_length_backward:  0.40
-  robot_footprint_width_left:       0.35
-  robot_footprint_width_right:      0.35
+  # TODO adapt footprint for car
+  robot_footprint_length_forward:   1.75
+  robot_footprint_length_backward:  1.75
+  robot_footprint_width_left:       1.0
+  robot_footprint_width_right:      1.0
+
 map_ros:
   layer_name: elevation
   grid_map_sub_topic: /se2_grid_map_generator_node/grid_map
