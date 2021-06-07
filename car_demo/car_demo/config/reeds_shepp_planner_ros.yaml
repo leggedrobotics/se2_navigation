@@ -28,6 +28,10 @@ state_validator_ros:
   robot_footprint_length_backward:  0.40
   robot_footprint_width_left:       0.35
   robot_footprint_width_right:      0.35
+map_ros:
+  layer_name: elevation
+  grid_map_sub_topic: /se2_grid_map_generator_node/grid_map
+  grid_map_pub_topic: /occupancy_map_ros/map_out
 
 planner_ros:
   nav_msgs_path_topic: ompl_rs_planner_ros/nav_msgs_path
@@ -35,7 +39,6 @@ planner_ros:
   path_msg_topic: ompl_rs_planner_ros/path_msgs_path # this is the topic the PriusControllerRos.cpp subscribes to (or any other pure_pursuit_controller)
   path_frame: map
   nav_msg_path_spatial_resolution: 1.5
-  state_space_bounds_margin: 0.5
 
 planner:
   path_spatial_resolution: 0.05

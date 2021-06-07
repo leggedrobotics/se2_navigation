@@ -53,7 +53,22 @@ OmplReedsSheppPlannerRosParameters loadOmplReedsSheppPlannerRosParameters(const 
   parameters.planningServiceName_ = node["planning_service_name"].as<std::string>();
   parameters.pathNavMsgResolution_ = node["nav_msg_path_spatial_resolution"].as<double>();
   parameters.pathMsgTopic_ = node["path_msg_topic"].as<std::string>();
-  parameters.stateSpaceBoundsMargin_ = node["state_space_bounds_margin"].as<double>();
+
+  return parameters;
+}
+
+OccupancyMapRosParameters loadOccupancyMapRosParameters(const std::string& filename) {
+  YAML::Node basenode = YAML::LoadFile(filename);
+
+  if (basenode.IsNull()) {
+    throw std::runtime_error("OccupancyMapRosParameters::loadOccupancyMapRosParameters loading failed");
+  }
+
+  OccupancyMapRosParameters parameters;
+  auto node = basenode["map_ros"];
+  parameters.layerName_ = node["layer_name"].as<std::string>();
+  parameters.gridMapMsgSubTopic_ = node["grid_map_sub_topic"].as<std::string>();
+  parameters.gridMapMsgPubTopic_ = node["grid_map_pub_topic"].as<std::string>();
 
   return parameters;
 }

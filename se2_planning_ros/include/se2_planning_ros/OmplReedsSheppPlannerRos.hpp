@@ -24,7 +24,6 @@ struct OmplReedsSheppPlannerRosParameters {
   std::string planningServiceName_ = "ompl_rs_planner_ros/planning_service";
   std::string pathMsgTopic_ = "ompl_rs_planner_ros/path";
   double pathNavMsgResolution_ = 1.0;
-  double stateSpaceBoundsMargin_ = 0.5;
 };
 
 class OmplReedsSheppPlannerRos : public PlannerRos {

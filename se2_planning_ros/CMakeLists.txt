@@ -6,10 +6,11 @@ add_compile_options(-Wall -Wextra -Wpedantic)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(SRC_FILES
-  src/OmplReedsSheppPlannerRos.cpp
   src/GridMapLazyStateValidatorRos.cpp
-  src/loaders.cpp
+  src/OmplReedsSheppPlannerRos.cpp
+  src/OccupancyMapRos.cpp
   src/PlannerRos.cpp
+  src/loaders.cpp
   src/common.cpp
 )
 
