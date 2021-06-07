@@ -47,9 +47,9 @@ class GridMapStateValidator : public StateValidator {
   bool isFootprintInitialized_ = false;
   bool isLayerNameInitialized_ = false;
 
-  std::string obstacleLayerName_ = "";
   grid_map::GridMap gridMap_;
   RobotFootprint nominalFootprint_;
+  std::string obstacleLayerName_ = "";
 
  private:
   mutable RobotFootprint currentFootprint_;

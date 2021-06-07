@@ -1,5 +1,5 @@
 map:
-  frame_id:                     odom
+  frame_id:                     map # TODO(christoph): planning breaks if start and goal are not set using map as reference frame in rviz
   layers:                       [elevation, traversability]
   default_values:               [0.0, 1.0]
   resolution:                   0.1

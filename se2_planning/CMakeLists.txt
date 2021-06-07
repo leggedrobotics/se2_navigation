@@ -6,14 +6,17 @@ add_compile_options(-Wall -Wextra -Wpedantic)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(SRC_FILES
-  src/ompl_planner_creators.cpp
+  src/Bounds.cpp
   src/GridMapLazyStateValidator.cpp
   src/GridMapStateValidator.cpp
+  src/HeightMap.cpp
+  src/Map.cpp
+  src/OccupancyMap.cpp
   src/OmplPlanner.cpp
   src/OmplReedsSheppPlanner.cpp
   src/State.cpp
   src/StateValidator.cpp
-  src/HeightMap.cpp
+  src/ompl_planner_creators.cpp
 )
 
 set(CATKIN_PACKAGE_DEPENDENCIES
@@ -32,7 +35,7 @@ if(NOT EIGEN3_FOUND)
   set(EIGEN3_INCLUDE_DIR ${EIGEN3_INCLUDE_DIRS})
 endif()
 
-find_package(Boost REQUIRED)
+find_package(Boost REQUIRED COMPONENTS thread)
 find_package(ompl REQUIRED)
 
 catkin_package(
@@ -88,8 +91,8 @@ add_executable(planning_benchmark
   src/planning_benchmark.cpp
 )
 target_link_libraries(planning_benchmark
-  ${catkin_LIBRARIES}
   ${PROJECT_NAME}
+  ${catkin_LIBRARIES}
   ${OMPL_LIBRARIES}
   test_helpers
 )

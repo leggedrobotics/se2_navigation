@@ -25,15 +25,16 @@ bool GridMapStateValidator::isStateValid(const State& state) const {
   return !isInCollision(polygon, gridMap_, obstacleLayerName_);
 }
 
+bool GridMapStateValidator::isInitialized() const {
+  return isGridMapInitialized_ && isFootprintInitialized_ && isLayerNameInitialized_;
+}
+
 void GridMapStateValidator::setGridMap(const grid_map::GridMap& gridMap) {
   if (gridMap.getLayers().empty()) {
     throw std::runtime_error("Grid map has no layers");
   }
   gridMap_ = gridMap;
   isGridMapInitialized_ = true;
-}
-bool GridMapStateValidator::isInitialized() const {
-  return isGridMapInitialized_ && isFootprintInitialized_ && isLayerNameInitialized_;
 }
 
 void GridMapStateValidator::setFootprint(const RobotFootprint& footprint) {
@@ -59,7 +60,7 @@ const std::string& GridMapStateValidator::getObstacleLayerName() const {
 
 bool isInCollision(const grid_map::Polygon& polygon, const grid_map::GridMap& gridMap, const std::string& obstacleLayer) {
   /*
-   * anything different thatn 0.0 means that
+   * anything different than 0.0 means that
    * the space is not free, this is just so that numerics are a bit better
    */
   const double collisionThreshold = 0.1;

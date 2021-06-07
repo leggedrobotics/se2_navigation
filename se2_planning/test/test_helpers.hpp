@@ -26,6 +26,7 @@ void addObstacles(std::function<bool(double, double)> isObstacle, const std::str
                   grid_map::GridMap *map);
 bool isInsideRectangle(double _x, double _y, double x0, double y0, double xLength, double yLength);
 se2_planning::SE2state randomState(const grid_map::GridMap &gm, double margin);
+se2_planning::ReedsSheppState randomReedsSheppState(const grid_map::GridMap &gm, double margin);
 grid_map::GridMap createGridMap(double length, double width, double resolution,
                                 std::function<bool(double, double)> isAnObstacle);
 
@@ -36,19 +37,15 @@ bool isStartAndGoalStateOK(const se2_planning::ReedsSheppPath &path,
                            const se2_planning::ReedsSheppState &start,
                            const se2_planning::ReedsSheppState &goal);
 
-se2_planning::ReedsSheppState randomState(
-    const se2_planning::OmplReedsSheppPlannerParameters &parameters);
-
 void setCostThreshold(se2_planning::OmplReedsSheppPlanner *planner);
 
-se2_planning::OmplReedsSheppPlannerParameters createRectangularStateSpaceWithDefaultParams(
-    double stateBound);
+se2_planning::OmplReedsSheppPlannerParameters createDefaultParams();
 
 void setupPlanner(const se2_planning::OmplReedsSheppPlannerParameters &parameters,
                   se2_planning::OmplReedsSheppPlanner *planner);
 
 bool simplePlanBetweenRandomStartAndGoalTest(
     se2_planning::OmplReedsSheppPlanner &planner,
-    const se2_planning::OmplReedsSheppPlannerParameters &parameters);
+    const se2_planning::OmplReedsSheppPlannerParameters &parameters, const grid_map::GridMap &map);
 
 } /* namespace se2_planning_test */

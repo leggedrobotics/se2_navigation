@@ -42,43 +42,79 @@ bool OmplReedsSheppPlanner::initialize() {
   return true;
 }
 
-void OmplReedsSheppPlanner::initializeStateSpace() {
-  // todo maybe not really needed
-  createDefaultStateSpace();
-}
-
 void OmplReedsSheppPlanner::createDefaultStateSpace() {
+  // Allocate abstracted objects
   stateSpace_.reset(new ompl::base::ReedsSheppStateSpace(parameters_.turningRadius_));
   bounds_ = std::make_unique<ompl::base::RealVectorBounds>(reedsSheppStateSpaceDim_);
-  setStateSpaceBoundaries();
+  // Initialize bounds to zero
+  ompl::base::RealVectorBounds bounds(reedsSheppStateSpaceDim_);
+  setStateSpaceBoundaries(bounds);
 }
+
+void OmplReedsSheppPlanner::extendStateSpaceBoundaries(const se2_planning::ReedsSheppState& state, const double margin) {
+  const auto bounds = getStateSpaceBoundaries();
+  ompl::base::RealVectorBounds newBounds(reedsSheppStateSpaceDim_);
+  newBounds.high[0] = std::max(bounds.high[0], state.x_ + margin);
+  newBounds.high[1] = std::max(bounds.high[1], state.y_ + margin);
+  newBounds.low[0] = std::min(bounds.low[0], state.x_ - margin);
+  newBounds.low[1] = std::min(bounds.low[1], state.y_ - margin);
+  setStateSpaceBoundaries(newBounds);
+}
+
 bool OmplReedsSheppPlanner::plan() {
-  bool result = BASE::plan();
+  // Update state space boundaries with values from map
+  const auto bounds = map_->getBounds();
+  ompl::base::RealVectorBounds realVectorBounds(reedsSheppStateSpaceDim_);
+  realVectorBounds.low[0] = bounds.low_.x_;
+  realVectorBounds.low[1] = bounds.low_.y_;
+  realVectorBounds.high[0] = bounds.high_.x_;
+  realVectorBounds.high[1] = bounds.high_.y_;
+  setStateSpaceBoundaries(realVectorBounds);
+  // Extend state space boundaries from the map to always include start and goal with an additional margin
+  ReedsSheppState startState{};
+  getStartingState(&startState);
+  extendStateSpaceBoundaries(startState, parameters_.boundariesMargin_);
+  ReedsSheppState goalState{};
+  getGoalState(&goalState);
+  extendStateSpaceBoundaries(goalState, parameters_.boundariesMargin_);
+  // Plan
+  const bool result = BASE::plan();
   *interpolatedPath_ = interpolatePath(*path_, parameters_.pathSpatialResolution_);
   return result;
 }
-void OmplReedsSheppPlanner::setStateSpaceBoundaries() {
-  bounds_->low[0] = parameters_.xLowerBound_;
-  bounds_->low[1] = parameters_.yLowerBound_;
-  bounds_->high[0] = parameters_.xUpperBound_;
-  bounds_->high[1] = parameters_.yUpperBound_;
-  stateSpace_->as<ompl::base::SE2StateSpace>()->setBounds(*bounds_);
+
+const ompl::base::RealVectorBounds& OmplReedsSheppPlanner::getStateSpaceBoundaries() const {
+  return stateSpace_->as<ompl::base::SE2StateSpace>()->getBounds();
 }
 
-void OmplReedsSheppPlanner::setStateValidator(std::unique_ptr<StateValidator> stateValidator) {
-  stateValidator_ = std::move(stateValidator);
+void OmplReedsSheppPlanner::setStateSpaceBoundaries(const ompl::base::RealVectorBounds& bounds) {
+  BASE::setStateSpaceBoundaries(bounds);
+  stateSpace_->as<ompl::base::SE2StateSpace>()->setBounds(bounds);
 }
 
-const StateValidator& OmplReedsSheppPlanner::getStateValidator() const {
-  return *stateValidator_;
+bool OmplReedsSheppPlanner::satisfiesStateSpaceBoundaries(const se2_planning::ReedsSheppState& state) const {
+  ompl::base::ScopedStatePtr stateOmpl(std::make_shared<ompl::base::ScopedState<> >(stateSpace_));
+  auto s = ((*stateOmpl)())->as<ompl::base::SE2StateSpace::StateType>();
+  auto rsState = state.as<ReedsSheppState>();
+  s->setX(rsState->x_);
+  s->setY(rsState->y_);
+  s->setYaw(rsState->yaw_);
+  return stateSpace_->satisfiesBounds(s);
 }
 
-bool OmplReedsSheppPlanner::isStateValid(const ompl::base::SpaceInformation* si, const ompl::base::State* state) {
+bool OmplReedsSheppPlanner::isStateValid(const ompl::base::SpaceInformation* si, const ompl::base::State* state) const {
+  (void)si;
   const ReedsSheppState rsState = se2_planning::convert(state);
   return stateValidator_->isStateValid(rsState);
 }
+
 ompl::base::ScopedStatePtr OmplReedsSheppPlanner::convert(const State& state) const {
   return se2_planning::convert(*(state.as<ReedsSheppState>()), simpleSetup_->getSpaceInformation());
+}
+
+void OmplReedsSheppPlanner::convert(const ompl::base::ScopedStatePtr omplState, State* state) const {
+  auto reedsSheppState = state->as<ReedsSheppState>();
+  *reedsSheppState = se2_planning::convert(omplState->get());
 }
 
 void OmplReedsSheppPlanner::convert(const ompl::geometric::PathGeometric& pathOmpl, Path* path) const {
@@ -191,7 +227,6 @@ ReedsSheppState convert(const ompl::base::State* s) {
   retState.x_ = rsState->getX();
   retState.y_ = rsState->getY();
   retState.yaw_ = rsState->getYaw();
-
   return retState;
 }
 

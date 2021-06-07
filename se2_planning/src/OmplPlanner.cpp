@@ -32,9 +32,53 @@ void OmplPlanner::getPath(Path* path) const {
   convert(*interpolatedPath_, path);
 }
 
+void OmplPlanner::getStartingState(State* startingState) const {
+  convert(startState_, startingState);
+}
+
+void OmplPlanner::getGoalState(State* goalState) const {
+  convert(goalState_, goalState);
+}
+
+void OmplPlanner::setStateValidator(std::unique_ptr<StateValidator> stateValidator) {
+  stateValidator_ = std::move(stateValidator);
+}
+
+const StateValidator& OmplPlanner::getStateValidator() const {
+  return *stateValidator_;
+}
+
+void OmplPlanner::lockStateValidator() {
+  stateValidator_->lock();
+}
+
+void OmplPlanner::unlockStateValidator() {
+  stateValidator_->unlock();
+}
+
+void OmplPlanner::setMap(std::unique_ptr<Map> Map) {
+  map_ = std::move(Map);
+}
+
+const Map& OmplPlanner::getMap() const {
+  return *map_;
+}
+
+void OmplPlanner::lockMap() {
+  map_->lock();
+}
+
+void OmplPlanner::unlockMap() {
+  map_->unlock();
+}
+
 bool OmplPlanner::plan() {
   simpleSetup_->clear();
   simpleSetup_->setStartAndGoalStates(*startState_, *goalState_);
+  // TODO see https://ompl.kavrakilab.org/genericPlanning.html on how to continue planning
+  //   The ompl::base::Planner::solve() method can be called repeatedly with different
+  //   allowed time durations until a solution is found. The planning process continues
+  //   with the available data structures when sequential calls to ompl::base::Planner::solve() are made.
   if (!simpleSetup_->solve(maxPlanningDuration_)) {
     std::cout << "OmplPlanner: Solve failed" << std::endl;
     return false;
@@ -47,12 +91,13 @@ bool OmplPlanner::plan() {
 
   return true;
 }
+
 bool OmplPlanner::reset() {
   simpleSetup_->clear();
   return true;
 }
+
 bool OmplPlanner::initialize() {
-  initializeStateSpace();
   if (stateSpace_ == nullptr) {
     std::cerr << "OmplPlanner:: state space is nullptr" << std::endl;
     return false;
@@ -64,6 +109,19 @@ bool OmplPlanner::initialize() {
   path_ = std::make_unique<ompl::geometric::PathGeometric>(si);
   interpolatedPath_ = std::make_unique<ompl::geometric::PathGeometric>(si);
   return true;
+}
+
+void OmplPlanner::setStateSpaceBoundaries(const ompl::base::RealVectorBounds& bounds) {
+  for (size_t idx = 0; idx < bounds.low.size(); idx++) {
+    bounds_->low[idx] = bounds.low[idx];
+  }
+  for (size_t idx = 0; idx < bounds.high.size(); idx++) {
+    bounds_->high[idx] = bounds.high[idx];
+  }
+}
+
+const ompl::base::RealVectorBounds& OmplPlanner::getStateSpaceBoundaries() const {
+  return *bounds_;
 }
 
 void OmplPlanner::setMaxPlanningDuration(double T) {

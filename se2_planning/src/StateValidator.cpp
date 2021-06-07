@@ -20,4 +20,11 @@ bool SE2stateValidator::isStateValid(const State& state) const {
   return true;
 }
 
+void StateValidator::lock() {
+  mtx_.lock();
+}
+
+void StateValidator::unlock() {
+  mtx_.unlock();
+}
 }  // namespace se2_planning

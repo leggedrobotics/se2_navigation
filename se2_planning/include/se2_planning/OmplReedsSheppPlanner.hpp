@@ -34,11 +34,8 @@ struct ReedsSheppPath : public Path {
 };
 
 struct OmplReedsSheppPlannerParameters {
+  double boundariesMargin_ = 1.0;
   double turningRadius_ = 10.0;
-  double xLowerBound_ = -1000.0;
-  double xUpperBound_ = 1000.0;
-  double yLowerBound_ = -1000.0;
-  double yUpperBound_ = 1000.0;
   double pathSpatialResolution_ = 0.05;
   double maxPlanningTime_ = 1.0;
   std::string omplPlannerName_ = "RRTstar";
@@ -54,22 +51,21 @@ class OmplReedsSheppPlanner final : public OmplPlanner {
   bool initialize() final;
   bool plan() final;
   void setParameters(const OmplReedsSheppPlannerParameters& parameters);
-  void setStateValidator(std::unique_ptr<StateValidator> stateValidator);
-  const StateValidator& getStateValidator() const;
+  void setStateSpaceBoundaries(const ompl::base::RealVectorBounds& bounds) override;
+  const ompl::base::RealVectorBounds& getStateSpaceBoundaries() const override;
+  bool satisfiesStateSpaceBoundaries(const se2_planning::ReedsSheppState& state) const;
+  void extendStateSpaceBoundaries(const se2_planning::ReedsSheppState& state, const double margin);
 
  private:
   void createDefaultStateSpace();
-  void initializeStateSpace() final;
-  void setStateSpaceBoundaries();
-  bool isStateValid(const ompl::base::SpaceInformation* si, const ompl::base::State* state) final;
+  bool isStateValid(const ompl::base::SpaceInformation* si, const ompl::base::State* state) const final;
   ompl::base::ScopedStatePtr convert(const State& state) const final;
+  void convert(const ompl::base::ScopedStatePtr omplState, State* state) const final;
   void convert(const ompl::geometric::PathGeometric& pathOmpl, Path* path) const final;
   int getDistanceSignAt(const ompl::geometric::PathGeometric& path, unsigned int id) const;
 
-  std::unique_ptr<ompl::base::RealVectorBounds> bounds_;
   const int reedsSheppStateSpaceDim_ = 2;
   OmplReedsSheppPlannerParameters parameters_;
-  std::unique_ptr<StateValidator> stateValidator_;
 };
 
 std::string toString(ReedsSheppPathSegment::Direction direction);

@@ -24,6 +24,21 @@ class OmplPlanner : public Planner {
   void setStartingState(const State& startingState) final;
   void setGoalState(const State& goalState) final;
   void getPath(Path* path) const final;
+  void getStartingState(State* startingState) const final;
+  void getGoalState(State* goalState) const final;
+
+  void setStateValidator(std::unique_ptr<StateValidator> stateValidator) final;
+  const StateValidator& getStateValidator() const final;
+  void lockStateValidator() final;
+  void unlockStateValidator() final;
+
+  void setMap(std::unique_ptr<Map> Map) final;
+  const Map& getMap() const final;
+  void lockMap() final;
+  void unlockMap() final;
+
+  virtual void setStateSpaceBoundaries(const ompl::base::RealVectorBounds& bounds);
+  virtual const ompl::base::RealVectorBounds& getStateSpaceBoundaries() const;
 
   void setMaxPlanningDuration(double T);
   void getOmplPath(ompl::geometric::PathGeometric* omplPath) const;
@@ -35,15 +50,18 @@ class OmplPlanner : public Planner {
   void setOmplPlanner(ompl::base::PlannerPtr planner);
 
  protected:
-  virtual void initializeStateSpace() = 0;
-  virtual bool isStateValid(const ompl::base::SpaceInformation* si, const ompl::base::State* state) = 0;
+  virtual bool isStateValid(const ompl::base::SpaceInformation* si, const ompl::base::State* state) const = 0;
   virtual ompl::base::ScopedStatePtr convert(const State& state) const = 0;
+  virtual void convert(const ompl::base::ScopedStatePtr omplState, State* state) const = 0;
   virtual void convert(const ompl::geometric::PathGeometric& pathOmpl, Path* path) const = 0;
 
   ompl::base::StateSpacePtr stateSpace_;
+  std::unique_ptr<ompl::base::RealVectorBounds> bounds_;
   ompl::geometric::SimpleSetupPtr simpleSetup_;
   ompl::base::ScopedStatePtr startState_, goalState_;
   std::unique_ptr<ompl::geometric::PathGeometric> path_, interpolatedPath_;
+  std::unique_ptr<StateValidator> stateValidator_;
+  std::unique_ptr<Map> map_;
 
  private:
   double maxPlanningDuration_ = 1.0;

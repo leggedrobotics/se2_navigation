@@ -9,6 +9,7 @@
 
 #include <ros/ros.h>
 #include "se2_navigation_msgs/RequestPathSrv.h"
+#include "se2_planning/Map.hpp"
 #include "se2_planning/Planner.hpp"
 
 namespace se2_planning {
@@ -24,8 +25,22 @@ class PlannerRos : public Planner {
   void getStartingState(State* startingState) const override;
   void getGoalState(State* goalState) const override;
 
+  void setStateValidator(std::unique_ptr<StateValidator> stateValidator) override;
+  const StateValidator& getStateValidator() const override;
+  void lockStateValidator() override;
+  void unlockStateValidator() override;
+
+  void setMap(std::unique_ptr<Map> Map) override;
+  const Map& getMap() const override;
+  void lockMap() override;
+  void unlockMap() override;
+
   void setPlanningStrategy(std::shared_ptr<Planner> planner);
   virtual void publishPath() const;
+  virtual void publishPathNavMsgs() const;
+  virtual void publishStartState() const;
+  virtual void publishGoalState() const;
+  virtual void publishStateSpaceBoundaryMarker();
 
  protected:
   using PlanningService = se2_navigation_msgs::RequestPathSrv;
@@ -36,6 +51,13 @@ class PlannerRos : public Planner {
 
   ros::NodeHandlePtr nh_;
   std::shared_ptr<Planner> planner_;
+  ros::ServiceServer planningService_;
+
+  ros::Publisher pathNavMsgsPublisher_;
+  ros::Publisher pathPublisher_;
+  ros::Publisher startPublisher_;
+  ros::Publisher goalPublisher_;
+  ros::Publisher stateSpacePublisher_;
 };
 
 } /* namespace se2_planning*/

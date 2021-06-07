@@ -6,9 +6,11 @@ add_compile_options(-Wall -Wextra -Wpedantic)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(SRC_FILES
+  src/GridMapLazyStateValidatorRos.cpp
   src/OmplReedsSheppPlannerRos.cpp
-  src/loaders.cpp
+  src/OccupancyMapRos.cpp
   src/PlannerRos.cpp
+  src/loaders.cpp
   src/common.cpp
 )
 
@@ -18,6 +20,8 @@ set(CATKIN_PACKAGE_DEPENDENCIES
   nav_msgs
   tf2
   se2_navigation_msgs
+  grid_map_ros
+  visualization_msgs
 )
 
 find_package(catkin REQUIRED
