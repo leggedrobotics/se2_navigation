@@ -7,8 +7,8 @@ state_validator_ros:
   grid_map_frame: odom
   grid_map_msg_sub_topic: /se2_grid_map_generator_node/grid_map
   grid_map_msg_pub_topic: state_validator/grid_map
-  grid_map_obstacle_layer_name: traversability
-  grid_map_state_validity_checking_method: traversability # see GridMapLazyStateValidator.hpp for list of available methods
+  grid_map_obstacle_layer_name: elevation
+  grid_map_state_validity_checking_method: collision # see GridMapLazyStateValidator.hpp for list of available methods
   grid_map_state_validity_threshold: 0.1
   grid_map_unsafe_state_validity_threshold: 0.1
   grid_map_max_number_of_unsafe_cells: 0
