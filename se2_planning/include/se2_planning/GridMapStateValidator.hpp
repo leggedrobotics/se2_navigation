@@ -51,7 +51,7 @@ class GridMapStateValidator : public StateValidator {
   RobotFootprint nominalFootprint_;
   std::string obstacleLayerName_ = "";
 
-private:
+ private:
   mutable RobotFootprint currentFootprint_;
 };
 
