@@ -21,9 +21,6 @@
 
 namespace se2_planning {
 
-using WriteLock = boost::unique_lock<boost::shared_mutex>;
-using ReadLock = boost::shared_lock<boost::shared_mutex>;
-
 struct GridMapLazyStateValidatorRosParameters {
   std::string gridMapFrame_ = "map";
   std::string gridMapMsgSubTopic_ = "state_validator_ros/traversability_map_in";
@@ -61,14 +58,10 @@ class GridMapLazyStateValidatorRos : public GridMapLazyStateValidator {
   void initRos();
   void mapCb(const grid_map_msgs::GridMap& msg);
 
-  ros::NodeHandlePtr nh_;
   GridMapLazyStateValidatorRosParameters parameters_;
-
-  //! Grid map data.
+  ros::NodeHandlePtr nh_;
   ros::Subscriber mapSubscriber_;
   ros::Publisher mapPublisher_;
-  bool newMapAvailable_ = false;
-  boost::shared_mutex gridMapMutex_;
 };
 
 geometry_msgs::Polygon convert(const RobotFootprint& footprint);

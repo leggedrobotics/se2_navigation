@@ -11,7 +11,7 @@
 
 namespace se2_planning {
 
-GridMapLazyStateValidatorRos::GridMapLazyStateValidatorRos(ros::NodeHandlePtr nh) : BASE(), nh_(nh), newMapAvailable_(false) {}
+GridMapLazyStateValidatorRos::GridMapLazyStateValidatorRos(ros::NodeHandlePtr nh) : BASE(), nh_(nh) {}
 
 void GridMapLazyStateValidatorRos::setParameters(const GridMapLazyStateValidatorRosParameters& parameters) {
   parameters_ = parameters;
@@ -23,27 +23,16 @@ void GridMapLazyStateValidatorRos::initialize() {
 }
 
 void GridMapLazyStateValidatorRos::mapCb(const grid_map_msgs::GridMap& msg) {
-  // TODO Also replace using the same gridMapMutex_? Issue that we require to set it in OMPLReedsSheppPlanner which only
-  //  has access to StateValidator class => add general state validator mutex?
-  if (isLocked()) {
-    ROS_INFO_STREAM("Planner is running, grid map for state validator can not be updated!");
-    return;
-  } else {
-    grid_map::GridMap newMap;
-    grid_map::GridMapRosConverter::fromMessage(msg, newMap);
+  grid_map::GridMap newMap;
+  grid_map::GridMapRosConverter::fromMessage(msg, newMap);
 
-    if (newMap.exists(obstacleLayerName_)) {
-      WriteLock writeLock(gridMapMutex_);
-      setGridMap(newMap);
-      newMapAvailable_ = true;
-      if (!isGridMapInitialized_) {
-        isGridMapInitialized_ = true;
-      }
-      writeLock.unlock();
-      publishMap(getGridMap());
-    } else {
-      ROS_ERROR("GlobalMap: No traversability layer found to load!");
-    }
+  if (newMap.exists(obstacleLayerName_)) {
+    BASE::lock();
+    BASE::setGridMap(newMap);
+    BASE::unlock();
+    publishMap(getGridMap());
+  } else {
+    ROS_ERROR("GlobalMap: No traversability layer found to load!");
   }
 }
 
