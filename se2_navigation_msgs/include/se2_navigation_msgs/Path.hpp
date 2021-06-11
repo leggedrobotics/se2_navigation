@@ -45,7 +45,7 @@ inline Path convert(const PathMsg& rosMsg)
 
 
 
-int Path::numPoints() const{
+inline int Path::numPoints() const{
 	int retVal = 0;
 	for (const auto &segment : segment_){
 		retVal += segment.points_.size();
