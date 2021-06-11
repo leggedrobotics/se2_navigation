@@ -5,8 +5,18 @@
  *      Author: jelavice
  */
 #include "pure_pursuit_core/velocity_control/ConstantVelocityController.hpp"
+#include <iostream>
 
 namespace pure_pursuit {
+
+void ConstantVelocityController::updateDrivingDirection(DrivingDirection drivingDirection){
+	  if (drivingDirection != drivingDirection_){
+		  rateLimiter_.reset(0.0); // assumption is that the robot is at zero velocity when changing directions
+		  std::cout << "reseting the velocity rate limiter" << std::endl;
+	  }
+	  drivingDirection_ = drivingDirection;
+}
+
 
 bool ConstantVelocityController::computeVelocity() {
   switch (drivingDirection_) {

@@ -19,7 +19,7 @@ class LongitudinalVelocityController {
 
   bool advance();
   double getVelocity() const;
-  void updateDrivingDirection(DrivingDirection drivingDirection);
+  virtual void updateDrivingDirection(DrivingDirection drivingDirection);
 
   virtual void updateCurrentState(const RobotState& robState);
   virtual bool initialize();

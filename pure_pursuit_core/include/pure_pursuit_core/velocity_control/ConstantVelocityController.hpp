@@ -25,6 +25,7 @@ class ConstantVelocityController : public LongitudinalVelocityController {
   ConstantVelocityController() = default;
   ~ConstantVelocityController() override = default;
   void setParameters(const ConstantVelocityControllerParameters& parameters);
+  void updateDrivingDirection(DrivingDirection drivingDirection) override;
 
  private:
   bool computeVelocity() override;

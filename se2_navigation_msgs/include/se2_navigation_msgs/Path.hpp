@@ -18,6 +18,7 @@ struct Path
 {
   std_msgs::Header header_;
   std::vector<PathSegment> segment_;
+  int numPoints() const;
 };
 
 inline PathMsg convert(const Path& msg)
@@ -40,6 +41,16 @@ inline Path convert(const PathMsg& rosMsg)
   }
   msg.header_ = rosMsg.header;
   return msg;
+}
+
+
+
+int Path::numPoints() const{
+	int retVal = 0;
+	for (const auto &segment : segment_){
+		retVal += segment.points_.size();
+	}
+	return retVal;
 }
 
 } /* namespace se2_navigation_msgs */

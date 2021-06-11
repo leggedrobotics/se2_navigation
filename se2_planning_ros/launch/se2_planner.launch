@@ -18,7 +18,7 @@
 		type="se2_planner_node" output="screen" launch-prefix="">
 	</node>
 
-	<node name="rviz" pkg="rviz" type="rviz"
+	<node name="se2_planner_rviz" pkg="rviz" type="rviz"
 		args="-d $(arg rviz_config_file)" required="true"
 		if="$(arg launch_rviz)" />
 
