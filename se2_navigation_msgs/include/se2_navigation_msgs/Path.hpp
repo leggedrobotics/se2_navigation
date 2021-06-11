@@ -18,7 +18,7 @@ struct Path
 {
   std_msgs::Header header_;
   std::vector<PathSegment> segment_;
-  int numPoints() const;
+  inline int numPoints() const;
 };
 
 inline PathMsg convert(const Path& msg)
@@ -42,7 +42,6 @@ inline Path convert(const PathMsg& rosMsg)
   msg.header_ = rosMsg.header;
   return msg;
 }
-
 
 
 inline int Path::numPoints() const{
