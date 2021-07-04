@@ -15,6 +15,7 @@ set(CATKIN_PACKAGE_DEPENDENCIES
   roscpp
   pure_pursuit_core
   se2_visualization_ros
+  dynamic_reconfigure
 )
 
 find_package(catkin REQUIRED
@@ -29,6 +30,9 @@ if(NOT EIGEN3_FOUND)
   set(EIGEN3_INCLUDE_DIR ${EIGEN3_INCLUDE_DIRS})
 endif()
 
+generate_dynamic_reconfigure_options(
+  config/dd_example.cfg
+)
 
 catkin_package(
   INCLUDE_DIRS
@@ -42,6 +46,7 @@ catkin_package(
   DEPENDS
     Eigen3
 )
+
 
 include_directories(
   include
@@ -63,6 +68,19 @@ target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
   yaml-cpp
 )
+
+
+add_executable(dd_example
+	src/dd_standalone_example.cpp
+)
+
+target_link_libraries(dd_example
+  ${catkin_LIBRARIES}
+)
+
+# make sure configure headers are built before any node using them
+add_dependencies(dd_example ${PROJECT_NAME}_gencfg)
+
 
 #############
 ## Install ##

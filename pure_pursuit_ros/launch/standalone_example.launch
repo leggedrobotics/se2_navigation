@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<launch>
+
+
+	<!-- Nodes -->
+	<node name="dd_standalone_example" pkg="pure_pursuit_ros"
+		type="dd_example" output="screen" launch-prefix="">
+	</node>
+
+
+
+</launch>
