@@ -19,7 +19,10 @@ struct AckermannSteeringCtrlParameters : public HeadingControllerParameters {
   double maxSteeringAngleMagnitude_ = 0.5;  // rad
   double maxSteeringRateOfChange_ = 0.2;    // rad/s
   double dt_ = 0.01;                        // seconds
+  std::string asString() const override;
 };
+
+
 
 class AckermannSteeringController : public HeadingController {
  public:

@@ -26,15 +26,15 @@ int main(int argc, char **argv) {
 
   f = boost::bind(&callback, _1, _2);
   server.setCallback(f);
+  ros::spinOnce();
+  ros::spinOnce();
+  pure_pursuit_ros::PurePursuitConfig dummyCfg;
 
+  dummyCfg.lookahead_fwd = 1.258;
+  server.updateConfig(dummyCfg);
+  ros::spinOnce();
+  ROS_INFO("Now the lookahead_fwd should be %f in the rqt console", dummyCfg.lookahead_fwd);
 
-//  pure_pursuit_ros::PurePursuitConfig dummyCfg;
-//
-//  dummyCfg.int_param = 99;
-//  server.updateConfig(dummyCfg);
-//  ros::spinOnce();
-//  ROS_INFO("Now the int param should be %d", dummyCfg.int_param);
-//
 
   ROS_INFO("Spinning node");
   ros::spin();

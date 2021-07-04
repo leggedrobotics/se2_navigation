@@ -19,6 +19,7 @@ struct HeadingControllerParameters {
   double anchorDistanceBck_ = 0.2;
   double deadZoneWidth_ = 0.0;
   double avgFilgerCurrentSampleWeight_ = 1.0;
+  virtual std::string asString() const;
 };
 
 class HeadingController {

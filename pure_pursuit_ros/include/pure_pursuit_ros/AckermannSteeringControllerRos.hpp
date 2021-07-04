@@ -24,7 +24,7 @@ class AckermannSteeringControllerRos : public AckermannSteeringController {
 
  private:
 
-  void callback(pure_pursuit_ros::PurePursuitConfig &config, uint32_t level);
+  void ddCallback(pure_pursuit_ros::PurePursuitConfig &config, uint32_t level);
 
   void initRos();
   bool advanceImpl() override;

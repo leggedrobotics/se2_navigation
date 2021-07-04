@@ -13,6 +13,23 @@
 
 namespace pure_pursuit {
 
+namespace {
+	const double kRadToDeg = 180.0 / M_PI;
+}
+
+std::string AckermannSteeringCtrlParameters::asString() const {
+	std::string ret = HeadingControllerParameters::asString() + "\n";
+
+	ret += "wheel base (m): " + std::to_string(wheelBase_) + "\n";
+	ret += "max steering angle magnitued (deg): "
+			+ std::to_string(kRadToDeg * maxSteeringAngleMagnitude_) + "\n";
+	ret += "max steering rate of change (deg/s): "
+			+ std::to_string(kRadToDeg * maxSteeringRateOfChange_) + "\n";
+	ret += "dt (sec): " + std::to_string(dt_) + "\n";
+
+	return ret;
+}
+
 bool AckermannSteeringController::advanceImpl() {
   chooseActiveAnchorAndLookaheadDistance(parameters_);
   const auto drivingDirection = currentPathSegment_.drivingDirection_;

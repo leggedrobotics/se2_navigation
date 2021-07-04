@@ -13,17 +13,22 @@
 
 namespace pure_pursuit {
 
+namespace {
+	const double kDegToRad = M_PI / 180.0;
+	const double kRadToDeg = 180.0 / M_PI;
+}
+
 AckermannSteeringControllerRos::AckermannSteeringControllerRos(ros::NodeHandle* nh) : BASE(), nh_(nh) {
   ddServer_ = std::make_unique<dynamic_reconfigure::Server<pure_pursuit_ros::PurePursuitConfig>>(ddMutex_);
   initRos();
 }
 
 
-void AckermannSteeringControllerRos::callback(pure_pursuit_ros::PurePursuitConfig &config, uint32_t level){
-	  ROS_INFO("Reconfigure Request: \n LookaheadDistance: %f ",
-	             config.lookahead_fwd);
+void AckermannSteeringControllerRos::ddCallback(pure_pursuit_ros::PurePursuitConfig &config, uint32_t level){
 	  ddConfig_ = config;
 	  updateFromDD(ddConfig_, &parameters_);
+	  ROS_INFO("Reconfigure Request: \n %s",
+	             parameters_.asString().c_str());
 }
 
 void AckermannSteeringControllerRos::setParameters(const AckermannSteeringCtrlParameters& parameters){
@@ -34,7 +39,7 @@ void AckermannSteeringControllerRos::setParameters(const AckermannSteeringCtrlPa
 
 void AckermannSteeringControllerRos::initRos() {
 
-  ddCalback_ = boost::bind(&AckermannSteeringControllerRos::callback,this, _1, _2);
+  ddCalback_ = boost::bind(&AckermannSteeringControllerRos::ddCallback,this, _1, _2);
   ddServer_->setCallback(ddCalback_);
 
   lookaheadPointPub_ = nh_->advertise<visualization_msgs::Marker>("pure_pursuit_heading_control/lookahead_point", 1, true);
@@ -146,9 +151,31 @@ std::unique_ptr<HeadingController> createAckermannSteeringControllerRos(const Ac
 
 void updateFromDD(const pure_pursuit_ros::PurePursuitConfig &config, AckermannSteeringCtrlParameters *param){
 	param->lookaheadDistanceFwd_ = config.lookahead_fwd;
+	param->lookaheadDistanceBck_ = config.lookahead_bck;
+	param->anchorDistanceFwd_ = config.anchor_dist_fwd;
+	param->anchorDistanceBck_ = config.anchor_dist_bck;
+	param->deadZoneWidth_ = config.dead_zone_width;
+	param->avgFilgerCurrentSampleWeight_ = config.avg_filter_current_sample_weight;
+	param->maxSteeringAngleMagnitude_ = config.max_steering_angle_magnitude_in_deg * kDegToRad;
+	param->maxSteeringRateOfChange_ = config.max_steering_rate_of_change_in_deg_per_sec * kDegToRad;
+	param->wheelBase_ = config.wheel_base;
+
+
 }
-void updateDD(const AckermannSteeringCtrlParameters &param, pure_pursuit_ros::PurePursuitConfig *config){
+void updateDD(const AckermannSteeringCtrlParameters &param,
+		pure_pursuit_ros::PurePursuitConfig *config) {
 	config->lookahead_fwd = param.lookaheadDistanceFwd_;
+	config->lookahead_fwd = param.lookaheadDistanceFwd_;
+	config->lookahead_bck = param.lookaheadDistanceBck_;
+	config->anchor_dist_fwd = param.anchorDistanceFwd_;
+	config->anchor_dist_bck = param.anchorDistanceBck_;
+	config->dead_zone_width = param.deadZoneWidth_;
+	config->avg_filter_current_sample_weight =
+			param.avgFilgerCurrentSampleWeight_;
+	config->max_steering_angle_magnitude_in_deg =kRadToDeg * param.maxSteeringAngleMagnitude_;
+	config->max_steering_rate_of_change_in_deg_per_sec = kRadToDeg * param.maxSteeringRateOfChange_;
+	config->wheel_base = param.wheelBase_;
+
 }
 
 } /* namespace pure_pursuit */
