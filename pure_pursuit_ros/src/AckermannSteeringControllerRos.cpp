@@ -18,8 +18,8 @@ namespace {
 	const double kRadToDeg = 180.0 / M_PI;
 }
 
-AckermannSteeringControllerRos::AckermannSteeringControllerRos(ros::NodeHandle* nh) : BASE(), nh_(nh) {
-  ddServer_ = std::make_unique<dynamic_reconfigure::Server<pure_pursuit_ros::PurePursuitConfig>>(ddMutex_);
+AckermannSteeringControllerRos::AckermannSteeringControllerRos(ros::NodeHandle* nh) : BASE(), nh_(nh), ddnh_("ackerman_steering") {
+  ddServer_ = std::make_unique<dynamic_reconfigure::Server<pure_pursuit_ros::PurePursuitConfig>>(ddMutex_,ddnh_);
   initRos();
 }
 

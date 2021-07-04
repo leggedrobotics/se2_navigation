@@ -19,6 +19,7 @@ struct AdaptiveVelocityControllerParameters {
   double timestep_ = 0.01;
   double maxVelocityRateOfChange_ = 0.3;
   double distanceToGoalWhenBrakingStarts_ = 4.0;  // meters
+  std::string asString() const;
 };
 
 class AdaptiveVelocityController : public LongitudinalVelocityController {
@@ -27,7 +28,7 @@ class AdaptiveVelocityController : public LongitudinalVelocityController {
  public:
   AdaptiveVelocityController() = default;
   ~AdaptiveVelocityController() override = default;
-  void setParameters(const AdaptiveVelocityControllerParameters& parameters);
+  virtual void setParameters(const AdaptiveVelocityControllerParameters& parameters);
   void updateCurrentPathSegment(const PathSegment& pathSegment) override;
 
  private:

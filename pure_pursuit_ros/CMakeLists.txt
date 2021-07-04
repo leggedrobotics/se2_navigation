@@ -9,6 +9,7 @@ set(SRC_FILES
   src/loaders.cpp
   src/SimplePathTrackerRos.cpp
   src/AckermannSteeringControllerRos.cpp
+  src/AdaptiveVelocityControllerRos.cpp
 )
 
 set(CATKIN_PACKAGE_DEPENDENCIES
@@ -31,7 +32,8 @@ if(NOT EIGEN3_FOUND)
 endif()
 
 generate_dynamic_reconfigure_options(
-  config/dd_example.cfg
+  config/dd_ackerman.cfg
+  config/dd_adaptive_vel.cfg
 )
 
 catkin_package(

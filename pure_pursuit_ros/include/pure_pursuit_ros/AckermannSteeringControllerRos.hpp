@@ -35,6 +35,7 @@ class AckermannSteeringControllerRos : public AckermannSteeringController {
   void publishP2() const;
 
   ros::NodeHandle* nh_;
+  ros::NodeHandle ddnh_;
   ros::Publisher lookaheadPointPub_;
   ros::Publisher anchorPointPub_;
   ros::Publisher pathSegmentPub_;
