@@ -76,7 +76,7 @@ bool AckermannSteeringController::computeTurningRadius() {
 void AckermannSteeringController::updateCurrentPathSegment(const PathSegment& pathSegment) {
   lastClosestPointId_ = 0;  // reset
   currentPathSegment_ = pathSegment;
-  const double extendingLength = 3.0 * std::max(parameters_.lookaheadDistanceFwd_, parameters_.lookaheadDistanceBck_);
+  const double extendingLength = 10.0 * std::max(parameters_.lookaheadDistanceFwd_, parameters_.lookaheadDistanceBck_);
   appendPointAlongFinalApproachDirection(extendingLength, &currentPathSegment_);
 }
 

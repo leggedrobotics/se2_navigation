@@ -14,10 +14,29 @@
 namespace pure_pursuit {
 
 AckermannSteeringControllerRos::AckermannSteeringControllerRos(ros::NodeHandle* nh) : BASE(), nh_(nh) {
+  ddServer_ = std::make_unique<dynamic_reconfigure::Server<pure_pursuit_ros::PurePursuitConfig>>(ddMutex_);
   initRos();
 }
 
+
+void AckermannSteeringControllerRos::callback(pure_pursuit_ros::PurePursuitConfig &config, uint32_t level){
+	  ROS_INFO("Reconfigure Request: \n LookaheadDistance: %f ",
+	             config.lookahead_fwd);
+	  ddConfig_ = config;
+	  updateFromDD(ddConfig_, &parameters_);
+}
+
+void AckermannSteeringControllerRos::setParameters(const AckermannSteeringCtrlParameters& parameters){
+	BASE::setParameters(parameters);
+	updateDD(parameters,&ddConfig_);
+	ddServer_->updateConfig(ddConfig_);
+}
+
 void AckermannSteeringControllerRos::initRos() {
+
+  ddCalback_ = boost::bind(&AckermannSteeringControllerRos::callback,this, _1, _2);
+  ddServer_->setCallback(ddCalback_);
+
   lookaheadPointPub_ = nh_->advertise<visualization_msgs::Marker>("pure_pursuit_heading_control/lookahead_point", 1, true);
 
   anchorPointPub_ = nh_->advertise<visualization_msgs::Marker>("pure_pursuit_heading_control/anchor_point", 1, true);
@@ -123,6 +142,13 @@ std::unique_ptr<HeadingController> createAckermannSteeringControllerRos(const Ac
   std::unique_ptr<AckermannSteeringControllerRos> ctrl = std::make_unique<AckermannSteeringControllerRos>(nh);
   ctrl->setParameters(parameters);
   return std::move(ctrl);
+}
+
+void updateFromDD(const pure_pursuit_ros::PurePursuitConfig &config, AckermannSteeringCtrlParameters *param){
+	param->lookaheadDistanceFwd_ = config.lookahead_fwd;
+}
+void updateDD(const AckermannSteeringCtrlParameters &param, pure_pursuit_ros::PurePursuitConfig *config){
+	config->lookahead_fwd = param.lookaheadDistanceFwd_;
 }
 
 } /* namespace pure_pursuit */
