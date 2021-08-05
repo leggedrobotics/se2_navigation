@@ -173,6 +173,11 @@ void ApproachPosePlannerRos::setParameters(const ApproachPosePlannerRosParam& pa
   parameters_ = parameters;
   ApproachPosePlanner::setParameters(parameters);
 }
+
+const ApproachPosePlannerRosParam &ApproachPosePlannerRos::getParameters() const{
+	return parameters_;
+}
+
 void ApproachPosePlannerRos::publishPath() const {
   ReedsSheppPath rsPath;
   this->getPath(&rsPath);
