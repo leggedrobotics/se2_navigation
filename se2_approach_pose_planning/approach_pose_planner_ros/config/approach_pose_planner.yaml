@@ -26,10 +26,10 @@ height_map:
   topic: grid_map
 
 state_space:
-  x_lower: -1000.0
-  x_upper: 1000.0
-  y_lower: -1000.0
-  y_upper: 1000.0
+  x_lower: -100.0
+  x_upper: 100.0
+  y_lower: -100.0
+  y_upper: 100.0
   turning_radius: 8.0
   
 approach_planner_ros:
