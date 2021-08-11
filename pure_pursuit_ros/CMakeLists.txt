@@ -32,8 +32,8 @@ if(NOT EIGEN3_FOUND)
 endif()
 
 generate_dynamic_reconfigure_options(
-  config/dd_ackerman.cfg
-  config/dd_adaptive_vel.cfg
+  config/PurePursuit.cfg
+  config/PurePursuitAdaptiveVel.cfg
 )
 
 catkin_package(
