@@ -183,6 +183,7 @@ bool ApproachPosePlanner::initialize() {
   path_ = std::make_unique<ompl::geometric::PathGeometric>(si);
   interpolatedPath_ = std::make_unique<ompl::geometric::PathGeometric>(si);
   approachStateValidator_->initialize();
+  plannerImpl_.getSimpleSetup()->setup();
   isInitialized_ = true;
   return status;
 }
@@ -202,7 +203,15 @@ bool ApproachPosePlanner::plan() {
   plannerImpl_.getSimpleSetup()->setStartState(*startState_);
   plannerImpl_.getSimpleSetup()->setGoal(goalStatesOmpl_);
 
-  const bool result = plannerImpl_.getSimpleSetup()->solve(params_.plannerImplParams_.maxPlanningTime_);
+  bool result  = false;
+	try {
+		result = plannerImpl_.getSimpleSetup()->solve(params_.plannerImplParams_.maxPlanningTime_);
+	} catch (const std::exception &e) {
+		std::cout << "Caught an exception inside the approach pose planner: " << e.what()
+				<< ", rethrowing the exception!" << std::endl;
+		result = false;
+		throw;
+	}
   if (!result) {
     std::cout << "OmplPlanner: Solve failed" << std::endl;
     return false;

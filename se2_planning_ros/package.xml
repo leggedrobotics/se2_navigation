@@ -9,6 +9,7 @@
 	<buildtool_depend>catkin</buildtool_depend>
 	
 	<depend>eigen</depend>
+	<depend>ompl</depend>
 	<depend>se2_planning</depend>
 	<depend>roscpp</depend>
 	<depend>nav_msgs</depend>

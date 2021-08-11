@@ -39,9 +39,11 @@ catkin_package(
   INCLUDE_DIRS
     include
     ${EIGEN3_INCLUDE_DIR}
+    ${ompl_INCLUDE_DIRS}
   LIBRARIES
     ${PROJECT_NAME}
     yaml-cpp
+    ${ompl_LIBRARIES}
   CATKIN_DEPENDS
    ${CATKIN_PACKAGE_DEPENDENCIES}
   DEPENDS

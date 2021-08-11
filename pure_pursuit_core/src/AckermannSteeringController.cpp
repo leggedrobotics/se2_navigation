@@ -13,6 +13,23 @@
 
 namespace pure_pursuit {
 
+namespace {
+	const double kRadToDeg = 180.0 / M_PI;
+}
+
+std::string AckermannSteeringCtrlParameters::asString() const {
+	std::string ret = HeadingControllerParameters::asString() + "\n";
+
+	ret += "wheel base (m): " + std::to_string(wheelBase_) + "\n";
+	ret += "max steering angle magnitued (deg): "
+			+ std::to_string(kRadToDeg * maxSteeringAngleMagnitude_) + "\n";
+	ret += "max steering rate of change (deg/s): "
+			+ std::to_string(kRadToDeg * maxSteeringRateOfChange_) + "\n";
+	ret += "dt (sec): " + std::to_string(dt_) + "\n";
+
+	return ret;
+}
+
 bool AckermannSteeringController::advanceImpl() {
   chooseActiveAnchorAndLookaheadDistance(parameters_);
   const auto drivingDirection = currentPathSegment_.drivingDirection_;
@@ -76,7 +93,7 @@ bool AckermannSteeringController::computeTurningRadius() {
 void AckermannSteeringController::updateCurrentPathSegment(const PathSegment& pathSegment) {
   lastClosestPointId_ = 0;  // reset
   currentPathSegment_ = pathSegment;
-  const double extendingLength = 3.0 * std::max(parameters_.lookaheadDistanceFwd_, parameters_.lookaheadDistanceBck_);
+  const double extendingLength = 10.0 * std::max(parameters_.lookaheadDistanceFwd_, parameters_.lookaheadDistanceBck_);
   appendPointAlongFinalApproachDirection(extendingLength, &currentPathSegment_);
 }
 

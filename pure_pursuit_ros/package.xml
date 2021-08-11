@@ -13,5 +13,6 @@
 	<depend>pure_pursuit_core</depend>
 	<depend>yaml-cpp</depend>
 	<depend>se2_visualization_ros</depend>
+	<depend>dynamic_reconfigure</depend>
 	
 </package>

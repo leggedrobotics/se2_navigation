@@ -1,6 +1,6 @@
 # Pure pursuit ros
 
-Pure pursuit controller with ros extension for publishing additional messages.
+Pure pursuit controller with ros extension for publishing additional messages. This package also supports dynamic reconfigure for tuning both heading and velocity controllers in real-time.
 
 ## Dependencies
 * roscpp
