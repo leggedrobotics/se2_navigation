@@ -2,6 +2,8 @@
 
 Pure pursuit controller with ros extension for publishing additional messages. This package also supports dynamic reconfigure for tuning both heading and velocity controllers in real-time.
 
+An example of chaning the nominal velocity for adaptive velocity controller with dynamic reconfigure can be found [here](https://youtu.be/rVHYbIhDWc8).
+
 ## Dependencies
 * roscpp
 * eigen
