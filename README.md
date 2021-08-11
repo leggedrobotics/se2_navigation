@@ -16,6 +16,7 @@ How is this package different from other SE(2) planning/control packages?
 * Integrated with [grid_map](https://github.com/ANYbotics/grid_map) package
 * Features visualizatios and rviz planning interface
 * Easily extensible
+* Supports dynamic reconfigure for controller tuning
 
 **Warning:** At the moment, this planning and control framework uses geometric planners which makes it unsuitable for high-speed driving. It is meant to be used for slow maneuvers, e.g. parking maneuvers. 
 
