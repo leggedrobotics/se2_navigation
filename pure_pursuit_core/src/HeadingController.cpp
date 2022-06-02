@@ -14,17 +14,14 @@
 namespace pure_pursuit {
 
 std::string HeadingControllerParameters::asString() const {
-	std::string ret;
-	ret += "Lookahead distance fwd: " + std::to_string(lookaheadDistanceFwd_)
-			+ "\n";
-	ret += "Lookahead distance bck: " + std::to_string(lookaheadDistanceBck_)
-			+ "\n";
-	ret += "Anchor distance fwd: " + std::to_string(anchorDistanceFwd_) + "\n";
-	ret += "Anchor distance bck: " + std::to_string(anchorDistanceBck_) + "\n";
-	ret += "dead zone width: " + std::to_string(deadZoneWidth_) + "\n";
-	ret += "avg filter current sample weight: "
-			+ std::to_string(avgFilgerCurrentSampleWeight_);
-	return ret;
+  std::string ret;
+  ret += "Lookahead distance fwd: " + std::to_string(lookaheadDistanceFwd_) + "\n";
+  ret += "Lookahead distance bck: " + std::to_string(lookaheadDistanceBck_) + "\n";
+  ret += "Anchor distance fwd: " + std::to_string(anchorDistanceFwd_) + "\n";
+  ret += "Anchor distance bck: " + std::to_string(anchorDistanceBck_) + "\n";
+  ret += "dead zone width: " + std::to_string(deadZoneWidth_) + "\n";
+  ret += "avg filter current sample weight: " + std::to_string(avgFilgerCurrentSampleWeight_);
+  return ret;
 }
 
 bool HeadingController::initialize() {

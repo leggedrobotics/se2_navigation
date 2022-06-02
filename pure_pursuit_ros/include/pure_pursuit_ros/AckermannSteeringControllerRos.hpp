@@ -7,11 +7,10 @@
 
 #pragma once
 
-#include <ros/ros.h>
-#include "pure_pursuit_core/heading_control/AckermannSteeringController.hpp"
 #include <dynamic_reconfigure/server.h>
 #include <pure_pursuit_ros/PurePursuitConfig.h>
-
+#include <ros/ros.h>
+#include "pure_pursuit_core/heading_control/AckermannSteeringController.hpp"
 
 namespace pure_pursuit {
 
@@ -23,8 +22,7 @@ class AckermannSteeringControllerRos : public AckermannSteeringController {
   void setParameters(const AckermannSteeringCtrlParameters& parameters) override;
 
  private:
-
-  void ddCallback(pure_pursuit_ros::PurePursuitConfig &config, uint32_t level);
+  void ddCallback(pure_pursuit_ros::PurePursuitConfig& config, uint32_t level);
 
   void initRos();
   bool advanceImpl() override;
@@ -47,11 +45,10 @@ class AckermannSteeringControllerRos : public AckermannSteeringController {
   std::unique_ptr<dynamic_reconfigure::Server<pure_pursuit_ros::PurePursuitConfig>> ddServer_;
   dynamic_reconfigure::Server<pure_pursuit_ros::PurePursuitConfig>::CallbackType ddCalback_;
   pure_pursuit_ros::PurePursuitConfig ddConfig_;
-
 };
 
-void updateFromDD(const pure_pursuit_ros::PurePursuitConfig &config, AckermannSteeringCtrlParameters *param);
-void updateDD(const AckermannSteeringCtrlParameters &param, pure_pursuit_ros::PurePursuitConfig *config);
+void updateFromDD(const pure_pursuit_ros::PurePursuitConfig& config, AckermannSteeringCtrlParameters* param);
+void updateDD(const AckermannSteeringCtrlParameters& param, pure_pursuit_ros::PurePursuitConfig* config);
 
 std::unique_ptr<HeadingController> createAckermannSteeringControllerRos(const AckermannSteeringCtrlParameters& parameters,
                                                                         ros::NodeHandle* nh);
