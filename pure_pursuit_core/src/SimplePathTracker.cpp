@@ -35,7 +35,15 @@ void SimplePathTracker::importCurrentPath(const Path& path) {
   if (!isPathAndCurrenStateWithinRadius(path, headingController_->getActiveLookaheadDistance())) {
     std::cout << "WARNING: path imported is more than one lookahead distance away from the current state" << std::endl;
   }
-  currentPath_ = path;
+  // remove from path segments that have less than two points
+  Path preprocessedPath;
+  for (const auto& segment : path.segment_) {
+    if (segment.point_.size() < 2) {
+      continue;
+    }
+    preprocessedPath.segment_.push_back(segment);
+  }
+  currentPath_ = preprocessedPath;
   isPathReceived_ = true;
   isPathUpdated_ = false;
   currentPathSegmentId_ = 0;
