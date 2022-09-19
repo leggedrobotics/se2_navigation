@@ -35,6 +35,13 @@ bool AckermannSteeringController::advanceImpl() {
   const Point anchorPoint = computeAnchorPoint(currentRobotState_.pose_, activeAnchorDistance_, drivingDirection);
   currentAnchorPoint_ = anchorPoint;
   const unsigned int closestPointOnPathId = getIdOfTheClosestPointOnThePath(currentPathSegment_, robotPose.position_, lastClosestPointId_);
+  double currentDistanceToPath = (robotPose.position_ - currentPathSegment_.point_.at(closestPointOnPathId).position_).norm();
+
+  if (currentDistanceToPath > parameters_.maxPathDistance_) {
+    std::cerr << "AckermannSteeringController::advanceImpl: currentDistanceToPath > maxPathDeviation_ " << currentDistanceToPath << " > "
+              << maxPathDistance_ << std::endl;
+    return false;
+  }
 
   Point lookaheadPoint;
   if (!computeLookaheadPoint(closestPointOnPathId, activeLookaheadDistance_, currentRobotState_, drivingDirection, currentPathSegment_,
@@ -126,6 +133,10 @@ void AckermannSteeringController::setParameters(const AckermannSteeringCtrlParam
 
   if (parameters.deadZoneWidth_ < 0) {
     throw std::runtime_error("deadZoneWidth_ is less than 0.");
+  }
+
+  if (parameters.maxPathDistance_ <= 0) {
+    throw std::runtime_error("maxPathDistance is less than or equal to 0.");
   }
 
   parameters_ = parameters;

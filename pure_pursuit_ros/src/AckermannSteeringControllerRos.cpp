@@ -156,6 +156,7 @@ void updateFromDD(const pure_pursuit_ros::PurePursuitConfig& config, AckermannSt
   param->maxSteeringAngleMagnitude_ = config.max_steering_angle_magnitude_in_deg * kDegToRad;
   param->maxSteeringRateOfChange_ = config.max_steering_rate_of_change_in_deg_per_sec * kDegToRad;
   param->wheelBase_ = config.wheel_base;
+  param->maxPathDistance_ = config.max_path_distance;
 }
 void updateDD(const AckermannSteeringCtrlParameters& param, pure_pursuit_ros::PurePursuitConfig* config) {
   config->lookahead_fwd = param.lookaheadDistanceFwd_;
@@ -168,6 +169,7 @@ void updateDD(const AckermannSteeringCtrlParameters& param, pure_pursuit_ros::Pu
   config->max_steering_angle_magnitude_in_deg = kRadToDeg * param.maxSteeringAngleMagnitude_;
   config->max_steering_rate_of_change_in_deg_per_sec = kRadToDeg * param.maxSteeringRateOfChange_;
   config->wheel_base = param.wheelBase_;
+  config->max_path_distance = param.maxPathDistance_;
 }
 
 } /* namespace pure_pursuit */

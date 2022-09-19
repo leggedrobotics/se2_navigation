@@ -30,6 +30,7 @@ AckermannSteeringCtrlParameters loadAckermannSteeringControllerParameters(const 
   parameters.lookaheadDistanceFwd_ = node["lookahead_fwd"].as<double>();
   parameters.deadZoneWidth_ = node["dead_zone_width"].as<double>();
   parameters.avgFilgerCurrentSampleWeight_ = node["avg_filter_current_sample_weight"].as<double>();
+  parameters.maxPathDistance_ = node["max_path_distance"].as<double>();
 
   // ackermann specific
   auto ackermannNode = node["heading_control_ackermann"];
