@@ -20,7 +20,7 @@ const double kRadToDeg = 180.0 / M_PI;
 std::string AckermannSteeringCtrlParameters::asString() const {
   std::string ret = HeadingControllerParameters::asString() + "\n";
 
-  ret += "wheel base (m): " + std::to_string(wheelBase_) + "\n";
+  ret += "wheel base (m): " + std::to_string(wheelBaseFront_) + "\n";
   ret += "max steering angle magnitued (deg): " + std::to_string(kRadToDeg * maxSteeringAngleMagnitude_) + "\n";
   ret += "max steering rate of change (deg/s): " + std::to_string(kRadToDeg * maxSteeringRateOfChange_) + "\n";
   ret += "dt (sec): " + std::to_string(dt_) + "\n";
@@ -57,9 +57,20 @@ bool AckermannSteeringController::advanceImpl() {
     std::cerr << "AckermannSteeringController: Failed to compute lookahead angle" << std::endl;
     return false;
   }
+  double wheelBase;
+  switch (drivingDirection) {
+    case DrivingDirection::FWD:
+      wheelBase = parameters_.wheelBaseFront_;
+      break;
+    case DrivingDirection::BCK:
+      wheelBase = parameters_.wheelBaseBack_;
+      break;
+    default:
+      std::cerr << "AckermannSteeringController: Unknown driving direction" << std::endl;
+      return false;
+  }
 
-  const double steeringAngle =
-      computeSteeringAngleCmd(lookaheadAngle, activeLookaheadDistance_, activeAnchorDistance_, parameters_.wheelBase_);
+  const double steeringAngle = computeSteeringAngleCmd(lookaheadAngle, activeLookaheadDistance_, activeAnchorDistance_, wheelBase);
 
   if (std::isnan(steeringAngle) || std::isinf(steeringAngle)) {
     std::cerr << "AckermannSteeringController: Computed steering angle is nan" << std::endl;
@@ -83,14 +94,40 @@ bool AckermannSteeringController::initialize() {
 bool AckermannSteeringController::computeSteeringAngle() {
   return true;
 }
+
 bool AckermannSteeringController::computeYawRate() {
+  double wheelBase;
+  switch (currentPathSegment_.drivingDirection_) {
+    case DrivingDirection::FWD:
+      wheelBase = parameters_.wheelBaseFront_;
+      break;
+    case DrivingDirection::BCK:
+      wheelBase = parameters_.wheelBaseBack_;
+      break;
+    default:
+      std::cerr << "AckermannSteeringController: Unknown driving direction" << std::endl;
+      return false;
+  }
   const double v = desiredLinearVelocity_.norm();
-  yawRate_ = v / parameters_.wheelBase_ * std::tan(steeringAngle_);
+  yawRate_ = v / wheelBase * std::tan(steeringAngle_);
   return true;
 }
+
 bool AckermannSteeringController::computeTurningRadius() {
+  double wheelBase;
+  switch (currentPathSegment_.drivingDirection_) {
+    case DrivingDirection::FWD:
+      wheelBase = parameters_.wheelBaseFront_;
+      break;
+    case DrivingDirection::BCK:
+      wheelBase = parameters_.wheelBaseBack_;
+      break;
+    default:
+      std::cerr << "AckermannSteeringController: Unknown driving direction" << std::endl;
+      return false;
+  }
   const double v = desiredLinearVelocity_.norm();
-  const double yawRate = v / parameters_.wheelBase_ * std::tan(steeringAngle_);
+  const double yawRate = v / wheelBase * std::tan(steeringAngle_);
   turningRadius_ = v / (std::fabs(yawRate) + 1e-4) * sgn(yawRate);
   return true;
 }
@@ -119,8 +156,12 @@ void AckermannSteeringController::setParameters(const AckermannSteeringCtrlParam
     throw std::runtime_error("lookaheadDistanceFwd_ is less than 0.");
   }
 
-  if (parameters.wheelBase_ < 0) {
-    throw std::runtime_error("wheelBase_ is less than 0.");
+  if (parameters.wheelBaseFront_ < 0) {
+    throw std::runtime_error("wheelBaseBack_ is less than 0.");
+  }
+
+  if (parameters.wheelBaseBack_ < 0) {
+    throw std::runtime_error("wheelBaseFront_ is less than 0.");
   }
 
   if (parameters.maxSteeringAngleMagnitude_ < 0) {

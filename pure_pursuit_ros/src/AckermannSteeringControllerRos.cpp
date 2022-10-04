@@ -155,7 +155,8 @@ void updateFromDD(const pure_pursuit_ros::PurePursuitConfig& config, AckermannSt
   param->avgFilgerCurrentSampleWeight_ = config.avg_filter_current_sample_weight;
   param->maxSteeringAngleMagnitude_ = config.max_steering_angle_magnitude_in_deg * kDegToRad;
   param->maxSteeringRateOfChange_ = config.max_steering_rate_of_change_in_deg_per_sec * kDegToRad;
-  param->wheelBase_ = config.wheel_base;
+  param->wheelBaseFront_ = config.wheel_base_front;
+  param->wheelBaseBack_ = config.wheel_base_back;
   param->maxPathDistance_ = config.max_path_distance;
 }
 void updateDD(const AckermannSteeringCtrlParameters& param, pure_pursuit_ros::PurePursuitConfig* config) {
@@ -168,7 +169,8 @@ void updateDD(const AckermannSteeringCtrlParameters& param, pure_pursuit_ros::Pu
   config->avg_filter_current_sample_weight = param.avgFilgerCurrentSampleWeight_;
   config->max_steering_angle_magnitude_in_deg = kRadToDeg * param.maxSteeringAngleMagnitude_;
   config->max_steering_rate_of_change_in_deg_per_sec = kRadToDeg * param.maxSteeringRateOfChange_;
-  config->wheel_base = param.wheelBase_;
+  config->wheel_base_front = param.wheelBaseFront_;
+  config->wheel_base_back = param.wheelBaseBack_;
   config->max_path_distance = param.maxPathDistance_;
 }
 

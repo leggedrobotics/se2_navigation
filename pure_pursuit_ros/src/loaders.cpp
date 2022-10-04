@@ -34,7 +34,8 @@ AckermannSteeringCtrlParameters loadAckermannSteeringControllerParameters(const 
 
   // ackermann specific
   auto ackermannNode = node["heading_control_ackermann"];
-  parameters.wheelBase_ = ackermannNode["wheel_base"].as<double>();
+  parameters.wheelBaseFront_ = ackermannNode["wheel_base_front"].as<double>();
+  parameters.wheelBaseBack_ = ackermannNode["wheel_base_back"].as<double>();
   parameters.maxSteeringAngleMagnitude_ = degToRad * ackermannNode["max_steering_angle_magnitude_in_deg"].as<double>();
   parameters.maxSteeringRateOfChange_ = degToRad * ackermannNode["max_steering_rate_of_change_in_deg_per_sec"].as<double>();
 
