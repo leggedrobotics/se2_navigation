@@ -29,7 +29,10 @@ class AdaptiveVelocityController : public LongitudinalVelocityController {
   AdaptiveVelocityController() = default;
   ~AdaptiveVelocityController() override = default;
   virtual void setParameters(const AdaptiveVelocityControllerParameters& parameters);
+  void resetRateLimiter();
   void updateCurrentPathSegment(const PathSegment& pathSegment) override;
+  void updateDrivingDirection(DrivingDirection drivingDirection) override;
+  bool reset() override;
 
  private:
   bool computeVelocity() override;

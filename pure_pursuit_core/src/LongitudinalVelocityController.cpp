@@ -31,4 +31,8 @@ void LongitudinalVelocityController::updateCurrentState(const RobotState& robSta
   currentRobotState_ = robState;
 }
 
+bool LongitudinalVelocityController::reset() {
+  return true;
+}
+
 } /* namespace pure_pursuit */

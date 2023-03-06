@@ -24,6 +24,7 @@ class SimplePathTracker : public PathTracker {
 
   void importCurrentPath(const Path& path) override;
   void updateCurrentPath(const Path& path) override;
+  void advanceSegmentId();
   void stopTracking() override;
   void setParameters(const SimplePathTrackerParameters& parameters);
 

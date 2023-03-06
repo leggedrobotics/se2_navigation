@@ -23,6 +23,7 @@ class LongitudinalVelocityController {
 
   virtual void updateCurrentState(const RobotState& robState);
   virtual bool initialize();
+  virtual bool reset();
   virtual void updateCurrentPathSegment(const PathSegment& pathSegment);
 
  private:

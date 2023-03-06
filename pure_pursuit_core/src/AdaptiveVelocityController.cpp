@@ -32,7 +32,6 @@ bool AdaptiveVelocityController::computeVelocity() {
       break;
     }
   }
-
   // should be path integral strictly speaking
   const double distanceToGoal = (currentRobotState_.pose_.position_ - currentPathSegment_.point_.back().position_).norm();
   const double dWhenBrakingStarts = parameters_.distanceToGoalWhenBrakingStarts_;
@@ -69,6 +68,19 @@ void AdaptiveVelocityController::setParameters(const AdaptiveVelocityControllerP
 
 void AdaptiveVelocityController::updateCurrentPathSegment(const PathSegment& pathSegment) {
   BASE::updateCurrentPathSegment(pathSegment);
+  //  rateLimiter_.reset(0.0);
+}
+
+void AdaptiveVelocityController::updateDrivingDirection(DrivingDirection drivingDirection) {
+  BASE::updateDrivingDirection(drivingDirection);
+}
+
+bool AdaptiveVelocityController::reset() {
+  BASE::reset();
+  resetRateLimiter();
+}
+
+void AdaptiveVelocityController::resetRateLimiter() {
   rateLimiter_.reset(0.0);
 }
 
