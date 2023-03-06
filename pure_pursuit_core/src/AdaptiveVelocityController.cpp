@@ -11,16 +11,13 @@
 
 namespace pure_pursuit {
 
-
-std::string AdaptiveVelocityControllerParameters::asString() const{
-	std::string ret;
-	ret += "desired velocity (m/s): " + std::to_string(desiredVelocity_) + "\n";
-	ret += "distance to goal when braking starts (m): "
-			+ std::to_string(distanceToGoalWhenBrakingStarts_) + "\n";
-	ret += "max velocity rate of change (m/s2): "
-			+ std::to_string(maxVelocityRateOfChange_) + "\n";
-	ret += "timestep (sec): " + std::to_string(timestep_);
-	return ret;
+std::string AdaptiveVelocityControllerParameters::asString() const {
+  std::string ret;
+  ret += "desired velocity (m/s): " + std::to_string(desiredVelocity_) + "\n";
+  ret += "distance to goal when braking starts (m): " + std::to_string(distanceToGoalWhenBrakingStarts_) + "\n";
+  ret += "max velocity rate of change (m/s2): " + std::to_string(maxVelocityRateOfChange_) + "\n";
+  ret += "timestep (sec): " + std::to_string(timestep_);
+  return ret;
 }
 
 bool AdaptiveVelocityController::computeVelocity() {
