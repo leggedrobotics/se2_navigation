@@ -7,26 +7,18 @@
 
 #pragma once
 
-#include "se2_navigation_msgs/ControllerCommandMsg.h"
 #include <ros/console.h>
+#include "se2_navigation_msgs/ControllerCommandMsg.h"
 
 namespace se2_navigation_msgs {
 
-struct ControllerCommand
-{
-  enum class Command
-    : int
-    {
-      StartTracking,
-    StopTracking,
-    NumCommands
-  };
+struct ControllerCommand {
+  enum class Command : int { StartTracking, StopTracking, NumCommands };
 
   Command command_;
 };
 
-inline ControllerCommandMsg convert(const ControllerCommand& msg)
-{
+inline ControllerCommandMsg convert(const ControllerCommand& msg) {
   ControllerCommandMsg rosMsg;
 
   rosMsg.command = static_cast<int>(msg.command_);
@@ -34,8 +26,7 @@ inline ControllerCommandMsg convert(const ControllerCommand& msg)
   return rosMsg;
 }
 
-inline ControllerCommand convert(const ControllerCommandMsg& rosMsg)
-{
+inline ControllerCommand convert(const ControllerCommandMsg& rosMsg) {
   ControllerCommand msg;
 
   switch (rosMsg.command) {
@@ -51,9 +42,7 @@ inline ControllerCommand convert(const ControllerCommandMsg& rosMsg)
     default: {
       ROS_ERROR_STREAM("se2 Controller: unknown controller command: " << rosMsg.command);
       throw std::runtime_error("se2 Controller: unknown controller command");
-
     }
-
   }
 
   return msg;

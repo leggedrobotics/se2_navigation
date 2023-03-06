@@ -1,18 +1,18 @@
 <?xml version="1.0"?>
 <package format="2">
-	<name>pure_pursuit_ros</name>
-	<version>0.1.0</version>
-	<description>Pure pursuit controller.</description>
-	<maintainer email="jelavice@ethz.ch">Edo Jelavic</maintainer>
-	<license>BSD</license>
+    <name>pure_pursuit_ros</name>
+    <version>0.1.0</version>
+    <description>Pure pursuit controller.</description>
+    <maintainer email="jelavice@ethz.ch">Edo Jelavic</maintainer>
+    <license>BSD</license>
 
-	<buildtool_depend>catkin</buildtool_depend>
-	
-	<depend>roscpp</depend>
-	<depend>eigen</depend>
-	<depend>pure_pursuit_core</depend>
-	<depend>yaml-cpp</depend>
-	<depend>se2_visualization_ros</depend>
-	<depend>dynamic_reconfigure</depend>
-	
+    <buildtool_depend>catkin</buildtool_depend>
+
+    <depend>roscpp</depend>
+    <depend>eigen</depend>
+    <depend>pure_pursuit_core</depend>
+    <depend>yaml-cpp</depend>
+    <depend>se2_visualization_ros</depend>
+    <depend>dynamic_reconfigure</depend>
+
 </package>

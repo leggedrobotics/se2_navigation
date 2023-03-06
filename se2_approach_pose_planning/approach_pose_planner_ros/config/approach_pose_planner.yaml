@@ -31,7 +31,7 @@ state_space:
   y_lower: -100.0
   y_upper: 100.0
   turning_radius: 8.0
-  
+
 approach_planner_ros:
   nav_msgs_path_topic: nav_msgs_path
   planning_service_name: approach_pose_planning_service
@@ -49,7 +49,7 @@ planner:
   path_spatial_resolution: 0.05
   ompl_planner: RRTstar # see ompl_planner_creators.hpp for list of available planners
   max_planning_time: 1.0
-  
+
 ompl_planners:
   rrt_star:
     planner_range: 15.0

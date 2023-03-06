@@ -1,11 +1,11 @@
 map:
-  frame_id:                     odom
-  layers:                       [elevation, traversability]
-  default_values:               [0.0, 1.0]
-  resolution:                   0.1
+  frame_id: odom
+  layers: [ elevation, traversability ]
+  default_values: [ 0.0, 1.0 ]
+  resolution: 0.1
   position:
-    x:                          0.0
-    y:                          0.0
-  length:                       20.0  # x dimension
-  width:                        20.0  # y dimension
-  topic:                        grid_map
+    x: 0.0
+    y: 0.0
+  length: 20.0  # x dimension
+  width: 20.0  # y dimension
+  topic: grid_map

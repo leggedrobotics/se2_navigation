@@ -5,31 +5,22 @@
  *      Author: jelavice
  */
 
-
 #pragma once
 
-#include "se2_navigation_msgs/PathSegmentMsg.h"
-#include <vector>
 #include <geometry_msgs/Pose.h>
+#include <vector>
+#include "se2_navigation_msgs/PathSegmentMsg.h"
 
 namespace se2_navigation_msgs {
 
-struct PathSegment
-{
-  enum class DrivingDirection
-    : int
-    {
-      Forward,
-    Backwards,
-    NumDirections
-  };
+struct PathSegment {
+  enum class DrivingDirection : int { Forward, Backwards, NumDirections };
 
-   DrivingDirection direction_;
-   std::vector<geometry_msgs::Pose> points_;
+  DrivingDirection direction_;
+  std::vector<geometry_msgs::Pose> points_;
 };
 
-inline PathSegmentMsg convert(const PathSegment& msg)
-{
+inline PathSegmentMsg convert(const PathSegment& msg) {
   PathSegmentMsg rosMsg;
 
   rosMsg.drivingDirection = static_cast<int>(msg.direction_);
@@ -38,8 +29,7 @@ inline PathSegmentMsg convert(const PathSegment& msg)
   return rosMsg;
 }
 
-inline PathSegment convert(const PathSegmentMsg& rosMsg)
-{
+inline PathSegment convert(const PathSegmentMsg& rosMsg) {
   PathSegment msg;
   using DrivingDirection = PathSegment::DrivingDirection;
 

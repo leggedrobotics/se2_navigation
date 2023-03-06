@@ -6,26 +6,25 @@
  */
 
 #pragma once
-#include <ros/ros.h>
 #include <nav_msgs/Odometry.h>
+#include <ros/ros.h>
+#include "car_demo/PIDController.hpp"
+#include "prius_msgs/PriusControl.hpp"
+#include "se2_navigation_msgs/Path.hpp"
 #include "se2_navigation_msgs/RequestCurrentStateSrv.h"
 #include "se2_navigation_msgs/SendControllerCommandSrv.h"
-#include "se2_navigation_msgs/Path.hpp"
-#include "prius_msgs/PriusControl.hpp"
-#include "car_demo/PIDController.hpp"
 
 namespace pure_pursuit {
-  class PathTracker;
-  class Path;
-}
+class PathTracker;
+class Path;
+}  // namespace pure_pursuit
 
 namespace car_demo {
 
-
 class PriusControllerRos {
-
   using CurrentStateService = se2_navigation_msgs::RequestCurrentStateSrv;
   using ControllerCommandService = se2_navigation_msgs::SendControllerCommandSrv;
+
  public:
   PriusControllerRos(ros::NodeHandlePtr nh);
   virtual ~PriusControllerRos(); /* = default(), defined in cpp file*/
@@ -34,18 +33,18 @@ class PriusControllerRos {
 
  private:
   void update();
-  void translateCommands(double longitudinalSpeed, double steeringAngle, prius_msgs::PriusControl *ctrl);
-  void translateGear(double longitudinalSpeed, prius_msgs::PriusControl *ctrl) const;
-  void translateVelocity(double desiredVelocityMagnitude, prius_msgs::PriusControl *ctrl);
+  void translateCommands(double longitudinalSpeed, double steeringAngle, prius_msgs::PriusControl* ctrl);
+  void translateGear(double longitudinalSpeed, prius_msgs::PriusControl* ctrl) const;
+  void translateVelocity(double desiredVelocityMagnitude, prius_msgs::PriusControl* ctrl);
   void createPathTrackerAndLoadParameters();
   void loadPIDParameters();
-  void publishControl(const prius_msgs::PriusControl &ctrl) const;
+  void publishControl(const prius_msgs::PriusControl& ctrl) const;
   void initRos();
-  void priusStateCallback(const nav_msgs::Odometry &odometry);
-  void pathCallback(const se2_navigation_msgs::PathMsg &pathMsg);
+  void priusStateCallback(const nav_msgs::Odometry& odometry);
+  void pathCallback(const se2_navigation_msgs::PathMsg& pathMsg);
   void stopTracking();
-  bool currentStateRequestService(CurrentStateService::Request &req, CurrentStateService::Response &res );
-  bool controllerCommandService(ControllerCommandService::Request &req, ControllerCommandService::Response &res );
+  bool currentStateRequestService(CurrentStateService::Request& req, CurrentStateService::Response& res);
+  bool controllerCommandService(ControllerCommandService::Request& req, ControllerCommandService::Response& res);
 
   void processStartTrackingCommand();
   void processAbortTrackingCommand();
@@ -70,9 +69,8 @@ class PriusControllerRos {
   std::unique_ptr<pure_pursuit::PathTracker> pathTracker_;
   PIDController pidController_;
   se2_navigation_msgs::Path currentPath_;
-
 };
 
-double longitudinalVelocity(const nav_msgs::Odometry &odom);
-void convert(se2_navigation_msgs::Path &path, pure_pursuit::Path *out);
+double longitudinalVelocity(const nav_msgs::Odometry& odom);
+void convert(se2_navigation_msgs::Path& path, pure_pursuit::Path* out);
 } /* namespace car_demo*/

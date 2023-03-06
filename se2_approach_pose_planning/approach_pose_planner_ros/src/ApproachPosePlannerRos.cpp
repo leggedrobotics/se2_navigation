@@ -174,8 +174,8 @@ void ApproachPosePlannerRos::setParameters(const ApproachPosePlannerRosParam& pa
   ApproachPosePlanner::setParameters(parameters);
 }
 
-const ApproachPosePlannerRosParam &ApproachPosePlannerRos::getParameters() const{
-	return parameters_;
+const ApproachPosePlannerRosParam& ApproachPosePlannerRos::getParameters() const {
+  return parameters_;
 }
 
 void ApproachPosePlannerRos::publishPath() const {

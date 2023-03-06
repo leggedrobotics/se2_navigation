@@ -101,7 +101,7 @@ config/rviz
 
   Sets the values in a given circle to the given values for the given layers. For example, you can trigger a map update
   with
-  
+
       rosservice call /se2_grid_map_generator_node/addCircularObstacle "obstacle:
         circle:
           center:
@@ -134,7 +134,8 @@ config/rviz
 
 * **`saveMap`** ([se2_grid_map_generator_msgs/resetMap] )
 
-  Saves the map to file provided in the field *filepath*. If the string *filepath* is left empy the map will be saved in the default path *se2_grid_map_generator/data/generated_grid_map.bag*.
+  Saves the map to file provided in the field *filepath*. If the string *filepath* is left empy the map will be saved in
+  the default path *se2_grid_map_generator/data/generated_grid_map.bag*.
 
 #### Published Topics
 

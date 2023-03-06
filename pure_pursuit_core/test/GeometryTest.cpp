@@ -9,23 +9,21 @@
 
 // Math
 #include <cmath>
-#include "test_helpers.hpp"
 #include "pure_pursuit_core/math.hpp"
+#include "test_helpers.hpp"
 
 namespace ppt = pure_pursuit_test;
 namespace pp = pure_pursuit;
 using SolutionCase = pp::Intersection::SolutionCase;
 
-template<typename T>
-int toInt(T t)
-{
+template <typename T>
+int toInt(T t) {
   return static_cast<int>(t);
 }
 
 constexpr unsigned int numCasesPerTest = 2000;
 
-TEST(Geoemtry, CircleValid)
-{
+TEST(Geoemtry, CircleValid) {
   const int seed = ppt::seedRndGenerator();
   for (unsigned int i = 0; i < numCasesPerTest; ++i) {
     const auto circle = ppt::createRandomCircle();
@@ -39,8 +37,7 @@ TEST(Geoemtry, CircleValid)
   }
 }
 
-TEST(Geoemtry, PointOutsideCircle)
-{
+TEST(Geoemtry, PointOutsideCircle) {
   const int seed = ppt::seedRndGenerator();
   for (unsigned int i = 0; i < numCasesPerTest; ++i) {
     const auto circle = ppt::createRandomCircle();
@@ -54,8 +51,7 @@ TEST(Geoemtry, PointOutsideCircle)
   }
 }
 
-TEST(Geoemtry, PointInsideCircle)
-{
+TEST(Geoemtry, PointInsideCircle) {
   const int seed = ppt::seedRndGenerator();
   for (unsigned int i = 0; i < numCasesPerTest; ++i) {
     const auto circle = ppt::createRandomCircle();
@@ -69,8 +65,7 @@ TEST(Geoemtry, PointInsideCircle)
   }
 }
 
-TEST(Geoemtry, PerpendicularVector)
-{
+TEST(Geoemtry, PerpendicularVector) {
   const int seed = ppt::seedRndGenerator();
   for (unsigned int i = 0; i < numCasesPerTest; ++i) {
     ppt::Line l;
@@ -88,8 +83,7 @@ TEST(Geoemtry, PerpendicularVector)
   }
 }
 
-TEST(Geometry, CircleIntersection_0)
-{
+TEST(Geometry, CircleIntersection_0) {
   const int seed = ppt::seedRndGenerator();
   for (unsigned int i = 0; i < numCasesPerTest; ++i) {
     const auto circle = ppt::createRandomCircle();
@@ -106,15 +100,13 @@ TEST(Geometry, CircleIntersection_0)
   }
 }
 
-TEST(Geometry, CircleIntersection_1)
-{
-  const int seed = 558104554;  //ppt::seedRndGenerator();
+TEST(Geometry, CircleIntersection_1) {
+  const int seed = 558104554;  // ppt::seedRndGenerator();
   for (unsigned int i = 0; i < numCasesPerTest; ++i) {
     const auto circle = ppt::createRandomCircle();
     const auto line = ppt::createRandomLineWitOneIntersection(circle);
-    const bool atLeastOnePointAtcircleRadiusDistance = pp::isClose(
-        (line.p1_ - circle.center_).norm(), circle.r_)
-        || pp::isClose((line.p2_ - circle.center_).norm(), circle.r_);
+    const bool atLeastOnePointAtcircleRadiusDistance =
+        pp::isClose((line.p1_ - circle.center_).norm(), circle.r_) || pp::isClose((line.p2_ - circle.center_).norm(), circle.r_);
     EXPECT_TRUE(atLeastOnePointAtcircleRadiusDistance);
     pp::Intersection intersection;
     pp::computeIntersection(line, circle, &intersection);
@@ -126,8 +118,7 @@ TEST(Geometry, CircleIntersection_1)
   }
 }
 
-TEST(Geometry, CircleIntersection_2)
-{
+TEST(Geometry, CircleIntersection_2) {
   const int seed = ppt::seedRndGenerator();
   for (unsigned int i = 0; i < numCasesPerTest; ++i) {
     const auto circle = ppt::createRandomCircle();
@@ -142,8 +133,7 @@ TEST(Geometry, CircleIntersection_2)
   }
 }
 
-TEST(Geometry, DesiredHeadingForward)
-{
+TEST(Geometry, DesiredHeadingForward) {
   using DrivingDirection = pp::DrivingDirection;
   const int seed = ppt::seedRndGenerator();
   std::uniform_real_distribution<double> yawDist(-M_PI, M_PI);
@@ -160,8 +150,7 @@ TEST(Geometry, DesiredHeadingForward)
   }
 }
 
-TEST(Geometry, DesiredHeadingReverse)
-{
+TEST(Geometry, DesiredHeadingReverse) {
   using DrivingDirection = pp::DrivingDirection;
   const int seed = ppt::seedRndGenerator();
   std::uniform_real_distribution<double> yawDist(-M_PI, M_PI);
@@ -178,8 +167,7 @@ TEST(Geometry, DesiredHeadingReverse)
   }
 }
 
-TEST(Geometry, IsPastLastPoint)
-{
+TEST(Geometry, IsPastLastPoint) {
   using PathPoint = pp::PathPoint;
   const int seed = ppt::seedRndGenerator();
   pp::PathSegment segment;
@@ -187,10 +175,10 @@ TEST(Geometry, IsPastLastPoint)
   EXPECT_THROW(pp::isPastLastPoint(segment, ppt::createRandomPoint()), std::runtime_error);
   segment.point_.resize(2);
   EXPECT_NO_THROW(pp::isPastLastPoint(segment, ppt::createRandomPoint()));
-  segment.point_ = {PathPoint(-1.0,0.0), PathPoint(0.0,0.0)};
+  segment.point_ = {PathPoint(-1.0, 0.0), PathPoint(0.0, 0.0)};
   for (unsigned int i = 0; i < numCasesPerTest; ++i) {
     const PathPoint queryPoint(ppt::createRandomPoint());
-    if (queryPoint.position_.x() > 0.0){
+    if (queryPoint.position_.x() > 0.0) {
       EXPECT_TRUE(pp::isPastLastPoint(segment, queryPoint.position_));
     } else {
       EXPECT_FALSE(pp::isPastLastPoint(segment, queryPoint.position_));
@@ -201,9 +189,7 @@ TEST(Geometry, IsPastLastPoint)
   }
 }
 
-
-TEST(Geometry, CoarseWaypoints1)
-{
+TEST(Geometry, CoarseWaypoints1) {
   /* this test addresses the ISSUE #3
    * https://github.com/leggedrobotics/se2_navigation/issues/3
    */
@@ -212,25 +198,23 @@ TEST(Geometry, CoarseWaypoints1)
   robotState.pose_ = RobotPose(-7.52288223073, 0.383239928729, 0.5042049);
   PathSegment pathSegment;
   pathSegment.drivingDirection_ = DrivingDirection::FWD;
-  pathSegment.point_.push_back(PathPoint(-9.64970568409, 0.036127697624)); // 0
-  pathSegment.point_.push_back(PathPoint(-6.11220568409, 2.16112769762)); // 1
-  pathSegment.point_.push_back(PathPoint(0.0, 5.0)); // 2
-  pathSegment.point_.push_back(PathPoint(6.11220568409, 2.16112769762)); // 3
-  pathSegment.point_.push_back(PathPoint(9.64970568409, 0.036127697624)); // 4
-  pathSegment.point_.push_back(PathPoint(13.9358333817, -2.53857798646)); // 5
+  pathSegment.point_.push_back(PathPoint(-9.64970568409, 0.036127697624));  // 0
+  pathSegment.point_.push_back(PathPoint(-6.11220568409, 2.16112769762));   // 1
+  pathSegment.point_.push_back(PathPoint(0.0, 5.0));                        // 2
+  pathSegment.point_.push_back(PathPoint(6.11220568409, 2.16112769762));    // 3
+  pathSegment.point_.push_back(PathPoint(9.64970568409, 0.036127697624));   // 4
+  pathSegment.point_.push_back(PathPoint(13.9358333817, -2.53857798646));   // 5
   const double lookaheadDistance = 2.5;
   appendPointAlongFinalApproachDirection(5.0 * lookaheadDistance, &pathSegment);
-  unsigned int closerPointId=0, fartherPointId=0;
-  const Point anchorPoint(-7.08510279935,0.624795656177 );
-
+  unsigned int closerPointId = 0, fartherPointId = 0;
+  const Point anchorPoint(-7.08510279935, 0.624795656177);
 
   findIdsOfTwoPointsDefiningALine(robotState, pathSegment, anchorPoint, 0, lookaheadDistance, &closerPointId, &fartherPointId);
-  EXPECT_EQ(closerPointId,1);
-  EXPECT_EQ(fartherPointId,2);
+  EXPECT_EQ(closerPointId, 1);
+  EXPECT_EQ(fartherPointId, 2);
 }
 
-TEST(Geometry, CoarseWaypoints2)
-{
+TEST(Geometry, CoarseWaypoints2) {
   /* this test addresses the ISSUE #3
    * https://github.com/leggedrobotics/se2_navigation/issues/3
    */
@@ -239,19 +223,18 @@ TEST(Geometry, CoarseWaypoints2)
   robotState.pose_ = RobotPose(2.25228492629, 4.33692721322, -0.2410715);
   PathSegment pathSegment;
   pathSegment.drivingDirection_ = DrivingDirection::FWD;
-  pathSegment.point_.push_back(PathPoint(-9.64970568409, 0.036127697624)); // 0
-  pathSegment.point_.push_back(PathPoint(-6.11220568409, 2.16112769762)); // 1
-  pathSegment.point_.push_back(PathPoint(0.0, 5.0)); // 2
-  pathSegment.point_.push_back(PathPoint(6.11220568409, 2.16112769762)); // 3
-  pathSegment.point_.push_back(PathPoint(9.64970568409, 0.036127697624)); // 4
-  pathSegment.point_.push_back(PathPoint(13.9358333817, -2.53857798646)); // 5
+  pathSegment.point_.push_back(PathPoint(-9.64970568409, 0.036127697624));  // 0
+  pathSegment.point_.push_back(PathPoint(-6.11220568409, 2.16112769762));   // 1
+  pathSegment.point_.push_back(PathPoint(0.0, 5.0));                        // 2
+  pathSegment.point_.push_back(PathPoint(6.11220568409, 2.16112769762));    // 3
+  pathSegment.point_.push_back(PathPoint(9.64970568409, 0.036127697624));   // 4
+  pathSegment.point_.push_back(PathPoint(13.9358333817, -2.53857798646));   // 5
   const double lookaheadDistance = 2.5;
   appendPointAlongFinalApproachDirection(5.0 * lookaheadDistance, &pathSegment);
-  unsigned int closerPointId=0, fartherPointId=0;
-  const Point anchorPoint(2.737826287315, 4.21755558031 );
-
+  unsigned int closerPointId = 0, fartherPointId = 0;
+  const Point anchorPoint(2.737826287315, 4.21755558031);
 
   findIdsOfTwoPointsDefiningALine(robotState, pathSegment, anchorPoint, 0, lookaheadDistance, &closerPointId, &fartherPointId);
-  EXPECT_EQ(closerPointId,2);
-  EXPECT_EQ(fartherPointId,3);
+  EXPECT_EQ(closerPointId, 2);
+  EXPECT_EQ(fartherPointId, 3);
 }
