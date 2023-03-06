@@ -50,7 +50,9 @@ se2_navigation_msgs::Path convert(const ReedsSheppPath& path) {
         return DrivingDirection::Forward;
       case ReedsSheppPathSegment::Direction::BCK:
         return DrivingDirection::Backwards;
-      default: { throw std::runtime_error("Unknown conversion"); }
+      default: {
+        throw std::runtime_error("Unknown conversion");
+      }
     }
   };
 

@@ -27,7 +27,9 @@ ompl::base::PlannerPtr createPlanner(const ompl::base::SpaceInformationPtr& si, 
     case OmplPlanners::BITstar: {
       return ompl::base::PlannerPtr(new ompl::geometric::BITstar(si));
     }
-    default: { throw std::runtime_error("Unknkown planner type"); }
+    default: {
+      throw std::runtime_error("Unknkown planner type");
+    }
   }
 }
 
@@ -49,7 +51,9 @@ void setPlannerParameters(const OmplPlannerParameters& params, OmplPlanners type
       // do nothing
       break;
     }
-    default: { throw std::runtime_error("Unknkown planner type"); }
+    default: {
+      throw std::runtime_error("Unknkown planner type");
+    }
   }
 }
 
