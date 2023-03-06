@@ -1,0 +1,5 @@
+# Request
+PathRequestMsg 		pathRequest                          # Query, maybe useful for the future
+---
+# Response
+bool status

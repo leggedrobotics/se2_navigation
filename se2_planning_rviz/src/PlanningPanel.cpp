@@ -371,8 +371,6 @@ void PlanningPanel::callPlanningService() {
       serviceCallResult = callService(req, res, service_name);
     } else {  // else do just regular planning
       se2_navigation_msgs::RequestPathSrv::Request req;
-      req.pathRequest.goalPose = goalPose;
-      req.pathRequest.startingPose = startingPose;
       se2_navigation_msgs::RequestPathSrv::Response res;
       serviceCallResult = callService(req, res, service_name);
     }
