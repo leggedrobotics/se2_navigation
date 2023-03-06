@@ -68,7 +68,8 @@ AdaptiveVelocityControllerParameters loadAdaptiveVelocityControllerParameters(co
   AdaptiveVelocityControllerParameters parameters;
   parameters.desiredVelocity_ = node["nominal_velocity"].as<double>();
   parameters.maxVelocityRateOfChange_ = node["max_rate_of_change"].as<double>();
-  parameters.distanceToGoalWhenBrakingStarts_ = node["distance_when_braking_starts"].as<double>();
+  parameters.distanceToGoalWhenBrakingStarts_ =
+      0.5 * parameters.desiredVelocity_ * parameters.desiredVelocity_ / parameters.maxVelocityRateOfChange_;
 
   return parameters;
 }
