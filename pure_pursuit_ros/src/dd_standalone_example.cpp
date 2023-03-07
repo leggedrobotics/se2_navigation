@@ -5,19 +5,16 @@
  *      Author: jelavice
  */
 
-
-
 #include <ros/ros.h>
 
 #include <dynamic_reconfigure/server.h>
 #include <pure_pursuit_ros/PurePursuitConfig.h>
 
-void callback(pure_pursuit_ros::PurePursuitConfig &config, uint32_t level) {
-	  ROS_INFO("Reconfigure Request: \n LookaheadDistance: %f ",
-	             config.lookahead_fwd);
+void callback(pure_pursuit_ros::PurePursuitConfig& config, uint32_t level) {
+  ROS_INFO("Reconfigure Request: \n LookaheadDistance: %f ", config.lookahead_fwd);
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
   ros::init(argc, argv, "dd_standalone_example");
 
   boost::recursive_mutex ddMutex;
@@ -34,7 +31,6 @@ int main(int argc, char **argv) {
   server.updateConfig(dummyCfg);
   ros::spinOnce();
   ROS_INFO("Now the lookahead_fwd should be %f in the rqt console", dummyCfg.lookahead_fwd);
-
 
   ROS_INFO("Spinning node");
   ros::spin();
