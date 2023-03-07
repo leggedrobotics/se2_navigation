@@ -6,16 +6,14 @@
  */
 
 #pragma once
-#include "prius_msgs/Control.h"
 #include <stdexcept>
+#include "prius_msgs/Control.h"
 
 namespace prius_msgs {
 
-struct PriusControl
-{
-  enum class Gear
-    : int {
-      NO_COMMAND,
+struct PriusControl {
+  enum class Gear : int {
+    NO_COMMAND,
     NEUTRAL,
     FORWARD,
     REVERSE,
@@ -25,16 +23,14 @@ struct PriusControl
   double steer_ = 0.0;
   Gear gear_ = Gear::NEUTRAL;
 
-  inline static PriusControl getFailProofControlCommand()
-  {
+  inline static PriusControl getFailProofControlCommand() {
     prius_msgs::PriusControl failproofCtrl;
     failproofCtrl.brake_ = 0.5;
     return failproofCtrl;
   }
 };
 
-inline PriusControl convert(const Control &rosMsg)
-{
+inline PriusControl convert(const Control& rosMsg) {
   PriusControl ctrlMsg;
 
   ctrlMsg.brake_ = rosMsg.brake;
@@ -66,8 +62,7 @@ inline PriusControl convert(const Control &rosMsg)
   return ctrlMsg;
 }
 
-inline Control convert(const PriusControl &msg)
-{
+inline Control convert(const PriusControl& msg) {
   Control rosMsg;
 
   rosMsg.brake = msg.brake_;

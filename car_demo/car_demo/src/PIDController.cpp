@@ -6,60 +6,49 @@
  */
 #include "car_demo/PIDController.hpp"
 
-#include <algorithm>
 #include <yaml-cpp/yaml.h>
+#include <algorithm>
 
 namespace car_demo {
 
-PIDController::PIDController()
-    : PIDController(10.0, 1.0, 0.0, 0.0)
-{
-}
+PIDController::PIDController() : PIDController(10.0, 1.0, 0.0, 0.0) {}
 
-PIDController::PIDController(const double maxEffort, const double kp, const double ki,
-                             const double kd, const double maxIntegratorInput,
+PIDController::PIDController(const double maxEffort, const double kp, const double ki, const double kd, const double maxIntegratorInput,
                              const double integratorSaturation)
     : kp_(kp),
       ki_(ki),
       kd_(kd),
       maxEffort_(maxEffort),
       maxIntegratorInput_(maxIntegratorInput),
-      integratorSaturation_(integratorSaturation)
-{
+      integratorSaturation_(integratorSaturation) {
   if (integratorSaturation == std::numeric_limits<double>::infinity()) {
     integratorSaturation_ = maxEffort;
   }
 }
 
-void PIDController::setGains(const double kp, const double ki, const double kd)
-{
+void PIDController::setGains(const double kp, const double ki, const double kd) {
   setKp(kp);
   setKi(ki);
   setKd(kd);
 }
 
-void PIDController::reset()
-{
+void PIDController::reset() {
   previousMeasured_ = 0.0;
   integral_ = 0.0;
 }
 
-double PIDController::update(const double dt, const double desired, const double measured)
-{
+double PIDController::update(const double dt, const double desired, const double measured) {
   const double measuredDerivative = (measured - previousMeasured_) / dt;
   return update(dt, desired, measured, 0.0, measuredDerivative);
 }
 
-double PIDController::update(const double dt, const double desired, const double measured,
-                             const double desiredDerivative)
-{
+double PIDController::update(const double dt, const double desired, const double measured, const double desiredDerivative) {
   const double measuredDerivative = (measured - previousMeasured_) / dt;
   return update(dt, desired, measured, desiredDerivative, measuredDerivative);
 }
 
-double PIDController::update(const double dt, const double desired, const double measured,
-                             const double desiredDerivative, const double measuredDerivative)
-{
+double PIDController::update(const double dt, const double desired, const double measured, const double desiredDerivative,
+                             const double measuredDerivative) {
   double out = 0.0;
   const double error = desired - measured;
   const double derivative = desiredDerivative - measuredDerivative;
@@ -79,8 +68,7 @@ double PIDController::update(const double dt, const double desired, const double
   return out;
 }
 
-PIDControllerParameters loadParameters(const std::string &filename)
-{
+PIDControllerParameters loadParameters(const std::string& filename) {
   YAML::Node basenode = YAML::LoadFile(filename);
 
   if (basenode.IsNull()) {
@@ -94,7 +82,6 @@ PIDControllerParameters loadParameters(const std::string &filename)
   parameters.ki_ = node["ki"].as<double>();
 
   return parameters;
-
 }
 
-}  // namespace basic_controllers
+}  // namespace car_demo

@@ -5,13 +5,11 @@
  *      Author: jelavice
  */
 
-
 #include <ros/ros.h>
 #include "car_demo/PriusControllerRos.hpp"
 
 using namespace car_demo;
 int main(int argc, char** argv) {
-
   ros::init(argc, argv, "prius_controller_node");
   ros::NodeHandlePtr nh(new ros::NodeHandle("~"));
   PriusControllerRos controller(nh);
@@ -20,7 +18,7 @@ int main(int argc, char** argv) {
 
   sleep(2.0);
   ros::Rate r(frequency);
-  while (ros::ok()){
+  while (ros::ok()) {
     controller.advance();
     ros::spinOnce();
     r.sleep();
@@ -28,5 +26,3 @@ int main(int argc, char** argv) {
 
   return 0;
 }
-
-

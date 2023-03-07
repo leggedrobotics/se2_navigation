@@ -9,16 +9,15 @@
 
 // Math
 #include <cmath>
-#include "se2_planning/GridMapStateValidator.hpp"
-#include "test_helpers.hpp"
 #include "grid_map_core/GridMap.hpp"
 #include "grid_map_core/iterators/GridMapIterator.hpp"
+#include "se2_planning/GridMapStateValidator.hpp"
+#include "test_helpers.hpp"
 
 namespace test = se2_planning_test;
 const std::string testLayer = "occupancy";
 
-se2_planning::SE2state randomState(const grid_map::GridMap &gm, double margin)
-{
+se2_planning::SE2state randomState(const grid_map::GridMap& gm, double margin) {
   se2_planning::SE2state s;
   const double l = gm.getLength()(0) / 2.0 - margin;
   const double w = gm.getLength()(1) / 2.0 - margin;
@@ -28,9 +27,7 @@ se2_planning::SE2state randomState(const grid_map::GridMap &gm, double margin)
   return s;
 }
 
-TEST(StateValidator, GridMapTest1)
-{
-
+TEST(StateValidator, GridMapTest1) {
   grid_map::GridMap gridMap;
   gridMap.setGeometry(grid_map::Length(20.0, 20.0), 0.1);
   gridMap.add(testLayer, 0.0);
@@ -46,8 +43,7 @@ TEST(StateValidator, GridMapTest1)
     se2_planning::GridMapStateValidator v;
     EXPECT_TRUE(v.isStateValid(se2_planning::SE2state(0.0, 0.0, 0.0)));
   }
-  auto validator = se2_planning::createGridMapStateValidator(
-      gridMap, se2_planning::computeFootprint(1.0, 0.0, 0.5, 0.5), testLayer);
+  auto validator = se2_planning::createGridMapStateValidator(gridMap, se2_planning::computeFootprint(1.0, 0.0, 0.5, 0.5), testLayer);
 
   EXPECT_FALSE(validator->isStateValid(se2_planning::SE2state(0.0, 0.0, 0.0)));
   EXPECT_FALSE(validator->isStateValid(se2_planning::SE2state(1.0, 1.0, 0.0)));
@@ -61,11 +57,9 @@ TEST(StateValidator, GridMapTest1)
 
   EXPECT_TRUE(validator->isStateValid(se2_planning::SE2state(-5.0, 5.0, 2.0)));
   EXPECT_TRUE(validator->isStateValid(se2_planning::SE2state(-5.0, 5.0, 3.0)));
-
 }
 
-TEST(StateValidator, GridMapTest2)
-{
+TEST(StateValidator, GridMapTest2) {
   const int seed = 371195984;
   test::rndGenerator.seed(seed);
   const int testCases = 10000;
@@ -80,8 +74,7 @@ TEST(StateValidator, GridMapTest2)
     }
   }
 
-  auto validator = se2_planning::createGridMapStateValidator(
-      gridMap, se2_planning::computeFootprint(1.0, 0.0, 0.5, 0.5), testLayer);
+  auto validator = se2_planning::createGridMapStateValidator(gridMap, se2_planning::computeFootprint(1.0, 0.0, 0.5, 0.5), testLayer);
   for (unsigned int i = 0; i < testCases; ++i) {
     const auto s = randomState(gridMap, 2.0);
     if (s.x_ > 1.0 && s.y_ > 1.0) {
@@ -96,6 +89,4 @@ TEST(StateValidator, GridMapTest2)
   if (::testing::Test::HasFailure()) {
     std::cout << "\n Test StateValidator, GridMapTest2 failed with seed: " << seed << std::endl;
   }
-
 }
-

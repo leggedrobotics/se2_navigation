@@ -1,11 +1,9 @@
 #!/usr/bin/env python
 import rospy
-from std_msgs.msg import String,Float64
-import rosservice
-from se2_grid_map_generator_msgs.srv import SaveMap,AddCircularObstacle,AddPolygonObstacle
-from se2_grid_map_generator_msgs.srv import SaveMapRequest,AddCircularObstacleRequest,AddPolygonObstacleRequest
 from se2_grid_map_generator_msgs.msg import CircularObstacle
-
+from se2_grid_map_generator_msgs.srv import SaveMap, AddCircularObstacle
+from se2_grid_map_generator_msgs.srv import SaveMapRequest, AddCircularObstacleRequest
+from std_msgs.msg import String, Float64
 
 addCircObstacleSrvName = "/se2_grid_map_generator_node/addCircularObstacle"
 saveMapSrvName = "/se2_grid_map_generator_node/saveMap"
@@ -18,14 +16,15 @@ def saveMap(filename):
         req.filepath = filename
         saveMapSrv(req)
     except rospy.ServiceException as e:
-        print("Service call failed: %s"%e)
+        print("Service call failed: %s" % e)
 
-def addCircObstacle(x,y,r):
+
+def addCircObstacle(x, y, r):
     try:
         addCircObstacleSrv = rospy.ServiceProxy(addCircObstacleSrvName, AddCircularObstacle)
-        circObstacle  = CircularObstacle()
-        circObstacle.layers = [String('elevation'),String('obstacle')]
-        circObstacle.values = [Float64(1),Float64(1)]
+        circObstacle = CircularObstacle()
+        circObstacle.layers = [String('elevation'), String('obstacle')]
+        circObstacle.values = [Float64(1), Float64(1)]
         circObstacle.circle.radius.data = r
         circObstacle.circle.center.x.data = x
         circObstacle.circle.center.y.data = y
@@ -33,11 +32,11 @@ def addCircObstacle(x,y,r):
         req.obstacle = circObstacle
         addCircObstacleSrv(req)
     except rospy.ServiceException as e:
-        print("Service call failed: %s"%e)
+        print("Service call failed: %s" % e)
 
 
 rospy.init_node('grid_map_generator')
-#generate some circles
+# generate some circles
 rospy.wait_for_service(addCircObstacleSrvName)
 addCircObstacle(10, 0, 1)
 addCircObstacle(0, 10, 1)

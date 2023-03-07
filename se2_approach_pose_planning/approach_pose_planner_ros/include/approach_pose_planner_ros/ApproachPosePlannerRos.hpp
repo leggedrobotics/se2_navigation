@@ -34,7 +34,7 @@ class ApproachPosePlannerRos : public ApproachPosePlanner {
   void publishApproachPoseCandidates() const;
   void publishTargetPosition() const;
   void publishStartingPose() const;
-  const ApproachPosePlannerRosParam &getParameters() const;
+  const ApproachPosePlannerRosParam& getParameters() const;
 
  private:
   void initRos();

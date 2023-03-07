@@ -7,7 +7,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(SRC_FILES
         src/GridMapGenerator.cpp
-    )
+        )
 
 set(CATKIN_PACKAGE_DEPENDENCIES
         roscpp
@@ -35,8 +35,8 @@ include_directories(
 )
 
 add_library(${PROJECT_NAME}
-            ${SRC_FILES}
-            )
+        ${SRC_FILES}
+        )
 
 add_dependencies(${PROJECT_NAME}
         ${catkin_EXPORTED_TARGETS}

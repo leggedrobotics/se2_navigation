@@ -22,8 +22,6 @@ struct AckermannSteeringCtrlParameters : public HeadingControllerParameters {
   std::string asString() const override;
 };
 
-
-
 class AckermannSteeringController : public HeadingController {
  public:
   AckermannSteeringController() = default;

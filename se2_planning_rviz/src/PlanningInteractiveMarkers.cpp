@@ -39,52 +39,34 @@
 
 namespace se2_planning_rviz {
 
-PlanningInteractiveMarkers::PlanningInteractiveMarkers(const ros::NodeHandle& nh,
-                                                       const std::string &ns)
-    : nh_(nh),
-      marker_server_(ns),
-      frame_id_("map"),
-      initialized_(false)
-{
-}
+PlanningInteractiveMarkers::PlanningInteractiveMarkers(const ros::NodeHandle& nh, const std::string& ns)
+    : nh_(nh), marker_server_(ns), frame_id_("map"), initialized_(false) {}
 
-PlanningInteractiveMarkers::PlanningInteractiveMarkers(const ros::NodeHandle& nh)
-    : PlanningInteractiveMarkers(nh, "planning_markers")
-{
-}
+PlanningInteractiveMarkers::PlanningInteractiveMarkers(const ros::NodeHandle& nh) : PlanningInteractiveMarkers(nh, "planning_markers") {}
 
-void PlanningInteractiveMarkers::setPoseUpdatedCallback(const PoseUpdatedFunctionType& function)
-{
+void PlanningInteractiveMarkers::setPoseUpdatedCallback(const PoseUpdatedFunctionType& function) {
   pose_updated_function_ = function;
 }
 
-void PlanningInteractiveMarkers::setFrameId(const std::string& frame_id)
-{
+void PlanningInteractiveMarkers::setFrameId(const std::string& frame_id) {
   frame_id_ = frame_id;
   set_pose_marker_.header.frame_id = frame_id_;
   marker_prototype_arrow_.header.frame_id = frame_id_;
 }
 
-void PlanningInteractiveMarkers::initialize(const se2_visualization_ros::Color &start_goal_color,
-                                            const double scale)
-{
-
+void PlanningInteractiveMarkers::initialize(const se2_visualization_ros::Color& start_goal_color, const double scale) {
   createArrowMarkers(start_goal_color, scale);
   createCylinderMarkers(start_goal_color, scale);
   initialized_ = true;
 }
 
-void PlanningInteractiveMarkers::initialize()
-{
+void PlanningInteractiveMarkers::initialize() {
   createArrowMarkers(se2_visualization_ros::Color::Pink(), 1.0);
   createCylinderMarkers(se2_visualization_ros::Color::Pink(), 1.0);
   initialized_ = true;
 }
 
-void PlanningInteractiveMarkers::createArrowMarkers(se2_visualization_ros::Color start_goal_color,
-                                                    const double scale)
-{
-
+void PlanningInteractiveMarkers::createArrowMarkers(se2_visualization_ros::Color start_goal_color, const double scale) {
   // First we set up the set point marker.
   set_pose_marker_.header.frame_id = frame_id_;
   set_pose_marker_.name = "set_pose";
@@ -143,16 +125,14 @@ void PlanningInteractiveMarkers::createArrowMarkers(se2_visualization_ros::Color
   control.orientation.w = 1.0;
   control.interaction_mode = visualization_msgs::InteractiveMarkerControl::NONE;
   auto getArrow = [&start_goal_color, &scale]() {
-
     visualization_msgs::Marker default_marker;
     default_marker.type = visualization_msgs::Marker::ARROW;
     default_marker.color = start_goal_color;
-    default_marker.scale.x = 0.8 *scale;
-    default_marker.scale.y = 0.25*scale;
-    default_marker.scale.z = 0.25*scale;
+    default_marker.scale.x = 0.8 * scale;
+    default_marker.scale.y = 0.25 * scale;
+    default_marker.scale.z = 0.25 * scale;
     default_marker.pose.position.x = -0.4 * scale;
     return default_marker;
-
   };
   control.markers.push_back(getArrow());
   control.always_visible = true;
@@ -183,18 +163,14 @@ void PlanningInteractiveMarkers::createArrowMarkers(se2_visualization_ros::Color
   control.markers.push_back(text_marker);
 
   marker_prototype_arrow_.controls.push_back(control);
-
 }
 
-void PlanningInteractiveMarkers::createCylinderMarkers(
-    se2_visualization_ros::Color start_goal_color, const double scale)
-{
-
+void PlanningInteractiveMarkers::createCylinderMarkers(se2_visualization_ros::Color start_goal_color, const double scale) {
   // First we set up the set point marker.
-//  set_pose_marker_.header.frame_id = frame_id_;
-//  set_pose_marker_.name = "set_pose";
-//  set_pose_marker_.scale = scale;
-//  set_pose_marker_.controls.clear();
+  //  set_pose_marker_.header.frame_id = frame_id_;
+  //  set_pose_marker_.name = "set_pose";
+  //  set_pose_marker_.scale = scale;
+  //  set_pose_marker_.controls.clear();
 
   constexpr double kSqrt2Over2 = sqrt(2.0) / 2.0;
 
@@ -211,15 +187,15 @@ void PlanningInteractiveMarkers::createCylinderMarkers(
   visualization_msgs::Marker default_marker;
   default_marker.type = visualization_msgs::Marker::CYLINDER;
   default_marker.color = start_goal_color;
-  default_marker.scale.x = 0.15* scale;
-  default_marker.scale.y = 0.15* scale;
-  default_marker.scale.z = 1.0* scale;
-  default_marker.pose.position.z = 0.3*scale;
+  default_marker.scale.x = 0.15 * scale;
+  default_marker.scale.y = 0.15 * scale;
+  default_marker.scale.z = 1.0 * scale;
+  default_marker.pose.position.z = 0.3 * scale;
   control.markers.push_back(default_marker);
   visualization_msgs::Marker text_marker;
   text_marker.type = visualization_msgs::Marker::TEXT_VIEW_FACING;
   text_marker.scale.z = 0.5;
-  text_marker.pose.position.z = 1*scale;
+  text_marker.pose.position.z = 1 * scale;
   text_marker.text = "placeholder";
   text_marker.color = start_goal_color;
   text_marker.id = 1;
@@ -228,35 +204,26 @@ void PlanningInteractiveMarkers::createCylinderMarkers(
   marker_prototype_cylinder_.controls.push_back(control);
 }
 
-void PlanningInteractiveMarkers::enableSetPoseMarker(const geometry_msgs::Pose& state)
-{
-
+void PlanningInteractiveMarkers::enableSetPoseMarker(const geometry_msgs::Pose& state) {
   set_pose_marker_.pose = state;
 
   marker_server_.insert(set_pose_marker_);
-  marker_server_.setCallback(
-      set_pose_marker_.name,
-      boost::bind(&PlanningInteractiveMarkers::processSetPoseFeedback, this, _1));
+  marker_server_.setCallback(set_pose_marker_.name, boost::bind(&PlanningInteractiveMarkers::processSetPoseFeedback, this, _1));
   marker_server_.applyChanges();
 }
 
-void PlanningInteractiveMarkers::disableSetPoseMarker()
-{
+void PlanningInteractiveMarkers::disableSetPoseMarker() {
   marker_server_.erase(set_pose_marker_.name);
   marker_server_.applyChanges();
 }
 
-void PlanningInteractiveMarkers::setPose(const geometry_msgs::Pose& state)
-{
-
+void PlanningInteractiveMarkers::setPose(const geometry_msgs::Pose& state) {
   set_pose_marker_.pose = state;
   marker_server_.setPose(set_pose_marker_.name, set_pose_marker_.pose);
   marker_server_.applyChanges();
 }
 
-void PlanningInteractiveMarkers::processSetPoseFeedback(
-    const visualization_msgs::InteractiveMarkerFeedbackConstPtr& feedback)
-{
+void PlanningInteractiveMarkers::processSetPoseFeedback(const visualization_msgs::InteractiveMarkerFeedbackConstPtr& feedback) {
   if (feedback->event_type == visualization_msgs::InteractiveMarkerFeedback::POSE_UPDATE) {
     if (pose_updated_function_) {
       geometry_msgs::Pose pose;
@@ -268,19 +235,17 @@ void PlanningInteractiveMarkers::processSetPoseFeedback(
   marker_server_.applyChanges();
 }
 
-void PlanningInteractiveMarkers::enableMarker(const std::string& id,
-                                              const geometry_msgs::Pose& state)
-{
-//  std::cerr << "enabling marker: " << id << std::endl;
+void PlanningInteractiveMarkers::enableMarker(const std::string& id, const geometry_msgs::Pose& state) {
+  //  std::cerr << "enabling marker: " << id << std::endl;
 
-//  auto search = marker_map_.find(id);
-//  if (search != marker_map_.end()) {
-//    // Already exists, just update the pose and enable it.
-//    search->second.pose = state;
-//    marker_server_.insert(search->second);
-//    marker_server_.applyChanges();
-//    return;
-//  }
+  //  auto search = marker_map_.find(id);
+  //  if (search != marker_map_.end()) {
+  //    // Already exists, just update the pose and enable it.
+  //    search->second.pose = state;
+  //    marker_server_.insert(search->second);
+  //    marker_server_.applyChanges();
+  //    return;
+  //  }
 
   if (id == "goal") {
     auto marker = (goalMarkerShape_ == MarkerShape::ARROW) ? marker_prototype_arrow_ : marker_prototype_cylinder_;
@@ -293,7 +258,7 @@ void PlanningInteractiveMarkers::enableMarker(const std::string& id,
    * dunno really why, but I need to set the text for all controls
    * otherwise it doesn't dipslay stuff correctly
    */
-  for (auto &control : marker_map_[id].controls) {
+  for (auto& control : marker_map_[id].controls) {
     if (control.markers.size() > 1) {
       control.markers[1].text = id;
     }
@@ -304,34 +269,30 @@ void PlanningInteractiveMarkers::enableMarker(const std::string& id,
   ros::spinOnce();
 }
 
-void PlanningInteractiveMarkers::updateMarkerPose(const std::string& id,
-                                                  const geometry_msgs::Pose& state)
-{
+void PlanningInteractiveMarkers::updateMarkerPose(const std::string& id, const geometry_msgs::Pose& state) {
   auto search = marker_map_.find(id);
   if (search == marker_map_.end()) {
     return;
   }
 
-//  std::cout << "Updating marker pose, id: " << id << std::endl;
-//  printf("State position: xyz: %f, %f, %f \n", state.pose.position.x, state.pose.position.y, state.pose.position.z );
-//  printf("State orientation: xyzw: %f, %f, %f %f \n", state.pose.orientation.x, state.pose.orientation.y, state.pose.orientation.z , state.pose.orientation.w);
+  //  std::cout << "Updating marker pose, id: " << id << std::endl;
+  //  printf("State position: xyz: %f, %f, %f \n", state.pose.position.x, state.pose.position.y, state.pose.position.z );
+  //  printf("State orientation: xyzw: %f, %f, %f %f \n", state.pose.orientation.x, state.pose.orientation.y, state.pose.orientation.z ,
+  //  state.pose.orientation.w);
 
   search->second.pose = state;
   marker_server_.setPose(id, state);
   marker_server_.applyChanges();
 }
 
-void PlanningInteractiveMarkers::disableMarker(const std::string& id)
-{
+void PlanningInteractiveMarkers::disableMarker(const std::string& id) {
   ROS_INFO_STREAM("Disabling marker: " << id);
 
   marker_server_.erase(id);
   marker_server_.applyChanges();
 }
 
-visualization_msgs::InteractiveMarker *PlanningInteractiveMarkers::GetMarker(const std::string &id)
-{
-
+visualization_msgs::InteractiveMarker* PlanningInteractiveMarkers::GetMarker(const std::string& id) {
   auto search = marker_map_.find(id);
   if (search == marker_map_.end()) {
     return nullptr;
@@ -340,15 +301,13 @@ visualization_msgs::InteractiveMarker *PlanningInteractiveMarkers::GetMarker(con
   return &(search->second);
 }
 
-void PlanningInteractiveMarkers::setMarkerShape(MarkerType type, MarkerShape shape)
-{
-
+void PlanningInteractiveMarkers::setMarkerShape(MarkerType type, MarkerShape shape) {
   switch (type) {
-    case MarkerType::START:{
+    case MarkerType::START: {
       startMarkerShape_ = shape;
       break;
     }
-    case MarkerType::GOAL:{
+    case MarkerType::GOAL: {
       goalMarkerShape_ = shape;
       break;
     }
@@ -356,7 +315,6 @@ void PlanningInteractiveMarkers::setMarkerShape(MarkerType type, MarkerShape sha
     default:
       break;
   }
-
 }
 
 }  // namespace se2_planning_rviz

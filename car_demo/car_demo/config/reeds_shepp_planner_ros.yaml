@@ -1,11 +1,10 @@
-
 state_space:
   x_lower: -100.0
   x_upper: 100.0
   y_lower: -100.0
   y_upper: 100.0
   turning_radius: 10.0
-  
+
 planner_ros:
   nav_msgs_path_topic: ompl_rs_planner_ros/nav_msgs_path
   planning_service_name: ompl_rs_planner_ros/planning_service
@@ -17,7 +16,7 @@ planner:
   path_spatial_resolution: 0.05
   ompl_planner: RRTstar # see ompl_planner_creators.hpp for list of available planners
   max_planning_time: 1.0
-  
+
 ompl_planners:
   rrt_star:
     planner_range: 50.0

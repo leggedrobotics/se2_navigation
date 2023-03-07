@@ -5,39 +5,39 @@ add_definitions(-std=c++11)
 
 
 set(CATKIN_PACKAGE_DEPENDENCIES
-    geometry_msgs
-    std_msgs
-    se2_navigation_msgs
-)
+        geometry_msgs
+        std_msgs
+        se2_navigation_msgs
+        )
 
 find_package(catkin REQUIRED COMPONENTS
-  ${CATKIN_PACKAGE_DEPENDENCIES}
-  message_generation
-)
+        ${CATKIN_PACKAGE_DEPENDENCIES}
+        message_generation
+        )
 
 
-add_message_files( 
-   DIRECTORY 
-     msg
+add_message_files(
+        DIRECTORY
+        msg
 )
 
 add_service_files(
-	DIRECTORY 
-	  srv
+        DIRECTORY
+        srv
 )
 
 generate_messages(
-    DEPENDENCIES
-      ${CATKIN_PACKAGE_DEPENDENCIES}
+        DEPENDENCIES
+        ${CATKIN_PACKAGE_DEPENDENCIES}
 )
 
 catkin_package(
-  CATKIN_DEPENDS
-    ${CATKIN_PACKAGE_DEPENDENCIES}
-    message_runtime
+        CATKIN_DEPENDS
+        ${CATKIN_PACKAGE_DEPENDENCIES}
+        message_runtime
 )
 
 include_directories(
-  ${catkin_INCLUDE_DIRS}
+        ${catkin_INCLUDE_DIRS}
 )
 

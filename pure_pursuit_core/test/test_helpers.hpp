@@ -10,11 +10,9 @@
 #include <random>
 #include "pure_pursuit_core/math.hpp"
 
-
-
 namespace pure_pursuit_test {
 
-using Circle  = pure_pursuit::Circle;
+using Circle = pure_pursuit::Circle;
 using Line = pure_pursuit::Line;
 using Vector = pure_pursuit::Vector;
 using Matrix = pure_pursuit::Matrix;
@@ -28,14 +26,14 @@ constexpr double testPlaneWidth = 100.0;
 
 int seedRndGenerator();
 Circle createRandomCircle();
-Vector createUnitVectorPerpendicularToLine(const Line &line);
-Line createRandomLineWithoutIntersection(const Circle &circle);
-Line createRandomLineWitOneIntersection(const Circle &circle);
-Line createRandomLineWithTwoIntersections(const Circle &circle);
+Vector createUnitVectorPerpendicularToLine(const Line& line);
+Line createRandomLineWithoutIntersection(const Circle& circle);
+Line createRandomLineWitOneIntersection(const Circle& circle);
+Line createRandomLineWithTwoIntersections(const Circle& circle);
 Point createRandomPoint();
-Point createRandomPointOutside( const Circle &circle);
-Point createRandomPointInside( const Circle &circle);
-PathSegment createRandomPathSegment( unsigned int numPoints);
-bool isVectorsColinear(const Vector &v1, const Vector &v2);
+Point createRandomPointOutside(const Circle& circle);
+Point createRandomPointInside(const Circle& circle);
+PathSegment createRandomPathSegment(unsigned int numPoints);
+bool isVectorsColinear(const Vector& v1, const Vector& v2);
 
 } /* namespace pure_pursuit_test */

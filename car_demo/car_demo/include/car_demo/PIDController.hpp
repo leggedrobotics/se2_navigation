@@ -37,12 +37,12 @@ class PIDController {
 
   void setGains(const double kp, const double ki = 0.0, const double kd = 0.0);
 
-  inline void setKp(const double kp) { kp_= kp; }
-  inline void setKi(const double ki) { ki_=ki; }
-  inline void setKd(const double kd) { kd_=kd; }
+  inline void setKp(const double kp) { kp_ = kp; }
+  inline void setKi(const double ki) { ki_ = ki; }
+  inline void setKd(const double kd) { kd_ = kd; }
   inline void setMaxEffort(const double eff) { maxEffort_ = eff; }
-  inline void setMaxIntegratorInput(const double maxIntInput) { maxIntegratorInput_=maxIntInput; }
-  inline void setIntegratorSaturation(const double integratorSaturation) { integratorSaturation_=integratorSaturation; }
+  inline void setMaxIntegratorInput(const double maxIntInput) { maxIntegratorInput_ = maxIntInput; }
+  inline void setIntegratorSaturation(const double integratorSaturation) { integratorSaturation_ = integratorSaturation; }
 
   inline double getKp() const { return kp_; }
   inline double getKi() const { return ki_; }
@@ -51,10 +51,9 @@ class PIDController {
   inline double getMaxIntegratorInput() const { return maxIntegratorInput_; }
   inline double getIntegratorSaturation() const { return integratorSaturation_; }
 
-
  protected:
-  double previousMeasured_=0.0;
-  double integral_=0.0;
+  double previousMeasured_ = 0.0;
+  double integral_ = 0.0;
   double kp_;
   double ki_;
   double kd_;
@@ -63,6 +62,6 @@ class PIDController {
   double integratorSaturation_;
 };
 
-PIDControllerParameters loadParameters(const std::string &filename);
+PIDControllerParameters loadParameters(const std::string& filename);
 
 }  // namespace car_demo

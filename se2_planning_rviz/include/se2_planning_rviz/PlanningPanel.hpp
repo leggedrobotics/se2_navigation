@@ -3,7 +3,6 @@
  *  Institute: ETH Zurich, Robotic Systems Lab
  */
 
-
 /*
 Original by:
 
@@ -43,16 +42,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef Q_MOC_RUN
 #include <ros/ros.h>
 #include <rviz/panel.h>
-#include "se2_planning_rviz/PoseWidget.hpp"
-#include "se2_planning_rviz/PlanningInteractiveMarkers.hpp"
-#include "se2_planning_rviz/EditButton.hpp"
 #include <QCheckBox>
+#include "se2_planning_rviz/EditButton.hpp"
+#include "se2_planning_rviz/PlanningInteractiveMarkers.hpp"
+#include "se2_planning_rviz/PoseWidget.hpp"
 #endif
 
 #include <string>
 
 namespace se2_navigation_msgs {
-  struct ControllerCommand;
+struct ControllerCommand;
 }
 
 class QLineEdit;
@@ -96,8 +95,7 @@ class PlanningPanel : public rviz::Panel {
   void updateGetCurrentStateService();
   void startEditing(const std::string& id);
   void finishEditing(const std::string& id);
-  void widgetPoseUpdated(const std::string& id,
-                         geometry_msgs::Pose& state);
+  void widgetPoseUpdated(const std::string& id, geometry_msgs::Pose& state);
 
   void callPlanningService();
   void callPublishTrackingCommand();
@@ -107,12 +105,12 @@ class PlanningPanel : public rviz::Panel {
   // Set up the layout, only called by the constructor.
   void createLayout();
   void setControllerCommandTopic(const QString& newControllerCommandTopic);
-  void setPathRequestTopic(const QString &newPathRequestTopic);
-  void setGetCurrentStateService(const QString &newCurrentStateService);
+  void setPathRequestTopic(const QString& newPathRequestTopic);
+  void setGetCurrentStateService(const QString& newCurrentStateService);
 
-  void getStartPoseFromWidget(geometry_msgs::Pose *startPoint);
-  void getStartPoseFromService(geometry_msgs::Pose *startPoint);
-  void callSendControllerCommandService(se2_navigation_msgs::ControllerCommand &command) const;
+  void getStartPoseFromWidget(geometry_msgs::Pose* startPoint);
+  void getStartPoseFromService(geometry_msgs::Pose* startPoint);
+  void callSendControllerCommandService(se2_navigation_msgs::ControllerCommand& command) const;
 
   void setShapeOfGoalMarker(const bool isPlanningApproachPose);
 
@@ -128,8 +126,8 @@ class PlanningPanel : public rviz::Panel {
   QPushButton* plan_request_button_;
   QPushButton* tracking_command_button_;
   QPushButton* stop_command_button_;
-  QCheckBox *currentStateAsStartCheckBox_;
-  QCheckBox *approachPosePlanningCheckBox_;
+  QCheckBox* currentStateAsStartCheckBox_;
+  QCheckBox* approachPosePlanningCheckBox_;
 
   // Keep track of all the pose <-> button widgets as they're related:
   std::map<std::string, PoseWidget*> pose_widget_map_;
@@ -146,7 +144,6 @@ class PlanningPanel : public rviz::Panel {
   std::string currently_editing_;
 
   geometry_msgs::Pose lastPose_;
-
 };
 
-}  /*namespce se2_planning_rviz */
+}  // namespace se2_planning_rviz

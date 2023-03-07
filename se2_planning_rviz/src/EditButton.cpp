@@ -35,7 +35,6 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
-
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QHeaderView>
@@ -46,12 +45,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 namespace se2_planning_rviz {
 
-EditButton::EditButton(const std::string& id, QWidget* parent)
-    : EditButton(id,"Edit",parent) {
+EditButton::EditButton(const std::string& id, QWidget* parent) : EditButton(id, "Edit", parent) {}
 
-}
-
-EditButton::EditButton(const std::string& id, const std::string &buttonInactiveText, QWidget* parent)
+EditButton::EditButton(const std::string& id, const std::string& buttonInactiveText, QWidget* parent)
     : QWidget(parent), id_(id), buttonInactiveText_(buttonInactiveText), editing_(false) {
   createButton();
 }
@@ -89,7 +85,6 @@ void EditButton::finishEditing() {
       "background-color: rgb(255, 255, 204); color: rgb(0, 0, 0);outline: "
       "none;");
   Q_EMIT finishedEditing(id_);
-
 }
 
 }  // namespace se2_planning_rviz

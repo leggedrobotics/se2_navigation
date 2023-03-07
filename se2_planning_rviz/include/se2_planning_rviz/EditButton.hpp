@@ -6,8 +6,6 @@
  *  Institute: ETH Zurich, Robotic Systems Lab
  */
 
-
-
 /*
  * Original by:
  *
@@ -58,14 +56,12 @@ class EditButton : public QWidget {
   Q_OBJECT
  public:
   explicit EditButton(const std::string& id, QWidget* parent = 0);
-  EditButton(const std::string& id, const std::string &buttonInactiveText, QWidget* parent = 0);
+  EditButton(const std::string& id, const std::string& buttonInactiveText, QWidget* parent = 0);
 
   std::string id() const { return id_; }
   void setId(const std::string& id) { id_ = id; }
 
-  virtual QSize sizeHint() const {
-    return edit_button_->sizeHint();
-  }
+  virtual QSize sizeHint() const { return edit_button_->sizeHint(); }
 
  public Q_SLOTS:
   void startEditing();
@@ -91,5 +87,4 @@ class EditButton : public QWidget {
   bool editing_;
 };
 
-}  /* namespace se2_planning_rviz*/
-
+} /* namespace se2_planning_rviz*/

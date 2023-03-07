@@ -96,7 +96,9 @@ void loadOmplPlannerParameters(OmplPlanners type, const std::string& filename, O
       // do nothing
       break;
     }
-    default: { throw std::runtime_error("Unknown parameters type"); }
+    default: {
+      throw std::runtime_error("Unknown parameters type");
+    }
   }
 }
 

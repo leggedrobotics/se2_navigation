@@ -3,6 +3,7 @@
 Helper functions shared across packages within se2_navigation. Mainly used for visualization purposes.
 
 ## Dependencies
+
 * roscpp (ros-melodic-roscpp)
 * eigen
 * visualization_msgs (ros-melodic-visualization-msgs)
@@ -13,7 +14,7 @@ Helper functions shared across packages within se2_navigation. Mainly used for v
 ## Installation
 
 Build with:   
-`catkin build se2_visualization_ros`    
+`catkin build se2_visualization_ros`
 
 ## Usage
 

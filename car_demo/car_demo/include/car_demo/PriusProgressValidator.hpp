@@ -23,4 +23,4 @@ class ProgressValidator {
 
 std::unique_ptr<ProgressValidator> createProgressValidator(const ProgressValidatorParameters& parameters);
 
-}
+}  // namespace car_demo
