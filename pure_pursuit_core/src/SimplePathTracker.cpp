@@ -35,7 +35,15 @@ void SimplePathTracker::importCurrentPath(const Path& path) {
   if (!isPathAndCurrenStateWithinRadius(path, headingController_->getActiveLookaheadDistance())) {
     std::cout << "WARNING: path imported is more than one lookahead distance away from the current state" << std::endl;
   }
-  currentPath_ = path;
+  // remove from path segments that have less than two points (they are not valid for pure pursuit)
+  Path preprocessedPath;
+  for (const auto& segment : path.segment_) {
+    if (segment.point_.size() < 2) {
+      continue;
+    }
+    preprocessedPath.segment_.push_back(segment);
+  }
+  currentPath_ = preprocessedPath;
   isPathReceived_ = true;
   isPathUpdated_ = false;
   currentPathSegmentId_ = 0;
@@ -56,6 +64,15 @@ void SimplePathTracker::updateCurrentPath(const Path& path) {
   // keep current state, do not change it
 }
 
+void SimplePathTracker::advanceSegmentId() {
+  const int nSegments = currentPath_.segment_.size();
+  currentPathSegmentId_ = bindIndexToRange(currentPathSegmentId_ + 1, 0, nSegments - 1);
+  // if the current segment has just one point skip it
+  if (currentPath_.segment_.at(currentPathSegmentId_).point_.size() == 1) {
+    this->advanceSegmentId();
+  }
+}
+
 void SimplePathTracker::advanceStateMachine() {
   const bool isSegmentTrackingFinished =
       progressValidator_->isPathSegmentTrackingFinished(currentPath_.segment_.at(currentPathSegmentId_), currentRobotState_);
@@ -70,8 +87,7 @@ void SimplePathTracker::advanceStateMachine() {
     // go to waiting state state
     currentFSMState_ = States::Waiting;
     stopwatch_.start();
-    const int nSegments = currentPath_.segment_.size();
-    currentPathSegmentId_ = bindIndexToRange(currentPathSegmentId_ + 1, 0, nSegments - 1);
+    this->advanceSegmentId();
     headingController_->updateCurrentPathSegment(currentPath_.segment_.at(currentPathSegmentId_));
     headingController_->initialize();
     velocityController_->updateCurrentPathSegment(currentPath_.segment_.at(currentPathSegmentId_));

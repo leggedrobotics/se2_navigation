@@ -19,6 +19,7 @@ struct HeadingControllerParameters {
   double anchorDistanceBck_ = 0.2;
   double deadZoneWidth_ = 0.0;
   double avgFilgerCurrentSampleWeight_ = 1.0;
+  double maxPathDistance_ = 1.0;
   virtual std::string asString() const;
 };
 
@@ -55,6 +56,8 @@ class HeadingController {
   PathSegment currentPathSegment_;
   unsigned int lastClosestPointId_ = 0;
   Vector desiredLinearVelocity_;
+  // max path deviation from tracked path
+  double maxPathDistance_ = 1.0;
 };
 
 }  // namespace pure_pursuit

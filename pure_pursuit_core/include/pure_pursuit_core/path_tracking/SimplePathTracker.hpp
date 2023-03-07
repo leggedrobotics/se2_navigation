@@ -32,6 +32,7 @@ class SimplePathTracker : public PathTracker {
   void advanceStateMachine() override;
   bool advanceControllers() override;
   bool isPathAndCurrenStateWithinRadius(const Path& path, double raidus) const;
+  void advanceSegmentId();
 
   States currentFSMState_ = States::NoOperation;
   bool isPathReceived_ = false;

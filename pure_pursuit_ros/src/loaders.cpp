@@ -30,7 +30,7 @@ AckermannSteeringCtrlParameters loadAckermannSteeringControllerParameters(const 
   parameters.lookaheadDistanceFwd_ = node["lookahead_fwd"].as<double>();
   parameters.deadZoneWidth_ = node["dead_zone_width"].as<double>();
   parameters.avgFilgerCurrentSampleWeight_ = node["avg_filter_current_sample_weight"].as<double>();
-
+  parameters.maxPathDistance_ = node["max_path_distance"].as<double>();
   // ackermann specific
   auto ackermannNode = node["heading_control_ackermann"];
   parameters.wheelBase_ = ackermannNode["wheel_base"].as<double>();
@@ -66,7 +66,8 @@ AdaptiveVelocityControllerParameters loadAdaptiveVelocityControllerParameters(co
   AdaptiveVelocityControllerParameters parameters;
   parameters.desiredVelocity_ = node["nominal_velocity"].as<double>();
   parameters.maxVelocityRateOfChange_ = node["max_rate_of_change"].as<double>();
-  parameters.distanceToGoalWhenBrakingStarts_ = node["distance_when_braking_starts"].as<double>();
+  parameters.distanceToGoalWhenBrakingStarts_ =
+      0.5 * parameters.desiredVelocity_ * parameters.desiredVelocity_ / parameters.maxVelocityRateOfChange_;
 
   return parameters;
 }

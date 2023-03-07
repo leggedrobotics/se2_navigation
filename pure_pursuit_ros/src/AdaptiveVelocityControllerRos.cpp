@@ -38,7 +38,7 @@ void updateFromDD(const pure_pursuit_ros::PurePursuitAdaptiveVelConfig& config, 
   param->distanceToGoalWhenBrakingStarts_ = config.distance_when_braking_starts;
 }
 void updateDD(const AdaptiveVelocityControllerParameters& param, pure_pursuit_ros::PurePursuitAdaptiveVelConfig* config) {
-  config->distance_when_braking_starts = param.distanceToGoalWhenBrakingStarts_;
+  config->distance_when_braking_starts =  0.5 * config->nominal_velocity * config->nominal_velocity / config->max_vel_rate_of_change;
   config->max_vel_rate_of_change = param.maxVelocityRateOfChange_;
   config->nominal_velocity = param.desiredVelocity_;
 }
