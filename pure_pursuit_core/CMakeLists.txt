@@ -82,7 +82,6 @@ install(DIRECTORY include/${PROJECT_NAME}/
 #################
 ## Clang_tools ##
 #################
-find_package(cmake_clang_tools)
 if (cmake_clang_tools_FOUND)
     message(STATUS "Run clang tooling for target " ${PROJECT_NAME})
     add_clang_tooling(

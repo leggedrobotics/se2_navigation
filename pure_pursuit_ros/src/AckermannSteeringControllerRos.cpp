@@ -158,6 +158,7 @@ void updateFromDD(const pure_pursuit_ros::PurePursuitConfig& config, AckermannSt
   param->wheelBase_ = config.wheel_base;
   param->maxPathDistance_ = config.max_path_distance;
 }
+
 void updateDD(const AckermannSteeringCtrlParameters& param, pure_pursuit_ros::PurePursuitConfig* config) {
   config->lookahead_fwd = param.lookaheadDistanceFwd_;
   config->lookahead_fwd = param.lookaheadDistanceFwd_;
