@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+  car_demo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        ROS_DISTRO: noetic
+    command: ["/bin/bash", "-lc", "source /root/catkin_ws/devel/setup.bash && roslaunch car_demo demo_autonomous.launch"]
+    environment:
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+      - ROS_MASTER_URI=http://127.0.0.1:11311
+      - ROS_IP=127.0.0.1
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
+    network_mode: host
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - car_demo_workspace:/root/catkin_ws
+    devices:
+      - /dev/dri:/dev/dri
+    shm_size: 1g
+    restart: "no"
+
+volumes:
+  car_demo_workspace:

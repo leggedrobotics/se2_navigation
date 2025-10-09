@@ -73,6 +73,16 @@ Refer to [car_demo](car_demo/README.md) for the details.
 Refer to [approach_pose_planner](se2_approach_pose_planning/approach_pose_planner_ros/README.md) if you are interested
 in approach pose planning.
 
+## Docker Setup
+
+The repository includes a ROS Noetic `Dockerfile`, a `docker-compose.yml`, and Makefile shortcuts for desktop testing.
+
+- **Prerequisites**: Docker with the Compose plugin, GPU drivers/X11 if you plan to visualize RViz or Gazebo. Allow the container to access your X server with `xhost +` before launching.
+- **Build image**: `make docker-build` (sets up the catkin workspace inside the container).
+- **Open interactive shell**: `make docker-shell` enters the image with ROS sourced; you can run commands such as `roslaunch car_demo demo_autonomous.launch`.
+- **Run the demo via Compose**: `make compose-up` builds (if needed) and launches the `car_demo` service defined in `docker-compose.yml`.
+- **Stop containers**: `make compose-down` tears down the Compose stack and keeps the catkin workspace volume.
+
 ## Usage
 
 Run the main demo with:   
